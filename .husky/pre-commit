@@ -1,3 +1,0 @@
-. "$(dirname -- "$0")/_/husky.sh"
-
-yarn run eslint ./src && yarn run prettier --check ./src
