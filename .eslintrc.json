@@ -16,7 +16,7 @@
   "rules": {
     "no-debugger": "off",
     "no-param-reassign": 0,
-    "no-console": 0,
+    "no-console": 1,
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "off",
     "class-methods-use-this": "off",
