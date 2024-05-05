@@ -55,3 +55,8 @@ yarn ci:format
 ```cmd
 yarn format
 ```
+
+5. For run tests
+```cmd
+yarn test
+```
