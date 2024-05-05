@@ -1,14 +1,44 @@
-import { ctpClient } from '@api/buildClient';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-const projectKey = import.meta.env.VITE_Project_key;
-// Create apiRoot from the imported ClientBuilder and include your Project key
-const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: projectKey });
+import { ApiRoot, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import {
+  ClientBuilder,
+  type AuthMiddlewareOptions, // Required for auth
+  type HttpMiddlewareOptions, // Required for sending HTTP requests
+} from '@commercetools/sdk-client-v2';
+export const projectKey = import.meta.env.VITE_Project_key;
 
-// Example call to return Project information
-// This code has the same effect as sending a GET request to the commercetools Composable Commerce API without any endpoints.
-const getProject = () => {
-  return apiRoot.get().execute();
-};
+class Api {
+  protected readonly apiRoot: ApiRoot;
 
-// Retrieve Project information and output the result to the log
-getProject().then(console.log).catch(console.error);
+  constructor() {
+    const authUrl = import.meta.env.VITE_Auth_url;
+    const apiUrl = import.meta.env.VITE_API_url;
+    const clientId = import.meta.env.VITE_Client_id;
+    const clientSecret = import.meta.env.VITE_Secret;
+    const scope = import.meta.env.VITE_Scope;
+    const authMiddlewareOptions: AuthMiddlewareOptions = {
+      host: authUrl,
+      projectKey,
+      credentials: {
+        clientId,
+        clientSecret,
+      },
+      scopes: [scope],
+      fetch,
+    };
+
+    const httpMiddlewareOptions: HttpMiddlewareOptions = {
+      host: apiUrl,
+      fetch,
+    };
+
+    const client = new ClientBuilder()
+      .withClientCredentialsFlow(authMiddlewareOptions)
+      .withHttpMiddleware(httpMiddlewareOptions)
+      .withLoggerMiddleware()
+      .build();
+
+    this.apiRoot = createApiBuilderFromCtpClient(client);
+  }
+}
+
+export default Api;
