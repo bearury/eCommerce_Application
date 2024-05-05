@@ -33,6 +33,9 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
-    "@commercetools/sdk-client-v2": "^2.5.0"
+    "@commercetools/platform-sdk": "^7.8.0",
+    "@commercetools/sdk-client-v2": "^2.5.0",
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "^3.3.2"
   }
 }
