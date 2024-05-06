@@ -15,6 +15,7 @@
     "ci:format": "prettier --check ./src"
   },
   "devDependencies": {
+    "@types/node": "^20.12.8",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "autoprefixer": "^10.4.19",
@@ -35,6 +36,10 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
+    "@commercetools/platform-sdk": "^7.8.0",
+    "@commercetools/sdk-client-v2": "^2.5.0",
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "^3.3.2"
     "zustand": "^4.5.2"
   }
 }
