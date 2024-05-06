@@ -1,6 +1,14 @@
 # eCommerce_Application
 
-Final Project JavaScript/Front-end 2023Q4
+## Final Project JavaScript/Front-end 2023Q4
+
+This is a learning project of the RSSchool platform. The application is an online store. The stack used:
+- bundler - vite
+- typescript
+- tests - vitest
+- sass/tailwindcss
+- state manager - zustand
+- eslint, prettier, husky
 
 ### Start on development in the project
 
@@ -46,4 +54,9 @@ yarn ci:format
 
 ```cmd
 yarn format
+```
+
+5. For run tests
+```cmd
+yarn test
 ```
