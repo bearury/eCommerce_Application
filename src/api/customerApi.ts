@@ -1,4 +1,10 @@
-import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
+import {
+  ByProjectKeyRequestBuilder,
+  ClientResponse,
+  Customer,
+  CustomerPagedQueryResponse,
+  CustomerSignInResult,
+} from '@commercetools/platform-sdk';
 import Api, { projectKey } from './api';
 
 class CustomerApi extends Api {
@@ -9,29 +15,27 @@ class CustomerApi extends Api {
     this.customerBuilder = this.apiRoot.withProjectKey({ projectKey });
   }
 
-  async getAllCustomers() {
+  async getAllCustomers(): Promise<ClientResponse<CustomerPagedQueryResponse>> {
     try {
-      const customers = await this.customerBuilder.customers().get().execute();
-      return customers;
+      return await this.customerBuilder.customers().get().execute();
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  async getCustomer(customerID: string) {
+  async getCustomer(customerID: string): Promise<ClientResponse<Customer>> {
     try {
-      const customer = await this.customerBuilder.customers().withId({ ID: customerID }).get().execute();
-      return customer;
+      return await this.customerBuilder.customers().withId({ ID: customerID }).get().execute();
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  async createCustomer(email: string, password: string) {
+  async createCustomer(email: string, password: string): Promise<ClientResponse<CustomerSignInResult>> {
     try {
-      const customer = await this.customerBuilder
+      return await this.customerBuilder
         .customers()
         .post({
           body: {
@@ -40,7 +44,6 @@ class CustomerApi extends Api {
           },
         })
         .execute();
-      return customer;
     } catch (error) {
       console.error(error);
       throw error;
