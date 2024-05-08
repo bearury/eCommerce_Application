@@ -5,11 +5,9 @@ import { RouterPages } from '@app/app.ts';
 import { routerState } from '@state/state.ts';
 
 interface HeaderButtonProps {
-  buttonType: ButtonType;
+  buttonType: RouterPages;
   callback: (param: RouterPages) => void;
 }
-
-type ButtonType = RouterPages;
 
 export default class HeaderButton extends View {
   type: RouterPages;
@@ -28,8 +26,8 @@ export default class HeaderButton extends View {
     routerState.subscribe(this.handlerChangePage.bind(this));
   }
 
-  handlerChangePage() {
-    const currentPage = routerState.getState().page;
+  private handlerChangePage(): void {
+    const currentPage: RouterPages | null = routerState.getState().page;
     if (currentPage && currentPage === this.type) {
       this.getElement().classList.add(styles.active);
     } else {

@@ -23,34 +23,24 @@ export default class HeaderPages extends View {
   }
 
   private configureView(): void {
-    const currentElement = this.getElement();
+    const currentElement: HTMLElement = this.getElement();
 
-    const buttons = [
-      {
-        type: RouterPages.signup,
-      },
-      {
-        type: RouterPages.signin,
-      },
-      {
-        type: RouterPages.main,
-      },
-    ];
+    const buttons: RouterPages[] = Object.values(RouterPages);
 
-    buttons.forEach((btn: { type: RouterPages }) => {
+    buttons.forEach((btn: RouterPages): void => {
       const button: HeaderButton = new HeaderButton({
-        buttonType: btn.type,
+        buttonType: btn,
         callback: this.handlerClickButton.bind(this),
       });
       this.buttons.push(button);
     });
 
-    this.buttons.forEach((button: HeaderButton) => {
+    this.buttons.forEach((button: HeaderButton): void => {
       currentElement.append(button.getElement());
     });
   }
 
-  private handlerClickButton(route: RouterPages) {
+  private handlerClickButton(route: RouterPages): void {
     this.router.navigate(route);
   }
 }

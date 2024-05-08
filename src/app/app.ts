@@ -2,7 +2,7 @@ import View from '../utils/view';
 import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 
-export const enum RouterPages {
+export enum RouterPages {
   signup = 'signup',
   signin = 'signin',
   main = 'main',
@@ -36,28 +36,28 @@ export default class App {
       {
         path: '',
         callback: async (): Promise<void> => {
-          const { SignUpPage } = await import('../pages/index');
+          const { SignUpPage } = await import('@pages/index');
           this.setContent(RouterPages.signup, new SignUpPage());
         },
       },
       {
         path: `${RouterPages.signup}`,
         callback: async (): Promise<void> => {
-          const { SignUpPage } = await import('../pages/index');
+          const { SignUpPage } = await import('@pages/index');
           this.setContent(RouterPages.signup, new SignUpPage());
         },
       },
       {
         path: `${RouterPages.signin}`,
         callback: async (): Promise<void> => {
-          const { SignInPage } = await import('../pages/index');
+          const { SignInPage } = await import('@pages/index');
           this.setContent(RouterPages.signin, new SignInPage());
         },
       },
       {
         path: `${RouterPages.main}`,
         callback: async (): Promise<void> => {
-          const { MainPage } = await import('../pages/index');
+          const { MainPage } = await import('@pages/index');
           this.setContent(RouterPages.main, new MainPage());
         },
       },
