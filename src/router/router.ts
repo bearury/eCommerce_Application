@@ -1,5 +1,7 @@
 import { RouterPages } from '../app/app';
 import HandlerRouter from './handler';
+import { routerState } from '@state/state.ts';
+import getPath from '@utils/get-path.ts';
 
 export type Route = { path: string; callback: Function };
 
@@ -20,16 +22,21 @@ export default class Router {
     // }
   }
 
-  public navigate(route: RouterPages) {
-    const foundPage = this.routes.find((item) => item.path === route);
-    if (foundPage) {
-      this.handler.navigate(foundPage.path);
+  public navigate(route: RouterPages): void {
+    const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
+
+    if (!foundPage) return;
+    const path: RouterPages | null = getPath(foundPage.path);
+
+    if (path) {
+      routerState.getState().setPage(path);
+      this.handler.navigate(path);
     }
   }
 
-  private urlChangedHandler(requestParams: { path: string; resource: string }) {
-    const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/{id}`;
-    const route = this.routes.find((item) => item.path === pathForFind);
+  private urlChangedHandler(requestParams: { path: string; resource: string }): void {
+    const pathForFind: string = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/{id}`;
+    const route: Route | undefined = this.routes.find((item: Route): boolean => item.path === pathForFind);
 
     if (!route) {
       this.redirectToNotFoundPage();

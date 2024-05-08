@@ -2,6 +2,7 @@ import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
+import { routerState } from '@state/state.ts';
 
 interface HeaderButtonProps {
   buttonType: ButtonType;
@@ -11,6 +12,8 @@ interface HeaderButtonProps {
 type ButtonType = RouterPages;
 
 export default class HeaderButton extends View {
+  type: RouterPages;
+
   constructor({ buttonType, callback }: HeaderButtonProps) {
     const params: ParamsElementCreator = {
       tag: 'button',
@@ -20,5 +23,17 @@ export default class HeaderButton extends View {
     };
 
     super(params);
+    this.type = buttonType;
+
+    routerState.subscribe(this.handlerChangePage.bind(this));
+  }
+
+  handlerChangePage() {
+    const currentPage = routerState.getState().page;
+    if (currentPage && currentPage === this.type) {
+      this.getElement().classList.add(styles.active);
+    } else {
+      this.getElement().classList.remove(styles.active);
+    }
   }
 }
