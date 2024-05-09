@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import HeaderButton from '@components/buttons/header-button/header-button.ts';
+import HeaderButton from '@components/buttons/header-button/header-button';
 import { RouterPages } from '@app/app.ts';
 
 describe('Header button component', (): void => {

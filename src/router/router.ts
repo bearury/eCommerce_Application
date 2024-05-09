@@ -1,7 +1,7 @@
-import { RouterPages } from "../app/app";
-import HandlerRouter from "./handler";
-import { routerState } from "@state/state.ts";
-import getPath from "@utils/get-path.ts";
+import { RouterPages } from '../app/app';
+import HandlerRouter from './handler';
+import { routerState } from '@state/state.ts';
+import getPath from '@utils/get-path.ts';
 
 export type Route = { path: string; callback: Function };
 

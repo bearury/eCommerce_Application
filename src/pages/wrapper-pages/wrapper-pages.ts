@@ -1,7 +1,7 @@
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import View from '@utils/view.ts';
 import styles from './wrapper-pages.module.scss';
-import HeaderPages from '@components/header-pages/header-pages.ts';
+import HeaderPages from '@components/header-pages/header-pages';
 import Router from '@router/router.ts';
 
 export default class WrapperPages extends View {
