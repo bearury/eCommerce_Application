@@ -24,6 +24,7 @@
     "class-methods-use-this": "off",
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
     "@typescript-eslint/no-explicit-any": 2,
-    "prettier/prettier": ["error", { "endOfLine": "auto" }]
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "@typescript-eslint/ban-types": "off"
   }
 }

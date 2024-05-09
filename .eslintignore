@@ -3,5 +3,5 @@ dist
 build
 vitest.config.ts
 tailwind.config.ts
-postcss.config.ts
+postcss.config.js
 vite.config.ts
