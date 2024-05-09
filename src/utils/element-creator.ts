@@ -17,6 +17,10 @@ class ElementCreator {
     this.createElement(params);
   }
 
+  public getElement(): HTMLElement {
+    return this.element;
+  }
+
   private createElement(params: ParamsElementCreator): HTMLElement {
     if (params.classNames && params.classNames.length) {
       this.setClasses(params.classNames);
@@ -37,10 +41,6 @@ class ElementCreator {
     }
 
     return this.getElement();
-  }
-
-  private getElement(): HTMLElement {
-    return this.element;
   }
 
   private setAttribute(attr: Array<{ type: string; value: string }>): void {

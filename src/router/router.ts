@@ -1,7 +1,7 @@
-import { RouterPages } from '../app/app';
-import HandlerRouter from './handler';
-import { routerState } from '@state/state.ts';
-import getPath from '@utils/get-path.ts';
+import { RouterPages } from "../app/app";
+import HandlerRouter from "./handler";
+import { routerState } from "@state/state.ts";
+import getPath from "@utils/get-path.ts";
 
 export type Route = { path: string; callback: Function };
 
@@ -16,10 +16,10 @@ export default class Router {
   }
 
   public redirectToNotFoundPage(): void {
-    // const notFoundPage = this.routes.find((item) => item.path === RouterPages.not_found);
-    // if (notFoundPage) {
-    //   this.handler.navigate(notFoundPage.path);
-    // }
+    const notFoundPage = this.routes.find((item) => item.path === RouterPages.not_found);
+    if (notFoundPage) {
+      this.handler.navigate(RouterPages.not_found);
+    }
   }
 
   public navigate(route: RouterPages): void {

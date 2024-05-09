@@ -21,7 +21,11 @@ export default class HandlerRouter {
       if (!path) {
         this.navigate(RouterPages.main);
         routerState.getState().setPage(RouterPages.main);
+        return;
       }
+
+      this.navigate(RouterPages.not_found);
+      routerState.getState().setPage(RouterPages.not_found);
     });
   }
 

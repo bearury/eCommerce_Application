@@ -5,6 +5,7 @@ import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 export enum RouterPages {
   signup = 'signup',
   signin = 'signin',
+  not_found = 'not_found',
   main = 'main',
 }
 
@@ -59,6 +60,13 @@ export default class App {
         callback: async (): Promise<void> => {
           const { MainPage } = await import('@pages/index');
           this.setContent(RouterPages.main, new MainPage());
+        },
+      },
+      {
+        path: `${RouterPages.not_found}`,
+        callback: async (): Promise<void> => {
+          const { NotFoundPage } = await import('@pages/index');
+          this.setContent(RouterPages.not_found, new NotFoundPage());
         },
       },
     ];

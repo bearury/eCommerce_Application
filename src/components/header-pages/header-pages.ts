@@ -28,6 +28,7 @@ export default class HeaderPages extends View {
     const buttons: RouterPages[] = Object.values(RouterPages);
 
     buttons.forEach((btn: RouterPages): void => {
+      if (btn === RouterPages.not_found) return;
       const button: HeaderButton = new HeaderButton({
         buttonType: btn,
         callback: this.handlerClickButton.bind(this),

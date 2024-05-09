@@ -1,0 +1,11 @@
+.page {
+  @apply flex flex-auto flex-col items-center justify-center bg-bgBody text-center text-textDark;
+
+  .title {
+    @apply text-8xl font-bold;
+  }
+
+  .subtitle {
+    @apply text-4xl;
+  }
+}
