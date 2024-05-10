@@ -16,10 +16,10 @@ export default class Router {
   }
 
   public redirectToNotFoundPage(): void {
-    // const notFoundPage = this.routes.find((item) => item.path === RouterPages.not_found);
-    // if (notFoundPage) {
-    //   this.handler.navigate(notFoundPage.path);
-    // }
+    const notFoundPage = this.routes.find((item) => item.path === RouterPages.not_found);
+    if (notFoundPage) {
+      this.handler.navigate(RouterPages.not_found);
+    }
   }
 
   public navigate(route: RouterPages): void {
