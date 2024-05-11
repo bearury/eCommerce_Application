@@ -199,7 +199,4 @@ export default class SignInPage extends View {
     }
   }
 
-  submit() {
-    console.log('submit');
-  }
 }
