@@ -4,7 +4,9 @@ import styles from './sign-in-page.module.scss';
 import View from '@utils/view.ts';
 import Form from '@components/form/form';
 import Input, { InputType } from '@components/input/input';
+import Auth from '@api/auth';
 
+const auth = new Auth();
 export default class SignInPage extends View {
   passwordInput: Input;
 
@@ -155,7 +157,11 @@ export default class SignInPage extends View {
 
   login(e: Event) {
     e.preventDefault();
-    console.log('Login callBack');
+    const emailInput = this.emailInput.getElement() as HTMLInputElement;
+    const userEmail = emailInput.value;
+    const passwordInput = this.passwordInput.getElement() as HTMLInputElement;
+    const userPassword = passwordInput.value;
+    auth.login({ email: userEmail, password: userPassword });
   }
 
   validateEmail(event: Event) {
