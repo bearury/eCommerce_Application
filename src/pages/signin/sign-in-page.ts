@@ -12,6 +12,8 @@ export default class SignInPage extends View {
 
   emailInput: Input;
 
+  loginInput: Input;
+
   formattedEmailError: ElementCreator;
 
   noWhiteSpaceError: ElementCreator;
@@ -29,6 +31,10 @@ export default class SignInPage extends View {
   oneLowerCaseError: ElementCreator;
 
   passNoWhiteSpaceError: ElementCreator;
+
+  isValidPassword: boolean;
+
+  isValidEmail: boolean;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -48,6 +54,11 @@ export default class SignInPage extends View {
       callbacks: [{ event: 'input', callback: this.validateEmail.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       placeholder: 'Your e-mail',
+    });
+    this.loginInput = new Input({
+      inputType: InputType.submit,
+      callbacks: [{ event: 'click', callback: this.login.bind(this) }],
+      value: 'Login',
     });
     this.formattedEmailError = new ElementCreator({
       tag: 'span',
@@ -101,6 +112,8 @@ export default class SignInPage extends View {
     });
 
     this.configureView();
+    this.isValidPassword = false;
+    this.isValidEmail = false;
   }
 
   configureView() {
@@ -110,11 +123,6 @@ export default class SignInPage extends View {
       inputType: InputType.checkbox,
       inputName: 'showPassword',
       callbacks: [{ event: 'click', callback: this.showPassword.bind(this) }],
-    });
-    const loginInput = new Input({
-      inputType: InputType.submit,
-      callbacks: [{ event: 'click', callback: this.login.bind(this) }],
-      value: 'Login',
     });
     const showPasswordWithLabel = new ElementCreator({
       tag: 'label',
@@ -150,7 +158,7 @@ export default class SignInPage extends View {
       this.passwordInput.getElement(),
       showPasswordWithLabel.getElement(),
       passwordErrors.getElement(),
-      loginInput.getElement()
+      this.loginInput.getElement()
     );
     section.append(form);
   }
@@ -168,17 +176,23 @@ export default class SignInPage extends View {
     const emailInput = event.target as HTMLInputElement;
     const emailValue = emailInput.value;
     const emailRegex = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    const isValidEmail = emailRegex.test(emailValue);
+    const isValidEmailInput = emailRegex.test(emailValue);
     const noWhiteSpace = emailValue.trim() === emailValue;
     const domainRegex = /@[^\s@]+\.[^\s@]{2,}$/;
     const hasDomain = domainRegex.test(emailValue);
     const atIndex = emailValue.indexOf('@');
     const dotIndex = emailValue.lastIndexOf('.');
     const hasValidAtSymbol = atIndex > 0 && dotIndex > atIndex;
-    this.formattedEmailError.getElement().classList.toggle(inputStyles.hidden, isValidEmail);
+    this.formattedEmailError.getElement().classList.toggle(inputStyles.hidden, isValidEmailInput);
     this.noWhiteSpaceError.getElement().classList.toggle(inputStyles.hidden, noWhiteSpace);
     this.noDomainError.getElement().classList.toggle(inputStyles.hidden, hasDomain);
     this.noSeparatingError.getElement().classList.toggle(inputStyles.hidden, hasValidAtSymbol);
+    if (isValidEmailInput && noWhiteSpace && hasDomain && hasValidAtSymbol) {
+      this.isValidEmail = true;
+    } else {
+      this.isValidEmail = false;
+    }
+    this.isAllFieldsValid();
   }
 
   validatePassword(event: Event) {
@@ -194,6 +208,12 @@ export default class SignInPage extends View {
     this.oneLowerCaseError.getElement().classList.toggle(inputStyles.hidden, hasLowercaseLetter);
     this.oneDigitError.getElement().classList.toggle(inputStyles.hidden, hasDigit);
     this.passNoWhiteSpaceError.getElement().classList.toggle(inputStyles.hidden, hasNoWhitespace);
+    if (isLengthValid && hasUppercaseLetter && hasLowercaseLetter && hasDigit && hasNoWhitespace) {
+      this.isValidPassword = true;
+    } else {
+      this.isValidPassword = false;
+    }
+    this.isAllFieldsValid();
   }
 
   showPassword() {
@@ -205,7 +225,12 @@ export default class SignInPage extends View {
     }
   }
 
-  submit() {
-    console.log('submit');
+  isAllFieldsValid() {
+    const loginButton = this.loginInput.getElement() as HTMLInputElement;
+    if (this.isValidPassword && this.isValidEmail) {
+      loginButton.disabled = false;
+    } else {
+      loginButton.disabled = true;
+    }
   }
 }
