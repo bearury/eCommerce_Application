@@ -71,7 +71,7 @@ export default class SignInPage extends View {
     this.passMinLengthError = new ElementCreator({
       tag: 'span',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
-      textContent: 'Please check that you entered the password correctly',
+      textContent: 'Password must be at least 8 characters long.',
     });
 
     this.oneUppercaseError = new ElementCreator({
@@ -175,6 +175,21 @@ export default class SignInPage extends View {
     this.noSeparatingError.getElement().classList.toggle(inputStyles.hidden, hasValidAtSymbol);
   }
 
+  validatePassword(event: Event) {
+    const passwordInput = event.target as HTMLInputElement;
+    const passwordValue = passwordInput.value;
+    const isLengthValid = passwordValue.length >= 8;
+    const hasUppercaseLetter = /[A-Z]/.test(passwordValue);
+    const hasLowercaseLetter = /[a-z]/.test(passwordValue);
+    const hasDigit = /\d/.test(passwordValue);
+    const hasNoWhitespace = passwordValue.trim() === passwordValue;
+    this.passMinLengthError.getElement().classList.toggle(inputStyles.hidden, isLengthValid);
+    this.oneUppercaseError.getElement().classList.toggle(inputStyles.hidden, hasUppercaseLetter);
+    this.oneLowerCaseError.getElement().classList.toggle(inputStyles.hidden, hasLowercaseLetter);
+    this.oneDigitError.getElement().classList.toggle(inputStyles.hidden, hasDigit);
+    this.passNoWhiteSpaceError.getElement().classList.toggle(inputStyles.hidden, hasNoWhitespace);
+  }
+
   showPassword() {
     const passwordInput = this.passwordInput.getElement() as HTMLInputElement;
     if (passwordInput.type === 'password') {
@@ -186,9 +201,5 @@ export default class SignInPage extends View {
 
   submit() {
     console.log('submit');
-  }
-
-  click() {
-    console.log('click');
   }
 }
