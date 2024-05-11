@@ -10,9 +10,23 @@ export default class SignInPage extends View {
 
   emailInput: Input;
 
-  wrongPasswordText: ElementCreator;
+  formattedEmailError: ElementCreator;
 
-  wrongEmailText: ElementCreator;
+  noWhiteSpaceError: ElementCreator;
+
+  noDomainError: ElementCreator;
+
+  noSeparatingError: ElementCreator;
+
+  passMinLengthError: ElementCreator;
+
+  oneUppercaseError: ElementCreator;
+
+  oneDigitError: ElementCreator;
+
+  oneLowerCaseError: ElementCreator;
+
+  passNoWhiteSpaceError: ElementCreator;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -33,15 +47,55 @@ export default class SignInPage extends View {
       classNames: [inputStyles.input, inputStyles.emailInput],
       placeholder: 'Your e-mail',
     });
-    this.wrongEmailText = new ElementCreator({
+    this.formattedEmailError = new ElementCreator({
       tag: 'span',
       classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
-      textContent: 'Please check that you entered the email correctly',
+      textContent: 'Email address must be properly formatted (e.g., user@example.com).',
     });
-    this.wrongPasswordText = new ElementCreator({
+    this.noWhiteSpaceError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Email address must not contain leading or trailing whitespace.',
+    });
+    this.noDomainError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Email address must contain a domain name (e.g., example.com).',
+    });
+    this.noSeparatingError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Email address must contain an "@" symbol separating local part and domain name.',
+    });
+
+    this.passMinLengthError = new ElementCreator({
       tag: 'span',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Please check that you entered the password correctly',
+    });
+
+    this.oneUppercaseError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
+      textContent: 'Password must contain at least one uppercase letter (A-Z).',
+    });
+
+    this.oneLowerCaseError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
+      textContent: 'Password must contain at least one lowercase letter (a-z).',
+    });
+
+    this.oneDigitError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
+      textContent: 'Password must contain at least one digit (0-9).',
+    });
+
+    this.passNoWhiteSpaceError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
+      textContent: 'Password must not contain leading or trailing whitespace.',
     });
 
     this.configureView();
@@ -66,12 +120,34 @@ export default class SignInPage extends View {
       textContent: 'Show password?',
       children: [showPassword.getElement()],
     });
+    const emailErrors = new ElementCreator({
+      tag: 'div',
+      classNames: [inputStyles.emailErrors],
+      children: [
+        this.formattedEmailError.getElement(),
+        this.noWhiteSpaceError.getElement(),
+        this.noDomainError.getElement(),
+        this.noSeparatingError.getElement(),
+      ],
+    });
+    const passwordErrors = new ElementCreator({
+      tag: 'div',
+      classNames: [inputStyles.emailErrors],
+      children: [
+        this.passMinLengthError.getElement(),
+        this.oneUppercaseError.getElement(),
+        this.oneLowerCaseError.getElement(),
+        this.oneDigitError.getElement(),
+        this.passNoWhiteSpaceError.getElement(),
+      ],
+    });
+
     form.append(
       this.emailInput.getElement(),
-      this.wrongEmailText.getElement(),
+      emailErrors.getElement(),
       this.passwordInput.getElement(),
       showPasswordWithLabel.getElement(),
-      this.wrongPasswordText.getElement(),
+      passwordErrors.getElement(),
       loginInput.getElement()
     );
     section.append(form);
@@ -85,19 +161,18 @@ export default class SignInPage extends View {
   validateEmail(event: Event) {
     const emailInput = event.target as HTMLInputElement;
     const emailValue = emailInput.value;
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const emailRegex = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     const isValidEmail = emailRegex.test(emailValue);
-    const errorText = this.wrongEmailText.getElement() as HTMLSpanElement;
-    errorText.classList.toggle(inputStyles.hidden, isValidEmail);
-  }
-
-  validatePassword(event: Event) {
-    const passwordInput = event.target as HTMLInputElement;
-    const passwordValue = passwordInput.value;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-    const isValidPassword = passwordRegex.test(passwordValue);
-    const errorText = this.wrongPasswordText.getElement() as HTMLSpanElement;
-    errorText.classList.toggle(inputStyles.hidden, isValidPassword);
+    const noWhiteSpace = emailValue.trim() === emailValue;
+    const domainRegex = /@[^\s@]+\.[^\s@]{2,}$/;
+    const hasDomain = domainRegex.test(emailValue);
+    const atIndex = emailValue.indexOf('@');
+    const dotIndex = emailValue.lastIndexOf('.');
+    const hasValidAtSymbol = atIndex > 0 && dotIndex > atIndex;
+    this.formattedEmailError.getElement().classList.toggle(inputStyles.hidden, isValidEmail);
+    this.noWhiteSpaceError.getElement().classList.toggle(inputStyles.hidden, noWhiteSpace);
+    this.noDomainError.getElement().classList.toggle(inputStyles.hidden, hasDomain);
+    this.noSeparatingError.getElement().classList.toggle(inputStyles.hidden, hasValidAtSymbol);
   }
 
   showPassword() {
