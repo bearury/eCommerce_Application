@@ -7,7 +7,7 @@ interface ParamsElementCreator {
   children?: Array<HTMLElement>;
 }
 
-type Event = 'click' | 'submit' | 'input' | 'change';
+export type Event = 'click' | 'submit' | 'input' | 'change';
 
 class ElementCreator {
   element: HTMLElement;
