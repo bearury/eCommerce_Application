@@ -162,6 +162,8 @@ export default class SignUpPage extends View {
     this.signUp = new Input({
       inputType: InputType.submit,
       callbacks: [{ event: 'click', callback: this.register.bind(this) }],
+=======
+      callbacks: [],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'sign-up',
       value: 'Sign-up',
