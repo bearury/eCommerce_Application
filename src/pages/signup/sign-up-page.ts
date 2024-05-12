@@ -6,6 +6,26 @@ import Input, { InputType } from '@components/input/input';
 import Form from '@components/form/form';
 import Auth from '@api/auth';
 
+type Address = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  country: string;
+  streetName: string;
+  city: string;
+  postalCode: string;
+};
+
+type CustomerDraft = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  addresses: Address[];
+  defaultShippingAddress?: number; // Optional property
+};
+
 const auth = new Auth();
 export default class SignUpPage extends View {
   passwordInput: Input;
@@ -31,6 +51,8 @@ export default class SignUpPage extends View {
   firstNameInput: Input;
 
   signUp: Input;
+
+  setDefaultAddressInput: Input;
 
   isValidEmail: boolean;
 
@@ -69,6 +91,8 @@ export default class SignUpPage extends View {
   germany: HTMLInputElement;
 
   britain: HTMLInputElement;
+
+  setDefaultShippingAddress: HTMLInputElement;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -161,11 +185,17 @@ export default class SignUpPage extends View {
     });
     this.signUp = new Input({
       inputType: InputType.submit,
-      callbacks: [],
+      callbacks: [{ event: 'click', callback: this.register.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'sign-up',
       value: 'Sign-up',
       disabled: true,
+    });
+    this.setDefaultAddressInput = new Input({
+      inputType: InputType.checkbox,
+      callbacks: [],
+      classNames: [inputStyles.input, inputStyles.emailInput],
+      inputName: 'setDefaultAddress',
     });
     this.formattedEmailError = new ElementCreator({
       tag: 'span',
@@ -211,6 +241,7 @@ export default class SignUpPage extends View {
     this.usa = this.countryInputUS.getElement() as HTMLInputElement;
     this.germany = this.countryInputDE.getElement() as HTMLInputElement;
     this.britain = this.countryInputGB.getElement() as HTMLInputElement;
+    this.setDefaultShippingAddress = this.setDefaultAddressInput.getElement() as HTMLInputElement;
     this.configureView();
   }
 
@@ -233,6 +264,17 @@ export default class SignUpPage extends View {
       textContent: 'Great Britain',
       children: [this.countryInputGB.getElement()],
     });
+    const setDefaultAddressLabel = new ElementCreator({
+      tag: 'label',
+      classNames: [inputStyles.label],
+      textContent: 'Set as default shipping address?',
+      children: [this.setDefaultAddressInput.getElement()],
+    });
+    const setDefaultAddressBlock = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.div],
+      children: [setDefaultAddressLabel.getElement()],
+    });
     const section = this.getElement();
     const form = new Form().getElement();
     form.append(
@@ -246,6 +288,7 @@ export default class SignUpPage extends View {
       this.lastNameError.getElement(),
       this.dateOfBirthInput.getElement(),
       this.dateOfBirthError.getElement(),
+      setDefaultAddressBlock.getElement(),
       this.streetNameInput.getElement(),
       this.streetError.getElement(),
       this.cityInput.getElement(),
@@ -406,7 +449,7 @@ export default class SignUpPage extends View {
       userCountryCode = 'GB';
     }
     try {
-      const data = await auth.register({
+      const request: CustomerDraft = {
         email: userEmail,
         password: userPassword,
         firstName: userFirstName,
@@ -423,7 +466,11 @@ export default class SignUpPage extends View {
             postalCode: userPostalCode,
           },
         ],
-      });
+      };
+      if (this.setDefaultShippingAddress.checked) {
+        request.defaultShippingAddress = 0;
+      }
+      const data = await auth.register(request);
       if (data.statusCode === 201) {
         console.log('User created');
       }
