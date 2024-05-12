@@ -11,6 +11,7 @@ class Api {
 
   constructor() {
     const authUrl = import.meta.env.VITE_Auth_url;
+    console.log('🚀 ~ Api ~ constructor ~ authUrl:', authUrl);
     const apiUrl = import.meta.env.VITE_API_url;
     const clientId = import.meta.env.VITE_Client_id;
     const clientSecret = import.meta.env.VITE_Secret;

@@ -17,15 +17,6 @@ class Auth extends Api {
       throw error;
     }
   }
-
-  async register() {
-    try {
-      return await this.customerBuilder.login().post({ body: user }).execute();
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
 }
 
 export default Auth;
