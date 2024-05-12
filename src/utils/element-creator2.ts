@@ -1,6 +1,4 @@
-import { ParamsElementCreator } from '@utils/element-creator';
-
-type Event = 'click' | 'submit' | 'input' | 'change';
+import { Event, ParamsElementCreator } from '@utils/element-creator';
 
 export default class ElementCreator2 {
   public static create(params: ParamsElementCreator): HTMLElement {
