@@ -387,7 +387,7 @@ export default class SignUpPage extends View {
     }
   }
 
-  register(event: Event) {
+  async register(event: Event) {
     event.preventDefault();
     const userEmail = (this.emailInput.getElement() as HTMLInputElement).value;
     const userPassword = (this.passwordInput.getElement() as HTMLInputElement).value;
@@ -405,24 +405,30 @@ export default class SignUpPage extends View {
     } else {
       userCountryCode = 'GB';
     }
-
-    auth.register({
-      email: userEmail,
-      password: userPassword,
-      firstName: userFirstName,
-      lastName: userLastName,
-      dateOfBirth: userDateOfBirth,
-      addresses: [
-        {
-          firstName: userFirstName,
-          lastName: userLastName,
-          email: userEmail,
-          country: userCountryCode,
-          streetName: userStreetName,
-          city: userCity,
-          postalCode: userPostalCode,
-        },
-      ],
-    });
+    try {
+      const data = await auth.register({
+        email: userEmail,
+        password: userPassword,
+        firstName: userFirstName,
+        lastName: userLastName,
+        dateOfBirth: userDateOfBirth,
+        addresses: [
+          {
+            firstName: userFirstName,
+            lastName: userLastName,
+            email: userEmail,
+            country: userCountryCode,
+            streetName: userStreetName,
+            city: userCity,
+            postalCode: userPostalCode,
+          },
+        ],
+      });
+      if (data.statusCode === 201) {
+        console.log('User created');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
