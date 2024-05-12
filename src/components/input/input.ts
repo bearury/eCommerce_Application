@@ -14,6 +14,7 @@ export enum InputType {
   tel = 'tel',
   text = 'text',
   submit = 'submit',
+  date = 'date',
 }
 
 export type Callback = { event: Event; callback: Function };
@@ -25,10 +26,21 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   inputName?: string;
+  disabled?: boolean;
+  checked?: boolean;
 }
 
 export default class Input extends View {
-  constructor({ inputType, callbacks, classNames = [], placeholder = '', value = '', inputName = '' }: InputProps) {
+  constructor({
+    inputType,
+    callbacks,
+    classNames = [],
+    placeholder = '',
+    value = '',
+    inputName = '',
+    disabled = false,
+    checked = false,
+  }: InputProps) {
     const params: ParamsElementCreator = {
       tag: 'input',
       classNames: classNames.map((className) => styles[className]),
@@ -40,6 +52,12 @@ export default class Input extends View {
       ],
       callback: callbacks,
     };
+    if (params.attribute && disabled) {
+      params.attribute.push({ type: 'disabled', value: 'true' });
+    }
+    if (params.attribute && checked) {
+      params.attribute.push({ type: 'checked', value: 'true' });
+    }
     super(params);
   }
 }

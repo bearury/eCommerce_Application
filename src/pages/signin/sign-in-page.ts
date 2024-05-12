@@ -59,6 +59,7 @@ export default class SignInPage extends View {
       inputType: InputType.submit,
       callbacks: [{ event: 'click', callback: this.login.bind(this) }],
       value: 'Login',
+      disabled: true,
     });
     this.formattedEmailError = new ElementCreator({
       tag: 'span',
@@ -175,7 +176,8 @@ export default class SignInPage extends View {
   validateEmail(event: Event) {
     const emailInput = event.target as HTMLInputElement;
     const emailValue = emailInput.value;
-    const emailRegex = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const emailRegex =
+      /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     const isValidEmailInput = emailRegex.test(emailValue);
     const noWhiteSpace = emailValue.trim() === emailValue;
     const domainRegex = /@[^\s@]+\.[^\s@]{2,}$/;
