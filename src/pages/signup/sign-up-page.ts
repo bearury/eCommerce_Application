@@ -32,6 +32,22 @@ export default class SignUpPage extends View {
 
   isValidPassword: boolean;
 
+  formattedEmailError: ElementCreator;
+
+  passwordError: ElementCreator;
+
+  firstNameError: ElementCreator;
+
+  lastNameError: ElementCreator;
+
+  dateOfBirthError: ElementCreator;
+
+  streetError: ElementCreator;
+
+  cityError: ElementCreator;
+
+  postalCodeError: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -94,7 +110,7 @@ export default class SignUpPage extends View {
     });
     this.countryInputUS = new Input({
       inputType: InputType.radio,
-      callbacks: [],
+      callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'country',
       value: 'US',
@@ -102,17 +118,58 @@ export default class SignUpPage extends View {
     });
     this.countryInputDE = new Input({
       inputType: InputType.radio,
-      callbacks: [],
+      callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'country',
       value: 'DE',
     });
     this.countryInputGB = new Input({
       inputType: InputType.radio,
-      callbacks: [],
+      callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'country',
       value: 'GB',
+    });
+    this.formattedEmailError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Email address must be properly formatted (e.g., user@example.com).',
+    });
+    this.passwordError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
+    });
+    this.firstNameError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Must contain at least one character and no special characters or numbers',
+    });
+    this.lastNameError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Must contain at least one character and no special characters or numbers',
+    });
+    this.dateOfBirthError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'You must be 13 years old or older',
+    });
+    this.streetError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Must contain at least one character',
+    });
+    this.cityError = new ElementCreator({
+      tag: 'span',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent: 'Must contain at least one character and no special characters or numbers',
+    });
+    this.postalCodeError = new ElementCreator({
+      tag: 'div',
+      classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
+      textContent:
+        'Must follow the format for the country: (e.g., 12345 or 12345-6789 for the U.S., 12345 for the Germany, SW1W 0NY for the Great Britain)',
     });
     this.configureView();
   }
@@ -139,18 +196,25 @@ export default class SignUpPage extends View {
     const section = this.getElement();
     const form = new Form().getElement();
     form.append(
-      this.passwordInput.getElement(),
       this.emailInput.getElement(),
+      this.formattedEmailError.getElement(),
       this.passwordInput.getElement(),
+      this.passwordError.getElement(),
       this.firstNameInput.getElement(),
+      this.firstNameError.getElement(),
       this.lastNameInput.getElement(),
+      this.lastNameError.getElement(),
       this.dateOfBirthInput.getElement(),
+      this.dateOfBirthError.getElement(),
       this.streetNameInput.getElement(),
+      this.streetError.getElement(),
       this.cityInput.getElement(),
+      this.cityError.getElement(),
       usaLabel.getElement(),
       germanyLabel.getElement(),
       britainLabel.getElement(),
-      this.postalCodeInput.getElement()
+      this.postalCodeInput.getElement(),
+      this.postalCodeError.getElement()
     );
     section.append(form);
   }
@@ -236,21 +300,30 @@ export default class SignUpPage extends View {
 
   validatePostalCode(event: Event) {
     const PostalCodeInput = event.target as HTMLInputElement;
+    const PostalCodeValue = PostalCodeInput.value;
     const usa = this.countryInputUS.getElement() as HTMLInputElement;
     const germany = this.countryInputDE.getElement() as HTMLInputElement;
     const britain = this.countryInputGB.getElement() as HTMLInputElement;
-    console.log('us', usa.checked, 'germany', germany.checked, 'gb', britain.checked);
     const usaRegex = /^\d{5}(?:[-\s]\d{4})?$/;
     const germanyRegex = /^(?!01000|99999)(0[1-9]\d{3}|[1-9]\d{4})$/;
     const britainRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$/i;
+    let regex: RegExp = usaRegex;
+    if (usa.checked) {
+      regex = usaRegex;
+    } else if (germany.checked) {
+      regex = germanyRegex;
+    } else if (britain.checked) {
+      regex = britainRegex;
+    }
+    const isValidPostalCode = regex.test(PostalCodeValue);
+    this.postalCodeError.getElement().classList.toggle(inputStyles.hidden, isValidPostalCode);
   }
 
-  isAllFieldsValid() {
-    const loginButton = this.loginInput.getElement() as HTMLInputElement;
-    if (this.isValidPassword && this.isValidEmail) {
-      loginButton.disabled = false;
-    } else {
-      loginButton.disabled = true;
-    }
+  clearPostalCode() {
+    const postalCodeInput = this.postalCodeInput.getElement() as HTMLInputElement;
+    postalCodeInput.value = '';
+    this.postalCodeError.getElement().classList.add(inputStyles.hidden);
   }
+
+  isAllFieldsValid() {}
 }
