@@ -4,7 +4,9 @@ import styles from './sign-up-page.module.scss';
 import inputStyles from '@components/input/input.module.scss';
 import Input, { InputType } from '@components/input/input';
 import Form from '@components/form/form';
+import Auth from '@api/auth';
 
+const auth = new Auth();
 export default class SignUpPage extends View {
   passwordInput: Input;
 
@@ -61,6 +63,12 @@ export default class SignUpPage extends View {
   cityError: ElementCreator;
 
   postalCodeError: ElementCreator;
+
+  usa: HTMLInputElement;
+
+  germany: HTMLInputElement;
+
+  britain: HTMLInputElement;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -153,6 +161,8 @@ export default class SignUpPage extends View {
     });
     this.signUp = new Input({
       inputType: InputType.submit,
+      callbacks: [{ event: 'click', callback: this.register.bind(this) }],
+=======
       callbacks: [],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'sign-up',
@@ -200,6 +210,9 @@ export default class SignUpPage extends View {
       textContent:
         'Must follow the format for the country: (e.g., 12345 or 12345-6789 for the U.S., 12345 for the Germany, SW1W 0NY for the Great Britain)',
     });
+    this.usa = this.countryInputUS.getElement() as HTMLInputElement;
+    this.germany = this.countryInputDE.getElement() as HTMLInputElement;
+    this.britain = this.countryInputGB.getElement() as HTMLInputElement;
     this.configureView();
   }
 
@@ -335,18 +348,15 @@ export default class SignUpPage extends View {
   validatePostalCode(event: Event) {
     const PostalCodeInput = event.target as HTMLInputElement;
     const PostalCodeValue = PostalCodeInput.value;
-    const usa = this.countryInputUS.getElement() as HTMLInputElement;
-    const germany = this.countryInputDE.getElement() as HTMLInputElement;
-    const britain = this.countryInputGB.getElement() as HTMLInputElement;
     const usaRegex = /^\d{5}(?:[-\s]\d{4})?$/;
     const germanyRegex = /^(?!01000|99999)(0[1-9]\d{3}|[1-9]\d{4})$/;
     const britainRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$/i;
     let regex: RegExp = usaRegex;
-    if (usa.checked) {
+    if (this.usa.checked) {
       regex = usaRegex;
-    } else if (germany.checked) {
+    } else if (this.germany.checked) {
       regex = germanyRegex;
-    } else if (britain.checked) {
+    } else if (this.britain.checked) {
       regex = britainRegex;
     }
     const isValidPostalCode = regex.test(PostalCodeValue);
@@ -376,6 +386,51 @@ export default class SignUpPage extends View {
       signUp.disabled = false;
     } else {
       signUp.disabled = true;
+    }
+  }
+
+  async register(event: Event) {
+    event.preventDefault();
+    const userEmail = (this.emailInput.getElement() as HTMLInputElement).value;
+    const userPassword = (this.passwordInput.getElement() as HTMLInputElement).value;
+    const userFirstName = (this.firstNameInput.getElement() as HTMLInputElement).value;
+    const userLastName = (this.lastNameInput.getElement() as HTMLInputElement).value;
+    const userDateOfBirth = (this.dateOfBirthInput.getElement() as HTMLInputElement).value;
+    const userStreetName = (this.streetNameInput.getElement() as HTMLInputElement).value;
+    const userCity = (this.cityInput.getElement() as HTMLInputElement).value;
+    const userPostalCode = (this.postalCodeInput.getElement() as HTMLInputElement).value;
+    let userCountryCode;
+    if (this.usa.checked) {
+      userCountryCode = 'US';
+    } else if (this.germany.checked) {
+      userCountryCode = 'DE';
+    } else {
+      userCountryCode = 'GB';
+    }
+    try {
+      const data = await auth.register({
+        email: userEmail,
+        password: userPassword,
+        firstName: userFirstName,
+        lastName: userLastName,
+        dateOfBirth: userDateOfBirth,
+        addresses: [
+          {
+            firstName: userFirstName,
+            lastName: userLastName,
+            email: userEmail,
+            country: userCountryCode,
+            streetName: userStreetName,
+            city: userCity,
+            postalCode: userPostalCode,
+          },
+        ],
+      });
+      if (data.statusCode === 201) {
+        console.log('User created');
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 }
