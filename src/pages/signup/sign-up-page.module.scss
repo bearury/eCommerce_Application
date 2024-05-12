@@ -1,3 +1,14 @@
 .page {
-  @apply bg-cyan-300 flex-auto;
+  @apply flex-auto bg-cyan-300;
+}
+
+.shipping {
+  cursor: auto;
+}
+
+.billing {
+  cursor: auto;
+}
+.hidden {
+  display: none;
 }
