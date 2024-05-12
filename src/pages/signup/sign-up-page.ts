@@ -28,9 +28,23 @@ export default class SignUpPage extends View {
 
   firstNameInput: Input;
 
+  signUp: Input;
+
   isValidEmail: boolean;
 
   isValidPassword: boolean;
+
+  isValidName: boolean;
+
+  isValidLastName: boolean;
+
+  isValidDateOfBirth: boolean;
+
+  isValidStreet: boolean;
+
+  isValidCity: boolean;
+
+  isValidPostalCode: boolean;
 
   formattedEmailError: ElementCreator;
 
@@ -55,8 +69,15 @@ export default class SignUpPage extends View {
       textContent: 'SignUpPage',
     };
     super(params);
+
     this.isValidEmail = false;
     this.isValidPassword = false;
+    this.isValidName = false;
+    this.isValidLastName = false;
+    this.isValidDateOfBirth = false;
+    this.isValidStreet = false;
+    this.isValidCity = false;
+    this.isValidPostalCode = false;
     this.passwordInput = new Input({
       inputType: InputType.password,
       callbacks: [{ event: 'input', callback: this.validatePassword.bind(this) }],
@@ -129,6 +150,14 @@ export default class SignUpPage extends View {
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'country',
       value: 'GB',
+    });
+    this.signUp = new Input({
+      inputType: InputType.submit,
+      callbacks: [],
+      classNames: [inputStyles.input, inputStyles.emailInput],
+      inputName: 'sign-up',
+      value: 'Sign-up',
+      disabled: true,
     });
     this.formattedEmailError = new ElementCreator({
       tag: 'span',
@@ -214,7 +243,8 @@ export default class SignUpPage extends View {
       germanyLabel.getElement(),
       britainLabel.getElement(),
       this.postalCodeInput.getElement(),
-      this.postalCodeError.getElement()
+      this.postalCodeError.getElement(),
+      this.signUp.getElement()
     );
     section.append(form);
   }
@@ -226,11 +256,8 @@ export default class SignUpPage extends View {
       /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     const isValidEmailInput = emailRegex.test(emailValue);
     this.formattedEmailError.getElement().classList.toggle(inputStyles.hidden, isValidEmailInput);
-    if (isValidEmailInput) {
-      this.isValidEmail = true;
-    } else {
-      this.isValidEmail = false;
-    }
+    this.isValidEmail = isValidEmailInput;
+    console.log('🚀 ~ SignUpPage ~ validateEmail ~ this.isValidEmail:', this.isValidEmail);
     this.isAllFieldsValid();
   }
 
@@ -244,11 +271,7 @@ export default class SignUpPage extends View {
     const hasNoWhitespace = passwordValue.trim() === passwordValue;
     const isValidPassword = isLengthValid && hasUppercaseLetter && hasLowercaseLetter && hasDigit && hasNoWhitespace;
     this.passwordError.getElement().classList.toggle(inputStyles.hidden, isValidPassword);
-    if (isValidPassword) {
-      this.isValidPassword = true;
-    } else {
-      this.isValidPassword = false;
-    }
+    this.isValidPassword = isValidPassword;
     this.isAllFieldsValid();
   }
 
@@ -263,6 +286,8 @@ export default class SignUpPage extends View {
     const nameRegex = /^[a-zA-Z]+$/;
     const isValidName = nameRegex.test(nameValue);
     this.firstNameError.getElement().classList.toggle(inputStyles.hidden, isValidName);
+    this.isValidName = isValidName;
+    this.isAllFieldsValid();
   }
 
   validateLastName(event: Event) {
@@ -271,6 +296,8 @@ export default class SignUpPage extends View {
     const nameRegex = /^[a-zA-Z]+$/;
     const isValidName = nameRegex.test(nameValue);
     this.lastNameError.getElement().classList.toggle(inputStyles.hidden, isValidName);
+    this.isValidLastName = isValidName;
+    this.isAllFieldsValid();
   }
 
   validateDateOfBirth(event: Event) {
@@ -282,6 +309,8 @@ export default class SignUpPage extends View {
     const userAge = currentDate.getFullYear() - userDate.getFullYear();
     const isValidAge = userAge >= minAge;
     this.dateOfBirthError.getElement().classList.toggle(inputStyles.hidden, isValidAge);
+    this.isValidDateOfBirth = isValidAge;
+    this.isAllFieldsValid();
   }
 
   validateStreet(event: Event) {
@@ -289,6 +318,8 @@ export default class SignUpPage extends View {
     const streetValue = streetInput.value;
     const isValidStreet = streetValue.trim().length > 0;
     this.streetError.getElement().classList.toggle(inputStyles.hidden, isValidStreet);
+    this.isValidStreet = isValidStreet;
+    this.isAllFieldsValid();
   }
 
   validateCity(event: Event) {
@@ -297,6 +328,8 @@ export default class SignUpPage extends View {
     const cityRegex = /^[a-zA-Z]+$/;
     const isValidCity = cityRegex.test(cityValue);
     this.cityError.getElement().classList.toggle(inputStyles.hidden, isValidCity);
+    this.isValidCity = isValidCity;
+    this.isAllFieldsValid();
   }
 
   validatePostalCode(event: Event) {
@@ -318,6 +351,8 @@ export default class SignUpPage extends View {
     }
     const isValidPostalCode = regex.test(PostalCodeValue);
     this.postalCodeError.getElement().classList.toggle(inputStyles.hidden, isValidPostalCode);
+    this.isValidPostalCode = isValidPostalCode;
+    this.isAllFieldsValid();
   }
 
   clearPostalCode() {
@@ -326,5 +361,21 @@ export default class SignUpPage extends View {
     this.postalCodeError.getElement().classList.add(inputStyles.hidden);
   }
 
-  isAllFieldsValid() {}
+  isAllFieldsValid() {
+    const signUp = this.signUp.getElement() as HTMLInputElement;
+    if (
+      this.isValidEmail &&
+      this.isValidPassword &&
+      this.isValidName &&
+      this.isValidLastName &&
+      this.isValidDateOfBirth &&
+      this.isValidStreet &&
+      this.isValidCity &&
+      this.isValidPostalCode
+    ) {
+      signUp.disabled = false;
+    } else {
+      signUp.disabled = true;
+    }
+  }
 }
