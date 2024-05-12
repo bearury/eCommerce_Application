@@ -1,6 +1,8 @@
 import View from '../utils/view';
 import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
+import Toast from '@components/toast/toast';
+import { toastState } from '@state/state.ts';
 
 export enum RouterPages {
   signup = 'signup',
@@ -16,14 +18,17 @@ export default class App {
 
   router: Router;
 
+  toast: Toast;
+
   constructor() {
     this.router = new Router(this.createRoutes());
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
+    this.toast = toastState.getState().toast;
   }
 
   public start(): void {
-    this.body.append(this.wrapperPage.getElement());
+    this.body.append(this.wrapperPage.getElement(), this.toast.getElement());
   }
 
   private setContent(pageName: RouterPages, view: View): void {
