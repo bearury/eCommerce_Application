@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest --run",
-    "prepare": "cd ../ && husky eCommerce_Application/.husky",
+    "prepare": "husky && cd ../ && husky eCommerce_Application/.husky",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "format": "prettier --write ./src",
