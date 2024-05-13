@@ -2,6 +2,7 @@ import { createStore } from 'zustand/vanilla';
 import { devtools } from 'zustand/middleware';
 import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
+import Loader from '@components/loader/loader';
 
 interface RouterState {
   page: RouterPages | null;
@@ -25,4 +26,10 @@ const toastState = createStore(
   }))
 );
 
-export { routerState, toastState };
+const loaderState = createStore(
+  devtools<{ loader: Loader }>(() => ({
+    loader: new Loader(),
+  }))
+);
+
+export { routerState, toastState, loaderState };
