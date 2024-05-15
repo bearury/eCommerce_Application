@@ -1,5 +1,5 @@
 .button {
-  @apply p-2 bg-inherit border-none text-bgContainer text-xl hover:text-red-400 transition-all;
+  @apply border-none bg-inherit p-2 text-xl text-bgContainer transition-all hover:text-red-400;
 }
 
 .active {
