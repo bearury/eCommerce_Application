@@ -5,7 +5,7 @@ import View from '@utils/view.ts';
 import Form from '@components/form/form';
 import Input, { InputType } from '@components/input/input';
 import Auth from '@api/auth';
-import { toastState } from '@state/state.ts';
+import { loaderState, toastState } from '@state/state.ts';
 
 const auth = new Auth();
 export default class SignInPage extends View {
@@ -171,16 +171,16 @@ export default class SignInPage extends View {
     const userEmail = emailInput.value;
     const passwordInput = this.passwordInput.getElement() as HTMLInputElement;
     const userPassword = passwordInput.value;
+    loaderState.getState().loader.show();
     auth
       .login({ email: userEmail, password: userPassword })
       .then(() => {
         toastState.getState().toast.showSuccess('Welcome');
       })
       .catch((e) => {
-        console.log('⭐: ', e.body.message);
-
         toastState.getState().toast.showError(e.body.message);
-      });
+      })
+      .finally(() => loaderState.getState().loader.close());
   }
 
   validateEmail(event: Event) {

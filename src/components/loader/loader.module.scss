@@ -1,0 +1,23 @@
+.loaderWrapper {
+  @apply absolute w-full h-full bg-bgBackdrop top-0 left-0 flex justify-center items-center -z-10 opacity-0;
+}
+
+.loaderWrapper.active {
+  @apply opacity-100 transition-[opacity] z-10;
+}
+
+.loader {
+  @apply w-4 h-4 rounded-full relative bg-bgContainer;
+
+  &:before, &:after {
+    transform: rotate(0deg) translate(30px);
+    @apply content-empty absolute rounded-full
+    inset-0 bg-bgBody animate-loader;
+  }
+}
+
+.loader:after {
+  animation-delay: 0.5s
+}
+
+

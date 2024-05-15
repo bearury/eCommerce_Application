@@ -13,8 +13,8 @@ const colors = {
 
 export default {
   content: [
-    "./src/**/*.{js,ts}",
-    "./src/**/*"
+    './src/**/*.{js,ts}',
+    './src/**/*',
   ],
   theme: {
     extend: {
@@ -24,6 +24,29 @@ export default {
       },
       boxShadow: {
         card: '-5px 5px 10px 5px rgba(0, 0, 0, 0.3)',
+      },
+      transitionTimingFunction: {
+        openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
+      },
+      content: {
+        empty: '\'\'',
+      },
+      animation: {
+        progress: 'progress 5s linear forwards',
+        loader: 'loader 1s ease infinite',
+      },
+      keyframes: {
+        progress: {
+          '100%': { right: '100%' },
+        },
+        loader: {
+          '100%': {
+            transform: 'rotate(360deg) translate(30px)',
+          },
+        },
+      },
+      animationDelay: {
+        500: '0.5s',
       },
     },
     screens: {
@@ -35,5 +58,5 @@ export default {
     },
   },
   plugins: [],
-}
+};
 
