@@ -12,7 +12,7 @@ export default class HeaderPages extends View {
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
-      tag: 'div',
+      tag: 'header',
       classNames: [styles.header],
     };
     super(params);

@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply relative h-screen w-screen overflow-hidden;
+  @apply relative h-screen w-screen overflow-x-hidden overflow-y-scroll bg-bgBody font-serif;
 }

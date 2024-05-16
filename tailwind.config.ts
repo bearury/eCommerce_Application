@@ -5,17 +5,16 @@ const colors = {
   textLight: '#E1D4C9',
   textAccent: '#B0907A',
   bgBody: '#E1D4C9',
+  bgHeader: '#413e3b',
   bgContainer: '#665F55',
   bgBackdrop: 'rgba(64, 63, 61, 0.3)',
+  bgDisabled: '#5b5653',
   borderLight: '#C1B6AD',
   borderDark: '#665F55',
 };
 
 export default {
-  content: [
-    './src/**/*.{js,ts}',
-    './src/**/*',
-  ],
+  content: ['./src/**/*.{js,ts}', './src/**/*'],
   theme: {
     extend: {
       colors: {
@@ -24,12 +23,13 @@ export default {
       },
       boxShadow: {
         card: '-5px 5px 10px 5px rgba(0, 0, 0, 0.3)',
+        button: '0px 0px 25px 10px rgba(0,0,0,0.5);',
       },
       transitionTimingFunction: {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
       },
       content: {
-        empty: '\'\'',
+        empty: "''",
       },
       animation: {
         progress: 'progress 5s linear forwards',
@@ -59,4 +59,3 @@ export default {
   },
   plugins: [],
 };
-

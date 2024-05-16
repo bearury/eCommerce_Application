@@ -3,7 +3,7 @@ import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 import Toast from '@components/toast/toast';
 import { loaderState, toastState } from '@state/state.ts';
-import Loader from '@components/loader/loader.ts';
+import Loader from '@components/loader/loader';
 
 export enum RouterPages {
   signup = 'signup',

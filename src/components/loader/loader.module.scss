@@ -1,23 +1,22 @@
 .loaderWrapper {
-  @apply absolute w-full h-full bg-bgBackdrop top-0 left-0 flex justify-center items-center -z-10 opacity-0;
+  @apply absolute left-0 top-0 -z-10 flex h-full w-full items-center justify-center bg-bgBackdrop opacity-0;
 }
 
 .loaderWrapper.active {
-  @apply opacity-100 transition-[opacity] z-10;
+  @apply z-10 opacity-100 transition-[opacity];
 }
 
 .loader {
-  @apply w-4 h-4 rounded-full relative bg-bgContainer;
+  @apply relative h-4 w-4 rounded-full bg-bgContainer;
 
-  &:before, &:after {
+  &:before,
+  &:after {
     transform: rotate(0deg) translate(30px);
-    @apply content-empty absolute rounded-full
-    inset-0 bg-bgBody animate-loader;
+    @apply absolute inset-0 animate-loader
+    rounded-full bg-bgBody content-empty;
   }
 }
 
 .loader:after {
-  animation-delay: 0.5s
+  animation-delay: 0.5s;
 }
-
-
