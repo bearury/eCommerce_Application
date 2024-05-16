@@ -29,6 +29,8 @@ type CustomerDraft = {
 
 const auth = new Auth();
 export default class SignUpPage extends View {
+  labelForm: ElementCreator;
+
   passwordInput: Input;
 
   emailInput: Input;
@@ -165,10 +167,14 @@ export default class SignUpPage extends View {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
-      textContent: 'SignUpPage',
+      textContent: '',
     };
     super(params);
-
+    this.labelForm = new ElementCreator({
+      tag: 'span',
+      classNames: [styles.label],
+      textContent: 'Sign Up',
+    });
     this.isValidEmail = false;
     this.isValidPassword = false;
     this.isValidName = false;
@@ -496,6 +502,7 @@ export default class SignUpPage extends View {
     const section = this.getElement();
     const form = new Form().getElement();
     form.append(
+      this.labelForm.getElement(),
       this.emailInput.getElement(),
       this.formattedEmailError.getElement(),
       this.passwordInput.getElement(),

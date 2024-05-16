@@ -1,13 +1,47 @@
-.password-input {
-  width: 300%;
-}
-.email {
-  color: aquamarine;
+input[type='text'],
+input[type='password'],
+input[type='date'] {
+  @apply w-80 rounded-lg p-2 text-xl;
 }
 
-.email-input {
-  color: #000;
+input[type='checkbox'],
+input[type='radio'] {
+  @apply h-4 w-4 hover:cursor-pointer;
 }
+
+input[type='submit'] {
+  @apply w-28 rounded-lg bg-bgBody py-2 text-xl font-bold;
+
+  &:hover {
+    @apply cursor-pointer;
+  }
+
+  &:active {
+    @apply text-textAccent shadow-button;
+  }
+
+  &:disabled {
+    @apply bg-bgDisabled text-bgBackdrop hover:cursor-default;
+  }
+}
+
+.label {
+  @apply flex items-center justify-center gap-2 text-base;
+}
+
+.wrongEmailText,
+.wrongPasswordText {
+  @apply text-xs text-white before:content-['-\_'];
+}
+
 .hidden {
   display: none;
+}
+
+.valid {
+  @apply border-green-700;
+}
+
+.invalid {
+  @apply border-red-700;
 }

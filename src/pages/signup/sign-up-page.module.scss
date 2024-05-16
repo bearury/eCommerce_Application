@@ -1,14 +1,16 @@
 .page {
-  @apply flex-auto bg-cyan-300;
+  @apply flex flex-auto flex-col items-center justify-center py-14;
 }
 
-.shipping {
-  cursor: auto;
+.label {
+  @apply mb-3 text-3xl font-bold underline;
 }
 
+.shipping,
 .billing {
-  cursor: auto;
+  @apply my-4 flex flex-col gap-2 border-y-2 border-borderLight py-1;
 }
+
 .hidden {
   display: none;
 }

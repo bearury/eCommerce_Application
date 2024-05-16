@@ -9,6 +9,8 @@ import { loaderState, toastState } from '@state/state.ts';
 
 const auth = new Auth();
 export default class SignInPage extends View {
+  labelForm: ElementCreator;
+
   passwordInput: Input;
 
   emailInput: Input;
@@ -41,9 +43,13 @@ export default class SignInPage extends View {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
-      textContent: 'SignInPage',
     };
     super(params);
+    this.labelForm = new ElementCreator({
+      tag: 'span',
+      classNames: [styles.label],
+      textContent: 'Sign In',
+    });
     this.passwordInput = new Input({
       inputType: InputType.password,
       callbacks: [{ event: 'input', callback: this.validatePassword.bind(this) }],
@@ -59,56 +65,57 @@ export default class SignInPage extends View {
     this.loginInput = new Input({
       inputType: InputType.submit,
       callbacks: [{ event: 'click', callback: this.login.bind(this) }],
+      classNames: [inputStyles.submit],
       value: 'Login',
       disabled: true,
     });
     this.formattedEmailError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
       textContent: 'Email address must be properly formatted (e.g., user@example.com).',
     });
     this.noWhiteSpaceError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
       textContent: 'Email address must not contain leading or trailing whitespace.',
     });
     this.noDomainError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
       textContent: 'Email address must contain a domain name (e.g., example.com).',
     });
     this.noSeparatingError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongEmailText, inputStyles.hidden],
       textContent: 'Email address must contain an "@" symbol separating local part and domain name.',
     });
 
     this.passMinLengthError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Password must be at least 8 characters long.',
     });
 
     this.oneUppercaseError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Password must contain at least one uppercase letter (A-Z).',
     });
 
     this.oneLowerCaseError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Password must contain at least one lowercase letter (a-z).',
     });
 
     this.oneDigitError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Password must contain at least one digit (0-9).',
     });
 
     this.passNoWhiteSpaceError = new ElementCreator({
-      tag: 'span',
+      tag: 'p',
       classNames: [inputStyles.wrongPasswordText, inputStyles.hidden],
       textContent: 'Password must not contain leading or trailing whitespace.',
     });
@@ -124,6 +131,7 @@ export default class SignInPage extends View {
     const showPassword = new Input({
       inputType: InputType.checkbox,
       inputName: 'showPassword',
+      classNames: [inputStyles.checkbox],
       callbacks: [{ event: 'click', callback: this.showPassword.bind(this) }],
     });
     const showPasswordWithLabel = new ElementCreator({
@@ -155,6 +163,7 @@ export default class SignInPage extends View {
     });
 
     form.append(
+      this.labelForm.getElement(),
       this.emailInput.getElement(),
       emailErrors.getElement(),
       this.passwordInput.getElement(),

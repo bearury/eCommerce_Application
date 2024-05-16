@@ -1,7 +1,7 @@
 .toast {
-  @apply absolute max-w-[350px] min-w-[250px] top-7
-  right-8 rounded-xl bg-bgBody p-3 shadow-card overflow-hidden
-  transform transition-all duration-500 translate-x-[calc(100%_+_40px)]
+  @apply absolute right-8 top-7 min-w-[250px]
+  max-w-[350px] translate-x-[calc(100%_+_40px)] transform overflow-hidden rounded-xl bg-bgBody
+  p-3 shadow-card transition-all duration-500
   ease-openToast;
 
   &.active {
@@ -13,7 +13,7 @@
   @apply flex items-center;
 
   .message {
-    @apply flex flex-col mx-4;
+    @apply mx-4 flex flex-col;
 
     .text {
       @apply text-[16px] text-textDark;
@@ -34,8 +34,8 @@
 }
 
 .point {
-  @apply min-w-6 h-6 rounded-full flex items-center font-bold
-  justify-center text-xl text-white;
+  @apply flex h-6 min-w-6 items-center justify-center rounded-full
+  text-xl font-bold text-white;
 }
 
 .point.error {
@@ -50,12 +50,11 @@
   @apply absolute bottom-0 left-0 h-1 w-full;
 
   &:before {
-    @apply content-empty absolute bottom-0 right-0 w-full h-full;
+    @apply absolute bottom-0 right-0 h-full w-full content-empty;
 
     &.info {
       @apply bg-green-500;
     }
-
 
     &.error {
       @apply bg-red-700;
@@ -69,10 +68,9 @@
   }
 }
 
-
 .closeBtn {
-  @apply absolute top-3 right-5 w-5 h-5 text-sm
-  flex items-center justify-center text-bgBackdrop transition-all;
+  @apply absolute right-5 top-3 flex h-5 w-5
+  items-center justify-center text-sm text-bgBackdrop transition-all;
 
   &:hover {
     @apply text-textDark transition-all;

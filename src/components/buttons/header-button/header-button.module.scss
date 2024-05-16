@@ -1,7 +1,19 @@
 .button {
-  @apply border-none bg-inherit p-2 text-xl text-bgContainer transition-all hover:text-red-400;
+  @apply border-none bg-inherit p-2 text-xl text-textLight transition-all;
+
+  &:hover {
+    @apply cursor-pointer font-bold;
+  }
+
+  &:nth-child(2) {
+    @apply mr-10;
+  }
 }
 
 .active {
-  @apply font-bold underline;
+  @apply font-bold text-textAccent underline;
+
+  &:hover {
+    @apply cursor-default;
+  }
 }
