@@ -6,6 +6,8 @@ import Form from '@components/form/form';
 import Input, { InputType } from '@components/input/input';
 import Auth from '@api/auth';
 import { loaderState, toastState } from '@state/state.ts';
+import Router from '@router/router.ts';
+import { RouterPages } from '@app/app.ts';
 
 const auth = new Auth();
 export default class SignInPage extends View {
@@ -39,12 +41,15 @@ export default class SignInPage extends View {
 
   isValidEmail: boolean;
 
-  constructor() {
+  router: Router;
+
+  constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
     };
     super(params);
+    this.router = router;
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
@@ -185,9 +190,11 @@ export default class SignInPage extends View {
       .login({ email: userEmail, password: userPassword })
       .then(() => {
         toastState.getState().toast.showSuccess('Welcome');
+        this.router.navigate(RouterPages.main);
       })
       .catch((e) => {
-        toastState.getState().toast.showError(e.body.message);
+        const message = e.body ? e.body.message : 'Unforeseen error';
+        toastState.getState().toast.showError(message);
       })
       .finally(() => loaderState.getState().loader.close());
   }
