@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { SignInPage } from '@pages/index';
+import NotFoundPage from '@pages/not-found/not-found-page.ts';
 
-describe('Sign in page component', (): void => {
-  const signInPage = new SignInPage();
-  it('signInPage instance of NotFoundPage class', (): void => {
-    expect(signInPage).toBeInstanceOf(SignInPage);
+describe('Not-found page component', (): void => {
+  const notFoundPage = new NotFoundPage();
+  it('notFoundPage instance of NotFoundPage class', (): void => {
+    expect(notFoundPage).toBeInstanceOf(NotFoundPage);
   });
 
   it('check that the class instance is not empty', (): void => {
-    expect(signInPage).toBeTruthy();
+    expect(notFoundPage).toBeTruthy();
   });
 });
