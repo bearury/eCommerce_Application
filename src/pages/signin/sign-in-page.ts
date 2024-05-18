@@ -10,6 +10,7 @@ import InputField from '@components/input/input-field/input-field';
 import Input, { InputType } from '@components/input/input';
 import { validationPassword } from '@utils/validation/password';
 
+
 const auth = new Auth();
 export default class SignInPage extends View {
   passwordInput: InputField;
@@ -22,12 +23,15 @@ export default class SignInPage extends View {
 
   isValidEmail: boolean;
 
-  constructor() {
+  router: Router;
+
+  constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
     };
     super(params);
+
     this.emailInput = new InputField({ type: 'email', callback: this.validateEmail.bind(this) });
     this.passwordInput = new InputField({ type: 'password', callback: this.validatePassword.bind(this) });
 
@@ -85,9 +89,11 @@ export default class SignInPage extends View {
       .login({ email: this.emailInput.getValue(), password: this.passwordInput.getValue() })
       .then(() => {
         toastState.getState().toast.showSuccess('Welcome');
+        this.router.navigate(RouterPages.main);
       })
       .catch((e) => {
-        toastState.getState().toast.showError(e.body.message);
+        const message = e.body ? e.body.message : 'Unforeseen error';
+        toastState.getState().toast.showError(message);
       })
       .finally(() => loaderState.getState().loader.close());
   }

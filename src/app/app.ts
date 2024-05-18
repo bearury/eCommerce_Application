@@ -61,7 +61,7 @@ export default class App {
         path: `${RouterPages.signin}`,
         callback: async (): Promise<void> => {
           const { SignInPage } = await import('@pages/index');
-          this.setContent(RouterPages.signin, new SignInPage());
+          this.setContent(RouterPages.signin, new SignInPage(this.router));
         },
       },
       {
