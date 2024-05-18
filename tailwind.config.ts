@@ -21,6 +21,9 @@ export default {
         current: 'currentColor',
         ...colors,
       },
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+      },
       boxShadow: {
         card: '-5px 5px 10px 5px rgba(0, 0, 0, 0.3)',
         button: '0px 0px 25px 10px rgba(0,0,0,0.5);',
@@ -29,7 +32,7 @@ export default {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
       },
       content: {
-        empty: "''",
+        empty: '\'\'',
       },
       animation: {
         progress: 'progress 5s linear forwards',
@@ -58,4 +61,7 @@ export default {
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: true,
+  },
 };

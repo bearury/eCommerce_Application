@@ -10,5 +10,9 @@ export default class MainPage extends View {
       textContent: 'MainPage',
     };
     super(params);
+
+    this.configureView();
   }
+
+  configureView() {}
 }
