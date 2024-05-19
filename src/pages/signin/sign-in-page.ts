@@ -6,14 +6,15 @@ import Form from '@components/form/form';
 import Auth from '@api/auth';
 import { loaderState, toastState } from '@state/state.ts';
 import { validationEmail } from '@utils/validation/email';
-import InputField from '@components/input/input-field/input-field';
+import InputField, { InputFieldType } from '@components/input/input-field/input-field';
 import Input, { InputType } from '@components/input/input';
 import { validationPassword } from '@utils/validation/password';
+import { RouterPages } from '@app/app.ts';
+import Router from '@router/router.ts';
+import InputPasswordField from '@components/input/input-field/input-password-field/input-password-field';
 
-
-const auth = new Auth();
 export default class SignInPage extends View {
-  passwordInput: InputField;
+  passwordInput: InputPasswordField;
 
   emailInput: InputField;
 
@@ -25,6 +26,8 @@ export default class SignInPage extends View {
 
   router: Router;
 
+  auth: Auth;
+
   constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -32,8 +35,15 @@ export default class SignInPage extends View {
     };
     super(params);
 
-    this.emailInput = new InputField({ type: 'email', callback: this.validateEmail.bind(this) });
-    this.passwordInput = new InputField({ type: 'password', callback: this.validatePassword.bind(this) });
+    this.router = router;
+    this.auth = new Auth();
+
+    this.emailInput = new InputField({
+      name: 'email',
+      type: InputFieldType.email,
+      callback: this.validateEmail.bind(this),
+    });
+    this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
 
     this.loginInput = new Input({
       inputType: InputType.submit,
@@ -48,44 +58,10 @@ export default class SignInPage extends View {
     this.isValidEmail = false;
   }
 
-  configureView() {
-    const section = this.getElement();
-    const form = new Form().getElement();
-
-    const labelForm = new ElementCreator({
-      tag: 'span',
-      classNames: [styles.label],
-      textContent: 'Sign In',
-    }).getElement();
-
-    const showPassword = new Input({
-      inputType: InputType.checkbox,
-      inputName: 'showPassword',
-      classNames: [inputStyles.checkbox],
-      callbacks: [{ event: 'click', callback: this.showPassword.bind(this) }],
-    }).getElement();
-
-    const showPasswordWithLabel = new ElementCreator({
-      tag: 'label',
-      classNames: [inputStyles.label],
-      textContent: 'Show password?',
-      children: [showPassword],
-    }).getElement();
-
-    form.append(
-      labelForm,
-      this.emailInput.getElement(),
-      this.passwordInput.getElement(),
-      showPasswordWithLabel,
-      this.loginInput.getElement()
-    );
-    section.append(form);
-  }
-
-  login(e: Event) {
+  private login(e: Event): void {
     e.preventDefault();
     loaderState.getState().loader.show();
-    auth
+    this.auth
       .login({ email: this.emailInput.getValue(), password: this.passwordInput.getValue() })
       .then(() => {
         toastState.getState().toast.showSuccess('Welcome');
@@ -98,26 +74,36 @@ export default class SignInPage extends View {
       .finally(() => loaderState.getState().loader.close());
   }
 
-  validateEmail() {
-    const validationMessages = validationEmail(this.emailInput.getValue());
+  private validateEmail(): void {
+    const validationMessages: string[] = validationEmail(this.emailInput.getValue());
     this.emailInput.setErrors(validationMessages);
     this.isValidEmail = !validationMessages.length;
     this.isAllFieldsValid();
   }
 
-  validatePassword() {
-    const validationMessages = validationPassword(this.passwordInput.getValue());
+  private validatePassword(): void {
+    const validationMessages: string[] = validationPassword(this.passwordInput.getValue());
     this.passwordInput.setErrors(validationMessages);
     this.isValidPassword = !validationMessages.length;
     this.isAllFieldsValid();
   }
 
-  showPassword() {
-    this.passwordInput.changeType();
+  private isAllFieldsValid(): void {
+    const loginButton: HTMLInputElement = this.loginInput.getElement() as HTMLInputElement;
+    loginButton.disabled = !(this.isValidPassword && this.isValidEmail);
   }
 
-  isAllFieldsValid() {
-    const loginButton = this.loginInput.getElement() as HTMLInputElement;
-    loginButton.disabled = !(this.isValidPassword && this.isValidEmail);
+  private configureView(): void {
+    const section: HTMLElement = this.getElement();
+    const form: HTMLElement = new Form().getElement();
+
+    const labelForm: HTMLElement = new ElementCreator({
+      tag: 'span',
+      classNames: [styles.label],
+      textContent: 'Login',
+    }).getElement();
+
+    form.append(labelForm, this.emailInput.getElement(), this.passwordInput.getElement(), this.loginInput.getElement());
+    section.append(form);
   }
 }

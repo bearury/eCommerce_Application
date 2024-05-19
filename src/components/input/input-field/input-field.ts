@@ -3,11 +3,15 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './input-field.module.scss';
 
 export interface InputFiledProps {
-  type: InputFiledType;
+  name: string;
+  type: InputFieldType;
   callback: () => void;
 }
 
-type InputFiledType = 'email' | 'password';
+export const enum InputFieldType {
+  email = 'email',
+  password = 'password',
+}
 
 export default class InputField extends View {
   input: ElementCreator;
@@ -16,7 +20,7 @@ export default class InputField extends View {
 
   error: ElementCreator;
 
-  constructor({ type, callback }: InputFiledProps) {
+  constructor({ name, type, callback }: InputFiledProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.inputItem],
@@ -28,17 +32,17 @@ export default class InputField extends View {
       classNames: [styles.input],
       callback: [{ event: 'input', callback }],
       attribute: [
-        { type: 'id', value: type },
+        { type: 'id', value: name },
         { type: 'autocomplete', value: 'off' },
-        { type: 'required', value: type },
+        { type: 'required', value: name },
         { type: 'type', value: type === 'email' ? 'text' : 'password' },
       ],
     });
     this.label = new ElementCreator({
       tag: 'label',
       classNames: [styles.label],
-      attribute: [{ type: 'for', value: type }],
-      textContent: type,
+      attribute: [{ type: 'for', value: name }],
+      textContent: name,
     });
     this.error = new ElementCreator({
       tag: 'ul',
@@ -74,16 +78,7 @@ export default class InputField extends View {
     });
   }
 
-  public changeType() {
-    const passwordInput = this.input.getElement() as HTMLInputElement;
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text';
-    } else {
-      passwordInput.type = 'password';
-    }
-  }
-
-  private renderView(): void {
+  protected renderView(): void {
     const wrapperInput: ElementCreator = new ElementCreator({
       tag: 'div',
       classNames: [styles.wrapperInput],
