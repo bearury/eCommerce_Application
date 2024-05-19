@@ -36,7 +36,7 @@ export default class InputField extends View {
         { type: 'id', value: name },
         { type: 'autocomplete', value: 'off' },
         { type: 'required', value: name },
-        { type: 'type', value: type === 'text' ? 'text' : 'password' },
+        { type: 'type', value: type },
       ],
     });
     this.label = new ElementCreator({

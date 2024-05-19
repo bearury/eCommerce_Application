@@ -10,8 +10,8 @@ import Input, { InputType } from '@components/input/input';
 import { validationPassword } from '@utils/validation/password';
 import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
-import InputTextField from '@components/input/input-field/input-password-field/input-text-field.ts';
-import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field.ts';
+import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
+import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field';
 
 export default class SignInPage extends View {
   passwordInput: InputPasswordField;
