@@ -20,6 +20,8 @@ export default class SignInPage extends View {
 
   loginInput: Input;
 
+  signupLink: ElementCreator;
+
   isValidPassword: boolean;
 
   isValidEmail: boolean;
@@ -50,6 +52,13 @@ export default class SignInPage extends View {
       classNames: [inputStyles.submit],
       value: 'Login',
       disabled: true,
+    });
+
+    this.signupLink = new ElementCreator({
+      tag: 'a',
+      classNames: [styles.link],
+      textContent: 'Do not have an account yet? Sign Up!',
+      callback: [{ event: 'click', callback: this.followingLink.bind(this) }],
     });
 
     this.configureView();
@@ -93,6 +102,11 @@ export default class SignInPage extends View {
     loginButton.disabled = !(this.isValidPassword && this.isValidEmail);
   }
 
+  private followingLink(e: Event): void {
+    e.preventDefault();
+    this.router.navigate(RouterPages.signup);
+  }
+
   private configureView(): void {
     const section: HTMLElement = this.getElement();
     const form: HTMLElement = new Form().getElement();
@@ -103,7 +117,13 @@ export default class SignInPage extends View {
       textContent: 'Login',
     }).getElement();
 
-    form.append(labelForm, this.emailInput.getElement(), this.passwordInput.getElement(), this.loginInput.getElement());
+    form.append(
+      labelForm,
+      this.emailInput.getElement(),
+      this.passwordInput.getElement(),
+      this.loginInput.getElement(),
+      this.signupLink.getElement()
+    );
     section.append(form);
   }
 }

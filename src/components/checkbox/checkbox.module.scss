@@ -2,15 +2,15 @@
   @apply select-none;
 
   .label {
-    @apply cursor-pointer flex items-center gap-3;
+    @apply flex cursor-pointer items-center gap-3;
   }
 
   .input {
     -webkit-appearance: none;
-    @apply border border-bgHeader appearance-none shrink-0 w-4 h-4 rounded relative;
+    @apply relative h-4 w-4 shrink-0 appearance-none rounded border border-bgHeader;
 
     &:before {
-      @apply content-empty bg-bgContainer rounded absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 scale-0 transition-all;
+      @apply absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 scale-0 rounded bg-bgContainer transition-all content-empty;
     }
 
     &:checked {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import NotFoundPage from '@pages/not-found/not-found-page.ts';
+import NotFoundPage from '@pages/not-found/not-found-page';
 
 describe('Not-found page component', (): void => {
   const notFoundPage = new NotFoundPage();
