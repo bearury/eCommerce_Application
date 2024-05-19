@@ -1,5 +1,5 @@
 .button {
-  @apply border-none bg-inherit p-2 text-xl text-textLight transition-all;
+  @apply border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out;
 
   &:hover {
     @apply cursor-pointer font-bold;

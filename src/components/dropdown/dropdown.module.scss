@@ -1,23 +1,22 @@
 .dropdown {
-  @apply relative max-w-20 w-full z-[99];
+  @apply relative z-[99] w-full max-w-20;
 
   .inner {
     @apply relative rounded border border-bgHeader;
   }
 
   .toggle {
-    @apply w-full flex justify-between items-center gap-1 px-2 py-1;
+    @apply flex w-full items-center justify-between gap-1 px-2 py-1;
   }
 
   .input {
-    @apply border-none outline-none select-none pointer-events-none w-full text-textDark bg-inherit p-0;
+    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textDark outline-none;
   }
 
   .icon {
     @apply transition-all;
   }
 }
-
 
 .active {
   .inner {
