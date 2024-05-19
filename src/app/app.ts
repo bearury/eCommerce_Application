@@ -47,14 +47,14 @@ export default class App {
         path: '',
         callback: async (): Promise<void> => {
           const { SignUpPage } = await import('@pages/index');
-          this.setContent(RouterPages.signup, new SignUpPage());
+          this.setContent(RouterPages.signup, new SignUpPage(this.router));
         },
       },
       {
         path: `${RouterPages.signup}`,
         callback: async (): Promise<void> => {
           const { SignUpPage } = await import('@pages/index');
-          this.setContent(RouterPages.signup, new SignUpPage());
+          this.setContent(RouterPages.signup, new SignUpPage(this.router));
         },
       },
       {

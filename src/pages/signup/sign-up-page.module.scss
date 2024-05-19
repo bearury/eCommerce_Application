@@ -1,16 +1,33 @@
 .page {
-  @apply flex flex-auto flex-col items-center justify-center py-14;
-}
+  @apply flex flex-auto flex-col items-center justify-center pb-14 font-inter;
 
-.label {
-  @apply mb-3 text-3xl font-bold underline;
-}
+  .label {
+    @apply mb-3 text-3xl font-bold text-textLight underline;
+  }
 
-.shipping,
-.billing {
-  @apply my-4 flex flex-col gap-2 border-y-2 border-borderLight py-1;
-}
+  .link {
+    @apply relative cursor-pointer text-textLight;
 
-.hidden {
-  display: none;
+    &::after {
+      @apply absolute -bottom-0.5 left-0 h-0.5 w-0 bg-bgBody duration-500 ease-in-out content-empty;
+    }
+
+    &:before {
+      @apply w-full;
+    }
+
+    &:hover:after,
+    &:focus:after {
+      @apply w-full;
+    }
+  }
+
+  .shipping,
+  .billing {
+    @apply my-4 flex flex-col gap-2 border-y-2 border-borderLight py-1;
+  }
+
+  .hidden {
+    display: none;
+  }
 }

@@ -5,6 +5,8 @@ import inputStyles from '@components/input/input.module.scss';
 import Input, { InputType } from '@components/input/input';
 import Form from '@components/form/form';
 import Auth from '@api/auth';
+import { RouterPages } from '@app/app';
+import Router from '@router/router';
 
 type Address = {
   firstName: string;
@@ -29,7 +31,9 @@ type CustomerDraft = {
 
 const auth = new Auth();
 export default class SignUpPage extends View {
-  labelForm: ElementCreator;
+  signinLink: ElementCreator;
+
+  router: Router;
 
   passwordInput: Input;
 
@@ -163,18 +167,23 @@ export default class SignUpPage extends View {
 
   anotherBillingAddressCheckbox: HTMLInputElement;
 
-  constructor() {
+  constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
       textContent: '',
     };
     super(params);
-    this.labelForm = new ElementCreator({
-      tag: 'span',
-      classNames: [styles.label],
-      textContent: 'Registration',
+
+    this.router = router;
+
+    this.signinLink = new ElementCreator({
+      tag: 'a',
+      classNames: [styles.link],
+      textContent: 'Already have an account? Login!',
+      callback: [{ event: 'click', callback: this.followingLink.bind(this) }],
     });
+
     this.isValidEmail = false;
     this.isValidPassword = false;
     this.isValidName = false;
@@ -305,7 +314,7 @@ export default class SignUpPage extends View {
       callbacks: [{ event: 'click', callback: this.register.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'sign-up',
-      value: 'Sign-up',
+      value: 'Sign Up',
       disabled: true,
     });
     this.setDefaultAddressInput = new Input({
@@ -498,11 +507,23 @@ export default class SignUpPage extends View {
     this.configureView();
   }
 
+  private followingLink(e: Event): void {
+    e.preventDefault();
+    this.router.navigate(RouterPages.signin);
+  }
+
   configureView() {
     const section = this.getElement();
     const form = new Form().getElement();
+
+    const labelForm: HTMLElement = new ElementCreator({
+      tag: 'span',
+      classNames: [styles.label],
+      textContent: 'Registration',
+    }).getElement();
+
     form.append(
-      this.labelForm.getElement(),
+      labelForm,
       this.emailInput.getElement(),
       this.formattedEmailError.getElement(),
       this.passwordInput.getElement(),
@@ -516,7 +537,8 @@ export default class SignUpPage extends View {
       this.shippingAddressBlock.getElement(),
       this.anotherBillingAddresBlock.getElement(),
       this.billingAddressBlock.getElement(),
-      this.signUp.getElement()
+      this.signUp.getElement(),
+      this.signinLink.getElement()
     );
     section.append(form);
   }

@@ -4,7 +4,7 @@ import styles from './header-pages.module.scss';
 import HeaderButton from '@components/buttons/header-button/header-button';
 import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
-import Image from '@components/image/image.ts';
+import Image from '@components/image/image';
 import img from '/logo.png';
 
 export default class HeaderPages extends View {
