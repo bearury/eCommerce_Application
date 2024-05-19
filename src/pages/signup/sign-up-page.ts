@@ -15,6 +15,7 @@ import { validationDate } from '@utils/validation/date.ts';
 import { validationBase } from '@utils/validation/street.ts';
 import { validationCity } from '@utils/validation/city.ts';
 import Checkbox from '@components/checkbox/checkbox.ts';
+import { auth } from '@api/api';
 
 type Address = {
   firstName: string;
@@ -735,10 +736,7 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
-      const data = await this.auth.register(request);
-      if (data.statusCode === 201) {
-        console.log('User created');
-      }
+      auth.register(request);
     } catch (error) {
       console.error(error);
     }
