@@ -1,9 +1,11 @@
 import View from '@utils/view.ts';
-import { ParamsElementCreator } from '@utils/element-creator.ts';
+import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-pages.module.scss';
 import HeaderButton from '@components/buttons/header-button/header-button';
 import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
+import Image from '@components/image/image.ts';
+import img from '/logo.png';
 
 export default class HeaderPages extends View {
   router: Router;
@@ -24,8 +26,13 @@ export default class HeaderPages extends View {
 
   private configureView(): void {
     const currentElement: HTMLElement = this.getElement();
+    const container: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.container] }).getElement();
+
+    const blockButton: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.blockButton] }).getElement();
 
     const buttons: RouterPages[] = Object.values(RouterPages);
+
+    const image: Image = new Image({ classNames: [styles.image], img });
 
     buttons.forEach((btn: RouterPages): void => {
       if (btn === RouterPages.not_found) return;
@@ -37,8 +44,11 @@ export default class HeaderPages extends View {
     });
 
     this.buttons.forEach((button: HeaderButton): void => {
-      currentElement.append(button.getElement());
+      blockButton.append(button.getElement());
     });
+
+    container.append(image.getElement(), blockButton);
+    currentElement.append(container);
   }
 
   private handlerClickButton(route: RouterPages): void {
