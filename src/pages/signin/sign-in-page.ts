@@ -12,6 +12,7 @@ import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
 import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
 import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field';
+import { auth } from '@api/api';
 
 export default class SignInPage extends View {
   passwordInput: InputPasswordField;
@@ -38,7 +39,7 @@ export default class SignInPage extends View {
     super(params);
 
     this.router = router;
-    this.auth = new Auth();
+    this.auth = auth;
 
     this.emailInput = new InputTextField({
       name: 'email',

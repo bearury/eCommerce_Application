@@ -1,5 +1,4 @@
 import { apiInstance, projectKey, session } from '@api/api';
-
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
 import { authState, loaderState, toastState } from '@state/state';
 
@@ -24,6 +23,7 @@ class Auth {
       return data;
     } catch (error) {
       if (error instanceof Error) {
+        authState.getState().setIsAuthorized(false);
         console.error(error);
       }
     }
