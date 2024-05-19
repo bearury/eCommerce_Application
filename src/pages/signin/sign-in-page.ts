@@ -6,17 +6,17 @@ import Form from '@components/form/form';
 import Auth from '@api/auth';
 import { loaderState, toastState } from '@state/state.ts';
 import { validationEmail } from '@utils/validation/email';
-import InputField, { InputFieldType } from '@components/input/input-field/input-field';
 import Input, { InputType } from '@components/input/input';
 import { validationPassword } from '@utils/validation/password';
 import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
-import InputPasswordField from '@components/input/input-field/input-password-field/input-password-field';
+import InputTextField from '@components/input/input-field/input-password-field/input-text-field.ts';
+import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field.ts';
 
 export default class SignInPage extends View {
   passwordInput: InputPasswordField;
 
-  emailInput: InputField;
+  emailInput: InputTextField;
 
   loginInput: Input;
 
@@ -38,9 +38,8 @@ export default class SignInPage extends View {
     this.router = router;
     this.auth = new Auth();
 
-    this.emailInput = new InputField({
+    this.emailInput = new InputTextField({
       name: 'email',
-      type: InputFieldType.email,
       callback: this.validateEmail.bind(this),
     });
     this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
@@ -61,6 +60,7 @@ export default class SignInPage extends View {
   private login(e: Event): void {
     e.preventDefault();
     loaderState.getState().loader.show();
+
     this.auth
       .login({ email: this.emailInput.getValue(), password: this.passwordInput.getValue() })
       .then(() => {

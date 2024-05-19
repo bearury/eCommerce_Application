@@ -173,7 +173,7 @@ export default class SignUpPage extends View {
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
-      textContent: 'Sign Up',
+      textContent: 'Registration',
     });
     this.isValidEmail = false;
     this.isValidPassword = false;

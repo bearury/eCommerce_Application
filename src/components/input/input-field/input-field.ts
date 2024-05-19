@@ -9,7 +9,8 @@ export interface InputFiledProps {
 }
 
 export const enum InputFieldType {
-  email = 'email',
+  text = 'text',
+  date = 'date',
   password = 'password',
 }
 
@@ -35,7 +36,7 @@ export default class InputField extends View {
         { type: 'id', value: name },
         { type: 'autocomplete', value: 'off' },
         { type: 'required', value: name },
-        { type: 'type', value: type === 'email' ? 'text' : 'password' },
+        { type: 'type', value: type === 'text' ? 'text' : 'password' },
       ],
     });
     this.label = new ElementCreator({

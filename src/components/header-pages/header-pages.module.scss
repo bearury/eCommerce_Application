@@ -1,3 +1,15 @@
 .header {
-  @apply flex gap-2 bg-bgHeader p-3;
+  @apply bg-bgHeader w-full;
+
+  .container {
+    @apply flex gap-2 p-3 justify-between items-center max-w-screen-lg w-[1280px] m-auto;
+  }
+
+  .blockButton {
+    @apply flex justify-between;
+  }
+}
+
+.image {
+  @apply w-14 h-full;
 }
