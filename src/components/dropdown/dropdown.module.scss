@@ -1,0 +1,30 @@
+.dropdown {
+  @apply relative max-w-20 w-full z-[99];
+
+  .inner {
+    @apply relative rounded border border-bgHeader;
+  }
+
+  .toggle {
+    @apply w-full flex justify-between items-center gap-1 px-2 py-1;
+  }
+
+  .input {
+    @apply border-none outline-none select-none pointer-events-none w-full text-textDark bg-inherit p-0;
+  }
+
+  .icon {
+    @apply transition-all;
+  }
+}
+
+
+.active {
+  .inner {
+    @apply rounded-bl-[0] rounded-br-[0];
+  }
+
+  .icon {
+    @apply rotate-180;
+  }
+}
