@@ -2,14 +2,21 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './checkbox.module.scss';
 
+export interface CheckboxProps {
+  label: string;
+}
+
 export default class Checkbox extends View {
-  constructor() {
+  label: string;
+
+  constructor({ label }: CheckboxProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.checkbox],
     };
     super(params);
 
+    this.label = label;
     this.configureView();
   }
 
@@ -18,12 +25,12 @@ export default class Checkbox extends View {
     const input: HTMLElement = new ElementCreator({
       tag: 'input',
       attribute: [{ type: 'type', value: 'checkbox' }],
-      callback: [{ event: 'input', callback: this.handleChange }],
+      // callback: [{ event: 'input', callback: this.callback }],
       classNames: [styles.input],
     }).getElement();
     const text: HTMLElement = new ElementCreator({
       tag: 'span',
-      textContent: 'Функция для обработки нажатия не перадана агрументом',
+      textContent: this.label,
       classNames: [styles.text],
     }).getElement();
     const label: HTMLElement = new ElementCreator({
@@ -33,9 +40,5 @@ export default class Checkbox extends View {
     }).getElement();
 
     checkbox.append(label);
-  }
-
-  private handleChange(e: PointerEvent): void {
-    console.log('[21] 🐬: ', e.target);
   }
 }
