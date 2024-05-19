@@ -1,8 +1,8 @@
 .dropdown {
-  @apply relative z-[99] w-full max-w-20;
+  @apply relative z-[99] w-full max-w-20 h-9;
 
   .inner {
-    @apply relative rounded border border-bgHeader;
+    @apply relative border border-bgHeader h-full;
   }
 
   .toggle {
@@ -10,11 +10,15 @@
   }
 
   .input {
-    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textDark outline-none;
+    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textLight outline-none;
   }
 
   .icon {
     @apply transition-all;
+
+    path {
+      @apply fill-bgBody;
+    }
   }
 }
 

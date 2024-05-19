@@ -53,6 +53,7 @@ export default class Dropdown extends View {
     const toggle: ElementCreator = new ElementCreator({
       tag: 'button',
       classNames: [styles.toggle],
+      attribute: [{ type: 'type', value: 'button' }],
       callback: [{ event: 'click', callback: this.handleClickToggle.bind(this) }],
       children: [this.input.getElement(), icon],
     });

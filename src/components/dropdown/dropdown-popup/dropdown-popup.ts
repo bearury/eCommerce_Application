@@ -29,6 +29,7 @@ export default class DropdownPopup extends View {
       const button = new ElementCreator({
         tag: 'button',
         classNames: [styles.button],
+        attribute: [{ type: 'type', value: 'button' }],
         callback: [{ event: 'click', callback: () => callback(item.title) }],
         textContent: item.title,
       }).getElement();
