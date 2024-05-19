@@ -1,16 +1,16 @@
 .popup {
-  @apply absolute left-0 top-full p-1 max-w-full w-full
-  rounded-bl rounded-br border-bgHeader border z-10 hidden;
+  @apply absolute left-0 top-full z-10 hidden w-full
+  max-w-full rounded-bl rounded-br border border-bgHeader p-1;
 
   .menu {
-    @apply bg-bgBody h-full overflow-auto flex flex-col gap-0;
+    @apply flex h-full flex-col gap-0 overflow-auto bg-bgBody;
 
     .button {
-      @apply text-textDark text-left px-1 bg-transparent text-lg;
+      @apply bg-transparent px-1 text-left text-lg text-textDark;
 
       @media (any-hover: hover) and (pointer: fine) {
         &:hover {
-          @apply text-white bg-bgContainer;
+          @apply bg-bgContainer text-white;
         }
       }
     }
