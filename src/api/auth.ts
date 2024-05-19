@@ -1,7 +1,7 @@
 import { apiInstance, projectKey, session } from '@api/api';
 
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
-import { loaderState, toastState } from '@state/state';
+import { authState, loaderState, toastState } from '@state/state';
 
 class Auth {
   private readonly customerBuilder: ByProjectKeyRequestBuilder;
@@ -19,6 +19,7 @@ class Auth {
         localStorage.setItem('email', user.email);
         localStorage.setItem('password', user.password);
         apiInstance.createAuthenticatedSession(user);
+        authState.getState().setIsAuthorized(true);
       }
       return data;
     } catch (error) {
@@ -51,6 +52,12 @@ class Auth {
     } finally {
       loaderState.getState().loader.close();
     }
+  }
+
+  logOut() {
+    localStorage.clear();
+    authState.getState().setIsAuthorized(false);
+    apiInstance.createAnonymousSession();
   }
 }
 

@@ -32,4 +32,15 @@ const loaderState = createStore(
   }))
 );
 
-export { routerState, toastState, loaderState };
+interface AuthState {
+  isAuthorized: boolean;
+  setIsAuthorized: (isAuthorized: boolean) => void;
+}
+
+const authState = createStore(
+  devtools<AuthState>((set) => ({
+    isAuthorized: false,
+    setIsAuthorized: (isAuthorized: boolean) => set(() => ({ isAuthorized })),
+  }))
+);
+export { routerState, toastState, loaderState, authState };

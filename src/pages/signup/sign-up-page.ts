@@ -182,7 +182,7 @@ export default class SignUpPage extends View {
       textContent: '',
     };
     super(params);
-    this.auth = new Auth();
+    this.auth = auth;
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
