@@ -2,10 +2,9 @@ import { ApiRoot, createApiBuilderFromCtpClient, CustomerSignin } from '@commerc
 import {
   AnonymousAuthMiddlewareOptions,
   ClientBuilder,
+  type HttpMiddlewareOptions,
   PasswordAuthMiddlewareOptions,
   TokenCache,
-  type AuthMiddlewareOptions,
-  type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 import { LocalStorageTokenCache } from './tokenCache';
 import Auth from './auth';
@@ -36,7 +35,7 @@ export class Api {
 
   private httpMiddlewareOptions: HttpMiddlewareOptions;
 
-  private authMiddlewareOptions: AuthMiddlewareOptions;
+  // private authMiddlewareOptions: AuthMiddlewareOptions;
 
   private tokenCache: TokenCache;
 
@@ -51,16 +50,16 @@ export class Api {
       fetch,
     };
     this.tokenCache = new LocalStorageTokenCache();
-    this.authMiddlewareOptions = {
-      host: this.authUrl,
-      projectKey,
-      credentials: {
-        clientId: this.clientId,
-        clientSecret: this.clientSecret,
-      },
-      scopes: this.scopes.split(' '),
-      fetch,
-    };
+    // this.authMiddlewareOptions = {
+    //   host: this.authUrl,
+    //   projectKey,
+    //   credentials: {
+    //     clientId: this.clientId,
+    //     clientSecret: this.clientSecret,
+    //   },
+    //   scopes: this.scopes.split(' '),
+    //   fetch,
+    // };
     this.clientBuilder = new ClientBuilder().withHttpMiddleware(this.httpMiddlewareOptions).withLoggerMiddleware();
   }
 
@@ -104,6 +103,7 @@ export class Api {
     return createApiBuilderFromCtpClient(client);
   }
 }
+
 export const apiInstance = new Api();
 export const session = isAuthorized
   ? apiInstance.createAuthenticatedSession(user)
