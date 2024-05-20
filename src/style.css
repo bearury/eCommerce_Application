@@ -11,5 +11,5 @@
 }
 
 body {
-  @apply relative h-screen w-screen overflow-x-hidden overflow-y-scroll bg-bgBody font-inter;
+  @apply relative h-screen w-screen overflow-x-hidden bg-bgBody font-inter;
 }
