@@ -1,6 +1,7 @@
 import { apiInstance, projectKey, session } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
 import { authState, loaderState, toastState } from '@state/state';
+import { error } from 'console';
 
 class Auth {
   private readonly customerBuilder: ByProjectKeyRequestBuilder;
@@ -41,12 +42,19 @@ class Auth {
           localStorage.setItem('email', user.email);
           localStorage.setItem('password', user.password);
           await this.login({ email: user.email, password: user.password });
+          return data;
+        } else {
+          console.log(data);
         }
       }
-      return data;
     } catch (error) {
       if (error instanceof Error) {
-        toastState.getState().toast.showError(error.message);
+        let message = 'Something went wrong during the registration process, please try again later';
+        if (error.message === 'There is already an existing customer with the provided email.') {
+          message =
+            'An account with the provided email address already exists, please log in or use another email address.';
+        }
+        toastState.getState().toast.showError(message);
         console.error(error);
       }
     } finally {
