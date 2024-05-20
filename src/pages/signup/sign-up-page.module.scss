@@ -8,7 +8,7 @@
 
 .shipping,
 .billing {
-  @apply flex flex-col gap-2 border-y-2 border-borderLight py-1 w-full;
+  @apply flex w-full flex-col gap-2 border-y-2 border-borderLight py-1;
 }
 
 .postalCodeBlock {
