@@ -17,3 +17,7 @@
     @apply cursor-default;
   }
 }
+
+.hidden {
+  @apply opacity-0 pointer-events-none;
+}
