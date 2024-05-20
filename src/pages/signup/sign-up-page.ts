@@ -17,6 +17,7 @@ import { validationCity } from '@utils/validation/city';
 import Checkbox from '@components/checkbox/checkbox';
 import Dropdown, { ItemDropdownTitle } from '@components/dropdown/dropdown';
 import { validationPostalCode } from '../../utils/validation/postalCode';
+import { auth } from '@api/api';
 
 type Address = {
   firstName: string;
@@ -367,10 +368,7 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
-      const data = await this.auth.register(request);
-      if (data.statusCode === 201) {
-        console.log('User created');
-      }
+      auth.register(request);
     } catch (error) {
       console.error(error);
     }

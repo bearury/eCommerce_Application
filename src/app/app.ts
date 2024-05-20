@@ -4,6 +4,8 @@ import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 import Toast from '@components/toast/toast';
 import { loaderState, toastState } from '@state/state.ts';
 import Loader from '@components/loader/loader';
+import { session } from '@api/api';
+import { ApiRoot } from '@commercetools/platform-sdk';
 
 export enum RouterPages {
   signup = 'signup',
@@ -23,12 +25,15 @@ export default class App {
 
   loader: Loader;
 
+  session: ApiRoot;
+
   constructor() {
     this.router = new Router(this.createRoutes());
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
     this.toast = toastState.getState().toast;
     this.loader = loaderState.getState().loader;
+    this.session = session;
   }
 
   public start(): void {

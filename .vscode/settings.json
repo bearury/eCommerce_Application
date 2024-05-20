@@ -1,4 +1,7 @@
 {
     "css.customData": [".vscode/tailwind.json"],
     "editor.tabSize": 2,
+    "cSpell.words": [
+        "commercetools"
+    ],
 }
