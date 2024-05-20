@@ -5,13 +5,10 @@
     @apply cursor-pointer font-bold;
   }
 
-  &:nth-child(2) {
-    @apply mr-10;
-  }
-
   &:first-letter {
     @apply uppercase;
   }
+
 }
 
 .active {

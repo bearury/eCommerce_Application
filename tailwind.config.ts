@@ -22,7 +22,7 @@ export default {
         ...colors,
       },
       fontFamily: {
-        'inter': ['Inter', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       boxShadow: {
         card: '-5px 5px 10px 5px rgba(0, 0, 0, 0.3)',
@@ -32,7 +32,7 @@ export default {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
       },
       content: {
-        empty: '\'\'',
+        empty: "''",
       },
       animation: {
         progress: 'progress 5s linear forwards',
@@ -54,8 +54,8 @@ export default {
     },
     screens: {
       lg: '1280px',
-      md: '768px',
-      tablet: '640px',
+      md: { max: '768px' },
+      tablet: { max: '640px' },
       sm: '440px',
       min: '120px',
     },
