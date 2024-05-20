@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
-import { routerState } from '@state/state.ts';
+import { authState, routerState } from '@state/state.ts';
 
 interface HeaderButtonProps {
   buttonType: RouterPages;
@@ -13,10 +13,18 @@ export default class HeaderButton extends View {
   type: RouterPages;
 
   constructor({ buttonType, callback }: HeaderButtonProps) {
+    const textContent: string =
+      buttonType === RouterPages.signin
+        ? `🗝 ${buttonType}`
+        : buttonType === RouterPages.signup
+          ? `🔐 ${buttonType}`
+          : buttonType === RouterPages.main
+            ? `🛒 ${buttonType}`
+            : buttonType;
     const params: ParamsElementCreator = {
       tag: 'button',
       classNames: [styles.button],
-      textContent: buttonType,
+      textContent,
       callback: [{ event: 'click', callback: () => callback(buttonType) }],
     };
 
@@ -32,6 +40,12 @@ export default class HeaderButton extends View {
       this.getElement().classList.add(styles.active);
     } else {
       this.getElement().classList.remove(styles.active);
+    }
+
+    if (authState.getState().isAuthorized && (this.type === RouterPages.signup || this.type === RouterPages.signin)) {
+      this.getElement().classList.add(styles.hidden);
+    } else {
+      this.getElement().classList.remove(styles.hidden);
     }
   }
 }

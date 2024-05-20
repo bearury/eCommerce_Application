@@ -34,7 +34,7 @@ export default class HeaderPages extends View {
       tag: 'button',
       classNames: [buttonStyles.button],
       callback: [{ event: 'click', callback: this.logOut.bind(this) }],
-      textContent: 'Log out',
+      textContent: '🔒 Logout',
     }).getElement();
 
     this.blockButton = new ElementCreator({ tag: 'div', classNames: [styles.blockButton] }).getElement();

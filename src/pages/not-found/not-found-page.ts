@@ -1,27 +1,49 @@
-import { ParamsElementCreator } from '@utils/element-creator.ts';
+import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './not-found-page.module.scss';
 import View from '@utils/view.ts';
-import ElementCreator2 from '@utils/element-creator2';
+import Router from '@router/router.ts';
+import { RouterPages } from '@app/app.ts';
 
 export default class NotFoundPage extends View {
-  constructor() {
+  router: Router;
+
+  constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.page],
     };
     super(params);
+    this.router = router;
     this.configureView();
   }
 
-  configureView() {
-    const subtitle = ElementCreator2.create({
+  private handlerClickGoHome(): void {
+    this.router.navigate(RouterPages.main);
+  }
+
+  private configureView(): void {
+    const subtitle = new ElementCreator({
       tag: 'div',
       classNames: [styles.subtitle],
       textContent: 'Page no fount',
     });
-    const title = ElementCreator2.create({ tag: 'div', classNames: [styles.title], textContent: '404' });
-    const block = ElementCreator2.create({ tag: 'div', children: [title, subtitle] });
+    const title: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.title],
+      textContent: '404',
+    }).getElement();
+    const block: HTMLElement = new ElementCreator({
+      tag: 'div',
+      children: [title, subtitle.getElement()],
+    }).getElement();
 
-    this.getElement().append(block);
+    const button: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.button],
+      callback: [{ event: 'click', callback: this.handlerClickGoHome.bind(this) }],
+      textContent: 'Go Home',
+    }).getElement();
+
+    this.getElement().append(block, button);
   }
 }

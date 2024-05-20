@@ -1,3 +1,15 @@
 .page {
   @apply flex-auto px-2 pt-3;
+
+  .container {
+    @apply max-w-screen-lg m-auto flex flex-col;
+  }
+
+  .title {
+    @apply mt-10 text-3xl font-bold text-center text-textDark;
+  }
+
+  .button {
+    @apply mt-40 border border-bgHeader rounded w-40 m-auto;
+  }
 }
