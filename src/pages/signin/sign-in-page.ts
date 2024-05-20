@@ -4,7 +4,7 @@ import styles from './sign-in-page.module.scss';
 import View from '@utils/view.ts';
 import Form from '@components/form/form';
 import Auth from '@api/auth';
-import { loaderState, toastState } from '@state/state.ts';
+import { loaderState } from '@state/state.ts';
 import { validationEmail } from '@utils/validation/email';
 import Input, { InputType } from '@components/input/input';
 import { validationPassword } from '@utils/validation/password';
@@ -67,21 +67,17 @@ export default class SignInPage extends View {
     this.isValidEmail = false;
   }
 
-  private login(e: Event): void {
+  private async login(e: Event): Promise<void> {
     e.preventDefault();
     loaderState.getState().loader.show();
 
-    this.auth
-      .login({ email: this.emailInput.getValue(), password: this.passwordInput.getValue() })
-      .then(() => {
-        toastState.getState().toast.showSuccess('Welcome');
-        this.router.navigate(RouterPages.main);
-      })
-      .catch((e) => {
-        const message = e.body ? e.body.message : 'Unforeseen error';
-        toastState.getState().toast.showError(message);
-      })
-      .finally(() => loaderState.getState().loader.close());
+    const response = await auth.login({
+      email: this.emailInput.getValue(),
+      password: this.passwordInput.getValue(),
+    });
+    if (response && response.statusCode === 200) {
+      this.router.navigate(RouterPages.main);
+    }
   }
 
   private validateEmail(): void {
