@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
-import { routerState } from '@state/state.ts';
+import { authState, routerState } from '@state/state.ts';
 
 interface HeaderButtonProps {
   buttonType: RouterPages;
@@ -32,6 +32,12 @@ export default class HeaderButton extends View {
       this.getElement().classList.add(styles.active);
     } else {
       this.getElement().classList.remove(styles.active);
+    }
+
+    if (authState.getState().isAuthorized && (this.type === 'signup' || this.type === 'signin')) {
+      this.getElement().classList.add(styles.hidden);
+    } else {
+      this.getElement().classList.remove(styles.hidden);
     }
   }
 }
