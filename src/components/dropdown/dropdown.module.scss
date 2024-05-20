@@ -1,8 +1,9 @@
 .dropdown {
-  @apply relative z-[99] w-full max-w-20;
+  @apply relative z-[99] h-9 w-full max-w-20;
 
   .inner {
-    @apply relative rounded border border-bgHeader;
+    @apply relative h-full border border-bgHeader;
+
   }
 
   .toggle {
@@ -10,11 +11,15 @@
   }
 
   .input {
-    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textDark outline-none;
+    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textLight outline-none;
   }
 
   .icon {
     @apply transition-all;
+
+    path {
+      @apply fill-bgBody;
+    }
   }
 }
 
@@ -26,4 +31,8 @@
   .icon {
     @apply rotate-180;
   }
+}
+
+.inner.error {
+  @apply border-red-500;
 }

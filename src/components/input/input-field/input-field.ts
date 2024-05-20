@@ -88,4 +88,9 @@ export default class InputField extends View {
 
     this.getElement().append(wrapperInput.getElement(), this.error.getElement());
   }
+
+  public clearValue() {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.value = '';
+  }
 }

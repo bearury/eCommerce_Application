@@ -7,6 +7,7 @@ export default class Form extends View {
     const params: ParamsElementCreator = {
       tag: 'form',
       classNames: [styles.form],
+      attribute: [{ type: 'novalidate', value: '' }],
     };
 
     super(params);
