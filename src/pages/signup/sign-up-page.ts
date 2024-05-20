@@ -20,6 +20,7 @@ import { validationPostalCode } from '../../utils/validation/postalCode';
 import { auth } from '@api/api';
 import { RouterPages } from '@app/app';
 import Router from '@router/router';
+import { loaderState, toastState } from '@state/state';
 
 type Address = {
   firstName: string;
@@ -123,7 +124,7 @@ export default class SignUpPage extends View {
 
     this.router = router;
     this.auth = auth;
-
+    
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
@@ -174,7 +175,7 @@ export default class SignUpPage extends View {
     this.countryInput = new Dropdown(this.clearPostalCode.bind(this));
 
     this.billingPostalCodeInput = new InputTextField({
-      name: 'Postal code',
+      name: 'Billing postal code',
       callback: () => this.validatePostalCode.call(this, 'billing'),
     });
 
@@ -275,12 +276,15 @@ export default class SignUpPage extends View {
   }
 
   private validatePostalCode(type: 'shipping' | 'billing'): void {
-    if (!this.countryInput.getValue()) {
-      this.countryInput.setError();
-      return;
-    }
-
     if (type === 'shipping') {
+      if (!this.countryInput.getValue()) {
+        this.countryInput.setError();
+        return;
+      }
+      if (!this.postalCodeInput.getValue()) {
+        this.postalCodeInput.clearErrors();
+        return;
+      }
       const validationMessages: string[] = validationPostalCode({
         value: this.postalCodeInput.getValue(),
         country: this.countryInput.getValue() as ItemDropdownTitle,
@@ -288,6 +292,14 @@ export default class SignUpPage extends View {
       this.postalCodeInput.setErrors(validationMessages);
       this.isValidPostalCode = !validationMessages.length;
     } else if (type === 'billing') {
+      if (!this.billingCountryInput.getValue()) {
+        this.billingCountryInput.setError();
+        return;
+      }
+      if (!this.billingPostalCodeInput.getValue()) {
+        this.billingPostalCodeInput.clearErrors();
+        return;
+      }
       const validationMessages: string[] = validationPostalCode({
         value: this.billingPostalCodeInput.getValue(),
         country: this.billingCountryInput.getValue() as ItemDropdownTitle,
@@ -309,6 +321,7 @@ export default class SignUpPage extends View {
   private toggleBillingBlock(): void {
     const billingBlock = this.billingAddressBlock.getElement() as HTMLDivElement;
     billingBlock.classList.toggle(styles.hidden);
+    this.isAllFieldsValid();
   }
 
   isAllFieldsValid() {
@@ -375,9 +388,9 @@ export default class SignUpPage extends View {
         request.defaultShippingAddress = 0;
       }
       if (this.anotherBillingAddress.getStatus()) {
-        const userStreetName = (this.billingStreetNameInput.getElement() as HTMLInputElement).value;
-        const userCity = (this.billingCityInput.getElement() as HTMLInputElement).value;
-        const userPostalCode = (this.billingPostalCodeInput.getElement() as HTMLInputElement).value;
+        const userStreetName = this.billingStreetNameInput.getValue();
+        const userCity = this.billingCityInput.getValue();
+        const userPostalCode = this.billingPostalCodeInput.getValue();
         request.addresses.push({
           firstName: this.firstNameInput.getValue(),
           lastName: this.lastNameInput.getValue(),
@@ -391,7 +404,19 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
-      auth.register(request);
+      auth
+        .register(request)
+        .then(() => {
+          toastState
+            .getState()
+            .toast.showSuccess(`Welcome ${this.firstNameInput.getValue()} ${this.lastNameInput.getValue()}`);
+          this.router.navigate(RouterPages.main);
+        })
+        .catch((e) => {
+          const message = e.body ? e.body.message : 'Unforeseen error';
+          toastState.getState().toast.showError(message);
+        })
+        .finally(() => loaderState.getState().loader.close());
     } catch (error) {
       console.error(error);
     }
