@@ -6,7 +6,8 @@ import HeaderButton from '@components/buttons/header-button/header-button';
 import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
 import Image from '@components/image/image';
-import img from '/logo.png';
+import img from '/shopping-cart.png';
+// import img from '/logo.png';
 import { authState } from '@state/state';
 import { apiInstance, isAuthorized } from '@api/api';
 
