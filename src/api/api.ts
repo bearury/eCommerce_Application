@@ -9,10 +9,11 @@ import {
 } from '@commercetools/sdk-client-v2';
 import { LocalStorageTokenCache } from './tokenCache';
 import Auth from './auth';
+import { authState } from '@state/state';
 
 export const projectKey = import.meta.env.VITE_Project_key;
 
-export const isAuthorized = localStorage.getItem('isAuthorized') || '';
+export const isAuthorized = localStorage.getItem('isAuthorized');
 export const email = localStorage.getItem('email') || '';
 export const password = localStorage.getItem('password') || '';
 export const user = {
@@ -64,7 +65,6 @@ export class Api {
   }
 
   createAnonymousSession(): ApiRoot {
-    console.log('анонимная сессия');
     const options: AnonymousAuthMiddlewareOptions = {
       host: this.authUrl,
       projectKey,
@@ -77,11 +77,11 @@ export class Api {
       tokenCache: this.tokenCache,
     };
     const client = this.clientBuilder.withAnonymousSessionFlow(options).build();
+    authState.getState().setIsAuthorized(false);
     return createApiBuilderFromCtpClient(client);
   }
 
   createAuthenticatedSession(user: CustomerSignin): ApiRoot {
-    console.log('авторизованная сессия');
     const passwordAuthMiddlewareOptions: PasswordAuthMiddlewareOptions = {
       host: this.authUrl,
       projectKey,
@@ -100,6 +100,7 @@ export class Api {
 
     const client = this.clientBuilder.withPasswordFlow(passwordAuthMiddlewareOptions).build();
     localStorage.setItem('isAuthorized', 'true');
+    authState.getState().setIsAuthorized(true);
     return createApiBuilderFromCtpClient(client);
   }
 }
