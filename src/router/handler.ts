@@ -1,5 +1,5 @@
 import { RouterPages } from '../app/app';
-import { routerState } from '@state/state.ts';
+import { authState, routerState } from '@state/state.ts';
 import getPath from '@utils/get-path.ts';
 
 export default class HandlerRouter {
@@ -30,6 +30,8 @@ export default class HandlerRouter {
   }
 
   public navigate<T extends RouterPages>(event: T): void {
+    console.log('[33] 🍄: ', event, authState.getState().isAuthorized);
+
     const arrPath = event.split('/');
     if (arrPath.length === 1) {
       this.callback({ path: arrPath[0], resource: '' });
