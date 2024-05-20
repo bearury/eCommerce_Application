@@ -10,7 +10,7 @@ export interface ItemDropdown {
 }
 
 export const enum ItemDropdownTitle {
-  USA = 'USA',
+  USA = 'US',
   DE = 'DE',
   UK = 'UK',
 }

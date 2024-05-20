@@ -3,7 +3,7 @@ export function validationCity(value: string): string[] {
 
   const regexFirstLetter = /^[A-Z]/;
   const isFirstLetterUppercase = regexFirstLetter.test(value);
-  const cityRegex = /^[a-zA-Z]+$/;
+  const cityRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
   const isValidCity = cityRegex.test(value);
 
   const textError = 'Must contain at least one character and no special characters or numbers';
