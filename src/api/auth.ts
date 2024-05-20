@@ -53,12 +53,6 @@ class Auth {
       loaderState.getState().loader.close();
     }
   }
-
-  logOut() {
-    localStorage.clear();
-    authState.getState().setIsAuthorized(false);
-    apiInstance.createAnonymousSession();
-  }
 }
 
 export default Auth;
