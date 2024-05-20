@@ -1,8 +1,7 @@
 import View from '../utils/view';
 import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
-import Toast from '@components/toast/toast';
-import { loaderState, toastState } from '@state/state.ts';
+import { loaderState } from '@state/state.ts';
 import Loader from '@components/loader/loader';
 import { session } from '@api/api';
 import { ApiRoot } from '@commercetools/platform-sdk';
@@ -21,8 +20,6 @@ export default class App {
 
   router: Router;
 
-  toast: Toast;
-
   loader: Loader;
 
   session: ApiRoot;
@@ -31,13 +28,12 @@ export default class App {
     this.router = new Router(this.createRoutes());
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
-    this.toast = toastState.getState().toast;
     this.loader = loaderState.getState().loader;
     this.session = session;
   }
 
   public start(): void {
-    this.body.append(this.wrapperPage.getElement(), this.toast.getElement(), this.loader.getElement());
+    this.body.append(this.wrapperPage.getElement(), this.loader.getElement());
   }
 
   private setContent(pageName: RouterPages, view: View): void {
