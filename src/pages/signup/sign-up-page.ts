@@ -20,7 +20,7 @@ import { validationPostalCode } from '../../utils/validation/postalCode';
 import { auth } from '@api/api';
 import { RouterPages } from '@app/app';
 import Router from '@router/router';
-import { loaderState, toastState } from '@state/state';
+import { toastState } from '@state/state';
 
 type Address = {
   firstName: string;
@@ -124,7 +124,6 @@ export default class SignUpPage extends View {
 
     this.router = router;
     this.auth = auth;
-    
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
@@ -404,19 +403,13 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
-      auth
-        .register(request)
-        .then(() => {
-          toastState
-            .getState()
-            .toast.showSuccess(`Welcome ${this.firstNameInput.getValue()} ${this.lastNameInput.getValue()}`);
-          this.router.navigate(RouterPages.main);
-        })
-        .catch((e) => {
-          const message = e.body ? e.body.message : 'Unforeseen error';
-          toastState.getState().toast.showError(message);
-        })
-        .finally(() => loaderState.getState().loader.close());
+      const response = await auth.register(request);
+      if (response && response.statusCode === 201) {
+        toastState
+          .getState()
+          .toast.showSuccess(`Welcome ${this.firstNameInput.getValue()} ${this.lastNameInput.getValue()}`);
+        this.router.navigate(RouterPages.main);
+      }
     } catch (error) {
       console.error(error);
     }
