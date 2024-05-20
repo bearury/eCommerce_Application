@@ -1,8 +1,9 @@
 .dropdown {
-  @apply relative z-[99] w-full max-w-20 h-9;
+  @apply relative z-[99] h-9 w-full max-w-20;
 
   .inner {
-    @apply relative border border-bgHeader h-full;
+    @apply relative h-full border border-bgHeader;
+
   }
 
   .toggle {
@@ -30,4 +31,8 @@
   .icon {
     @apply rotate-180;
   }
+}
+
+.inner.error {
+  @apply border-red-500;
 }

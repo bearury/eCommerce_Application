@@ -5,17 +5,18 @@ import inputStyles from '@components/input/input.module.scss';
 import Input, { InputType } from '@components/input/input';
 import Form from '@components/form/form';
 import Auth from '@api/auth';
-import InputTextField from '@components/input/input-field/input-password-field/input-text-field.ts';
-import { validationEmail } from '@utils/validation/email.ts';
-import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field.ts';
-import { validationPassword } from '@utils/validation/password.ts';
-import { validationName } from '@utils/validation/name.ts';
-import InputDateField from '@components/input/input-field/input-date-field/input-date-field.ts';
-import { validationDate } from '@utils/validation/date.ts';
-import { validationBase } from '@utils/validation/street.ts';
-import { validationCity } from '@utils/validation/city.ts';
-import Checkbox from '@components/checkbox/checkbox.ts';
-import Dropdown from '@components/dropdown/dropdown.ts';
+import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
+import { validationEmail } from '@utils/validation/email';
+import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field';
+import { validationPassword } from '@utils/validation/password';
+import { validationName } from '@utils/validation/name';
+import InputDateField from '@components/input/input-field/input-date-field/input-date-field';
+import { validationDate } from '@utils/validation/date';
+import { validationBase } from '@utils/validation/street';
+import { validationCity } from '@utils/validation/city';
+import Checkbox from '@components/checkbox/checkbox';
+import Dropdown, { ItemDropdownTitle } from '@components/dropdown/dropdown';
+import { validationPostalCode } from '../../utils/validation/postalCode';
 
 type Address = {
   firstName: string;
@@ -47,12 +48,6 @@ export default class SignUpPage extends View {
 
   emailInput: InputTextField;
 
-  // countryInputUS: Input;
-  //
-  // countryInputDE: Input;
-  //
-  // countryInputGB: Input;
-
   postalCodeInput: InputTextField;
 
   cityInput: InputTextField;
@@ -66,8 +61,6 @@ export default class SignUpPage extends View {
   firstNameInput: InputTextField;
 
   signUp: Input;
-
-  // setDefaultAddressInput: Input;
 
   isValidEmail: boolean;
 
@@ -85,67 +78,13 @@ export default class SignUpPage extends View {
 
   isValidPostalCode: boolean;
 
-  // formattedEmailError: ElementCreator;
-
-  // passwordError: ElementCreator;
-
-  // firstNameError: ElementCreator;
-  //
-  // lastNameError: ElementCreator;
-
-  // dateOfBirthError: ElementCreator;
-
-  // streetError: ElementCreator;
-  //
-  // cityError: ElementCreator;
-
-  // postalCodeError: ElementCreator;
-
-  // usa: HTMLInputElement;
-  //
-  // germany: HTMLInputElement;
-  //
-  // britain: HTMLInputElement;
-
-  // setDefaultShippingAddress: HTMLInputElement;
-
   billingStreetNameInput: InputTextField;
 
   billingCityInput: InputTextField;
 
   billingPostalCodeInput: InputTextField;
 
-  // billingCountryInputUS: Input;
-  //
-  // billingCountryInputDE: Input;
-  //
-  // billingCountryInputGB: Input;
-
-  // setDefaultBillingAddressInput: Input;
-  //
-  // usaBilling: HTMLInputElement;
-  //
-  // germanyBilling: HTMLInputElement;
-  //
-  // britainBilling: HTMLInputElement;
-
-  // usaLabel: ElementCreator;
-  //
-  // germanyLabel: ElementCreator;
-  //
-  // britainLabel: ElementCreator;
-
-  // billingUsaLabel: ElementCreator;
-  //
-  // billingGermanyLabel: ElementCreator;
-  //
-  // billingBritainLabel: ElementCreator;
-
   setDefaultAddress: Checkbox;
-
-  // setDefaultBillingAddressBlock: ElementCreator;
-  //
-  // setDefaultAddressLabel: ElementCreator;
 
   setDefaultBillingAddress: Checkbox;
 
@@ -157,19 +96,11 @@ export default class SignUpPage extends View {
 
   billingAddressBlock: ElementCreator;
 
-  // billingStreetError: ElementCreator;
-
-  // billingCityError: ElementCreator;
-
-  // billingPostalCodeError: ElementCreator;
-
   isValidBillingStreet: boolean;
 
   isValidBillingCity: boolean;
 
   isValidBillingPostalCode: boolean;
-
-  // anotherBillingAddressCheckbox: HTMLInputElement;
 
   countryInput: Dropdown;
 
@@ -199,65 +130,17 @@ export default class SignUpPage extends View {
     this.isValidBillingStreet = false;
     this.isValidBillingCity = false;
     this.isValidBillingPostalCode = false;
-    // this.passwordInput = new Input({
-    //   inputType: InputType.password,
-    //   callbacks: [{ event: 'input', callback: this.validatePassword.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.passwordInput],
-    //   placeholder: 'Your password',
-    // });
-    // this.emailInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateEmail.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Your e-mail',
-    // });
 
     this.emailInput = new InputTextField({ name: 'email', callback: this.validateEmail.bind(this) });
     this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
 
-    // this.firstNameInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateName.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Your first name',
-    // });
-    // this.lastNameInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateLastName.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Your last name',
-    // });
-
     this.firstNameInput = new InputTextField({ name: 'first name', callback: this.validateName.bind(this) });
     this.lastNameInput = new InputTextField({ name: 'last name', callback: this.validateLastName.bind(this) });
-
-    // this.dateOfBirthInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [
-    //     { event: 'focus', callback: this.dateOnFocus.bind(this) },
-    //     { event: 'input', callback: this.validateDateOfBirth.bind(this) },
-    //   ],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Date of birth',
-    // });
 
     this.dateOfBirthInput = new InputDateField({
       name: 'Date of birth',
       callback: this.validateDateOfBirth.bind(this),
     });
-
-    // this.streetNameInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateStreet.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Street name',
-    // });
-    // this.cityInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateCity.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'City',
-    // });
 
     this.streetNameInput = new InputTextField({
       name: 'street name',
@@ -265,100 +148,29 @@ export default class SignUpPage extends View {
     });
     this.cityInput = new InputTextField({ name: 'city', callback: () => this.validateCity.call(this, 'shipping') });
 
-    // this.postalCodeInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validatePostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Postal code',
-    // });
+    this.postalCodeInput = new InputTextField({
+      name: 'Postal code',
+      callback: () => this.validatePostalCode.call(this, 'shipping'),
+    });
 
-    this.postalCodeInput = new InputTextField({ name: 'Postal code', callback: this.validatePostalCode.bind(this) });
-
-    this.countryInput = new Dropdown();
+    this.countryInput = new Dropdown(this.clearPostalCode.bind(this));
 
     this.billingPostalCodeInput = new InputTextField({
       name: 'Postal code',
-      callback: this.validatePostalCode.bind(this),
+      callback: () => this.validatePostalCode.call(this, 'billing'),
     });
 
-    this.billingCountryInput = new Dropdown();
-
-    // this.countryInputUS = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'country',
-    //   value: 'US',
-    //   checked: true,
-    // });
-    // this.countryInputDE = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'country',
-    //   value: 'DE',
-    // });
-    // this.countryInputGB = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'country',
-    //   value: 'GB',
-    // });
-
-    // this.billingStreetNameInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateStreet.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Street name',
-    // });
+    this.billingCountryInput = new Dropdown(this.clearBillingPostalCode.bind(this));
 
     this.billingStreetNameInput = new InputTextField({
       name: 'Street name',
       callback: () => this.validateStreet.call(this, 'billing'),
     });
 
-    // this.billingCityInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validateCity.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'City',
-    // });
-
     this.billingCityInput = new InputTextField({
       name: 'City',
       callback: () => this.validateCity.call(this, 'billing'),
     });
-
-    // this.billingPostalCodeInput = new Input({
-    //   inputType: InputType.text,
-    //   callbacks: [{ event: 'input', callback: this.validatePostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   placeholder: 'Postal code',
-    // });
-
-    // this.billingCountryInputUS = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearBillingPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'billingCountry',
-    //   value: 'US',
-    //   checked: true,
-    // });
-    // this.billingCountryInputDE = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearBillingPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'billingCountry',
-    //   value: 'DE',
-    // });
-    // this.billingCountryInputGB = new Input({
-    //   inputType: InputType.radio,
-    //   callbacks: [{ event: 'input', callback: this.clearBillingPostalCode.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'billingCountry',
-    //   value: 'GB',
-    // });
 
     this.signUp = new Input({
       inputType: InputType.submit,
@@ -369,157 +181,9 @@ export default class SignUpPage extends View {
       disabled: true,
     });
 
-    // this.setDefaultAddressInput = new Input({
-    //   inputType: InputType.checkbox,
-    //   callbacks: [],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'setDefaultAddress',
-    // });
-    // this.anotherBillingAddress = new Input({
-    //   inputType: InputType.checkbox,
-    //   callbacks: [{ event: 'click', callback: this.toggleBillingBlock.bind(this) }],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'anotherBillingAddress',
-    // });
-    // this.setDefaultBillingAddressInput = new Input({
-    //   inputType: InputType.checkbox,
-    //   callbacks: [],
-    //   classNames: [inputStyles.input, inputStyles.emailInput],
-    //   inputName: 'setDefaultBillingAddress',
-    // });
-    // this.formattedEmailError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Email address must be properly formatted (e.g., user@example.com).',
-    // });
-    // this.passwordError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
-    // });
-    // this.firstNameError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character and no special characters or numbers',
-    // });
-    // this.lastNameError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character and no special characters or numbers',
-    // });
-    // this.dateOfBirthError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'You must be 13 years old or older',
-    // });
-
-    // this.streetError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character',
-    // });
-    // this.cityError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character and no special characters or numbers',
-    // });
-    // this.postalCodeError = new ElementCreator({
-    //   tag: 'div',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent:
-    //     'Must follow the format for the country: (e.g., 12345 or 12345-6789 for the U.S., 12345 for the Germany, SW1W 0NY for the Great Britain)',
-    // });
-    // this.billingStreetError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character',
-    // });
-
-    // this.billingCityError = new ElementCreator({
-    //   tag: 'span',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent: 'Must contain at least one character and no special characters or numbers',
-    // });
-
-    // this.billingPostalCodeError = new ElementCreator({
-    //   tag: 'div',
-    //   classNames: [inputStyles.wrongEmailText, styles.hidden],
-    //   textContent:
-    //     'Must follow the format for the country: (e.g., 12345 or 12345-6789 for the U.S., 12345 for the Germany, SW1W 0NY for the Great Britain)',
-    // });
-    // this.usaLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'USA',
-    //   children: [this.countryInputUS.getElement()],
-    // });
-    // this.germanyLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Germany',
-    //   children: [this.countryInputDE.getElement()],
-    // });
-    // this.britainLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Great Britain',
-    //   children: [this.countryInputGB.getElement()],
-    // });
-
-    // this.billingUsaLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'USA',
-    //   children: [this.billingCountryInputUS.getElement()],
-    // });
-    // this.billingGermanyLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Germany',
-    //   children: [this.billingCountryInputDE.getElement()],
-    // });
-    // this.billingBritainLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Great Britain',
-    //   children: [this.billingCountryInputGB.getElement()],
-    // });
-
-    // this.setDefaultAddressLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Set as default shipping address?',
-    //   children: [this.setDefaultAddressInput.getElement()],
-    // });
-
-    // this.setDefaultBillingAddressLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Set as default billing address?',
-    //   children: [this.setDefaultBillingAddressInput.getElement()],
-    // });
-    // this.setDefaultAddressBlock = new ElementCreator({
-    //   tag: 'div',
-    //   classNames: [styles.div],
-    //   children: [this.setDefaultAddressLabel.getElement()],
-    // });
-
     this.setDefaultAddress = new Checkbox({ label: 'Set as default shipping address?' });
 
     this.setDefaultBillingAddress = new Checkbox({ label: 'Set as default billing address?' });
-
-    // this.setDefaultBillingAddressBlock = new ElementCreator({
-    //   tag: 'div',
-    //   classNames: [styles.div],
-    //   children: [this.setDefaultBillingAddressLabel.getElement()],
-    // });
-
-    // this.anotherBillingAddressLabel = new ElementCreator({
-    //   tag: 'label',
-    //   classNames: [inputStyles.label],
-    //   textContent: 'Set another billing address?',
-    //   children: [this.anotherBillingAddress.getElement()],
-    // });
 
     this.anotherBillingAddress = new Checkbox({
       label: 'Set another billing address?',
@@ -564,35 +228,20 @@ export default class SignUpPage extends View {
         postalCodeBlockBilling,
       ],
     });
-    // this.usa = this.countryInputUS.getElement() as HTMLInputElement;
-    // this.germany = this.countryInputDE.getElement() as HTMLInputElement;
-    // this.britain = this.countryInputGB.getElement() as HTMLInputElement;
-    // this.usaBilling = this.billingCountryInputUS.getElement() as HTMLInputElement;
-    // this.germanyBilling = this.billingCountryInputDE.getElement() as HTMLInputElement;
-    // this.britainBilling = this.billingCountryInputGB.getElement() as HTMLInputElement;
-    // this.setDefaultShippingAddress = this.setDefaultAddressInput.getElement() as HTMLInputElement;
-    // this.setDefaultBillingAddress = this.setDefaultBillingAddressInput.getElement() as HTMLInputElement;
-
-    // this.anotherBillingAddressCheckbox = this.anotherBillingAddress.getElement() as HTMLInputElement;
 
     this.configureView();
   }
 
-  configureView() {
+  private configureView(): void {
     const section = this.getElement();
     const form = new Form().getElement();
     form.append(
       this.labelForm.getElement(),
       this.emailInput.getElement(),
-      // this.formattedEmailError.getElement(),
       this.passwordInput.getElement(),
-      // this.passwordError.getElement(),
       this.firstNameInput.getElement(),
-      // this.firstNameError.getElement(),
       this.lastNameInput.getElement(),
-      // this.lastNameError.getElement(),
       this.dateOfBirthInput.getElement(),
-      // this.dateOfBirthError.getElement(),
       this.shippingAddressBlock.getElement(),
       this.anotherBillingAddressBlock.getElement(),
       this.billingAddressBlock.getElement(),
@@ -601,59 +250,39 @@ export default class SignUpPage extends View {
     section.append(form);
   }
 
-  // dateOnFocus() {
-  //   const date = this.dateOfBirthInput.getElement() as HTMLInputElement;
-  //   date.type = 'date';
-  // }
+  private validatePostalCode(type: 'shipping' | 'billing'): void {
+    if (!this.countryInput.getValue()) {
+      this.countryInput.setError();
+      return;
+    }
 
-  validatePostalCode() {
-    const postalCodeInput = event.target as HTMLInputElement;
-    const usaRegex = /^\d{5}(?:[-\s]\d{4})?$/;
-    const germanyRegex = /^(?!01000|99999)(0[1-9]\d{3}|[1-9]\d{4})$/;
-    const britainRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$/i;
-    if (postalCodeInput.closest(`.${styles.shipping}`)) {
-      const postalCodeValue = postalCodeInput.value;
-      const regex: RegExp = usaRegex;
-      // if (this.usa.checked) {
-      //   regex = usaRegex;
-      // } else if (this.germany.checked) {
-      //   regex = germanyRegex;
-      // } else if (this.britain.checked) {
-      //   regex = britainRegex;
-      // }
-      const isValidPostalCode = regex.test(postalCodeValue);
-      this.postalCodeError.getElement().classList.toggle(styles.hidden, isValidPostalCode);
-      this.isValidPostalCode = isValidPostalCode;
-    } else if (postalCodeInput.closest(`.${styles.billing}`)) {
-      const postalCodeValue = postalCodeInput.value;
-      let regex: RegExp = usaRegex;
-      if (this.usaBilling.checked) {
-        regex = usaRegex;
-      } else if (this.germanyBilling.checked) {
-        regex = germanyRegex;
-      } else if (this.britainBilling.checked) {
-        regex = britainRegex;
-      }
-      const isValidPostalCode = regex.test(postalCodeValue);
-      // this.billingPostalCodeError.getElement().classList.toggle(styles.hidden, isValidPostalCode);
-      this.isValidBillingPostalCode = isValidPostalCode;
+    if (type === 'shipping') {
+      const validationMessages: string[] = validationPostalCode({
+        value: this.postalCodeInput.getValue(),
+        country: this.countryInput.getValue() as ItemDropdownTitle,
+      });
+      this.postalCodeInput.setErrors(validationMessages);
+      this.isValidPostalCode = !validationMessages.length;
+    } else if (type === 'billing') {
+      const validationMessages: string[] = validationPostalCode({
+        value: this.billingPostalCodeInput.getValue(),
+        country: this.billingCountryInput.getValue() as ItemDropdownTitle,
+      });
+      this.billingPostalCodeInput.setErrors(validationMessages);
+      this.isValidBillingPostalCode = !validationMessages.length;
     }
     this.isAllFieldsValid();
   }
 
-  clearPostalCode() {
-    const postalCodeInput = this.postalCodeInput.getElement() as HTMLInputElement;
-    postalCodeInput.value = '';
-    // this.postalCodeError.getElement().classList.add(styles.hidden);
+  private clearPostalCode(): void {
+    this.postalCodeInput.clearValue();
   }
 
-  clearBillingPostalCode() {
-    const postalCodeInput = this.billingPostalCodeInput.getElement() as HTMLInputElement;
-    postalCodeInput.value = '';
-    // this.billingPostalCodeError.getElement().classList.add(styles.hidden);
+  private clearBillingPostalCode(): void {
+    this.billingPostalCodeInput.clearValue();
   }
 
-  toggleBillingBlock() {
+  private toggleBillingBlock(): void {
     const billingBlock = this.billingAddressBlock.getElement() as HTMLDivElement;
     billingBlock.classList.toggle(styles.hidden);
   }
@@ -699,61 +328,37 @@ export default class SignUpPage extends View {
 
   async register(event: Event) {
     event.preventDefault();
-    const userEmail = (this.emailInput.getElement() as HTMLInputElement).value;
-    const userPassword = (this.passwordInput.getElement() as HTMLInputElement).value;
-    const userFirstName = (this.firstNameInput.getElement() as HTMLInputElement).value;
-    const userLastName = (this.lastNameInput.getElement() as HTMLInputElement).value;
-    const userDateOfBirth = (this.dateOfBirthInput.getElement() as HTMLInputElement).value;
-    const userStreetName = (this.streetNameInput.getElement() as HTMLInputElement).value;
-    const userCity = (this.cityInput.getElement() as HTMLInputElement).value;
-    const userPostalCode = (this.postalCodeInput.getElement() as HTMLInputElement).value;
-    let userCountryCode;
-    if (this.usa.checked) {
-      userCountryCode = 'US';
-    } else if (this.germany.checked) {
-      userCountryCode = 'DE';
-    } else {
-      userCountryCode = 'GB';
-    }
     try {
       const request: CustomerDraft = {
-        email: userEmail,
-        password: userPassword,
-        firstName: userFirstName,
-        lastName: userLastName,
-        dateOfBirth: userDateOfBirth,
+        email: this.emailInput.getValue(),
+        password: this.passwordInput.getValue(),
+        firstName: this.firstNameInput.getValue(),
+        lastName: this.lastNameInput.getValue(),
+        dateOfBirth: this.dateOfBirthInput.getValue(),
         addresses: [
           {
-            firstName: userFirstName,
-            lastName: userLastName,
-            email: userEmail,
-            country: userCountryCode,
-            streetName: userStreetName,
-            city: userCity,
-            postalCode: userPostalCode,
+            firstName: this.firstNameInput.getValue(),
+            lastName: this.lastNameInput.getValue(),
+            email: this.emailInput.getValue(),
+            country: this.countryInput.getValue(),
+            streetName: this.streetNameInput.getValue(),
+            city: this.cityInput.getValue(),
+            postalCode: this.postalCodeInput.getValue(),
           },
         ],
       };
-      if (this.setDefaultShippingAddress.checked) {
+      if (this.setDefaultAddress.getStatus()) {
         request.defaultShippingAddress = 0;
       }
       if (this.anotherBillingAddress.getStatus()) {
         const userStreetName = (this.billingStreetNameInput.getElement() as HTMLInputElement).value;
         const userCity = (this.billingCityInput.getElement() as HTMLInputElement).value;
         const userPostalCode = (this.billingPostalCodeInput.getElement() as HTMLInputElement).value;
-        let userBillingCountryCode;
-        if (this.usaBilling.checked) {
-          userBillingCountryCode = 'US';
-        } else if (this.germanyBilling.checked) {
-          userBillingCountryCode = 'DE';
-        } else {
-          userBillingCountryCode = 'GB';
-        }
         request.addresses.push({
-          firstName: userFirstName,
-          lastName: userLastName,
-          email: userEmail,
-          country: userBillingCountryCode,
+          firstName: this.firstNameInput.getValue(),
+          lastName: this.lastNameInput.getValue(),
+          email: this.emailInput.getValue(),
+          country: this.countryInput.getValue(),
           streetName: userStreetName,
           city: userCity,
           postalCode: userPostalCode,

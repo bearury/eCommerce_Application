@@ -6,7 +6,13 @@ import DropdownPopup from '@components/dropdown/dropdown-popup/dropdown-popup';
 
 export interface ItemDropdown {
   id: string;
-  title: string;
+  title: ItemDropdownTitle;
+}
+
+export const enum ItemDropdownTitle {
+  USA = 'USA',
+  DE = 'DE',
+  UK = 'UK',
 }
 
 export default class Dropdown extends View {
@@ -18,21 +24,31 @@ export default class Dropdown extends View {
 
   popup: DropdownPopup;
 
-  constructor() {
+  inner: HTMLElement;
+
+  callback: () => void;
+
+  constructor(callback: () => void) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.dropdown],
     };
     super(params);
 
+    this.callback = callback;
+
     this.items = [
-      { id: '1', title: 'USA' },
-      { id: '2', title: 'DE' },
-      { id: '3', title: 'UK' },
+      { id: '1', title: ItemDropdownTitle.USA },
+      { id: '2', title: ItemDropdownTitle.DE },
+      { id: '3', title: ItemDropdownTitle.UK },
     ];
 
     this.status = false;
     this.popup = new DropdownPopup({ items: this.items, callback: this.handleCheck.bind(this) });
+    this.inner = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.inner],
+    }).getElement();
     this.input = new ElementCreator({
       tag: 'input',
       classNames: [styles.input],
@@ -58,13 +74,9 @@ export default class Dropdown extends View {
       children: [this.input.getElement(), icon],
     });
 
-    const inner: HTMLElement = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.inner],
-      children: [toggle.getElement()],
-    }).getElement();
+    this.inner.append(toggle.getElement());
 
-    dropdown.append(inner, this.popup.getElement());
+    dropdown.append(this.inner, this.popup.getElement());
   }
 
   private handleClickToggle(): void {
@@ -77,6 +89,21 @@ export default class Dropdown extends View {
   private handleCheck(param: string): void {
     const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
     input.value = param;
+    this.clearError();
+    this.callback();
     this.handleClickToggle();
+  }
+
+  public getValue(): ItemDropdownTitle | '' {
+    const input = this.input.getElement() as HTMLInputElement;
+    return input.value as ItemDropdownTitle | '';
+  }
+
+  public setError(): void {
+    this.inner.classList.add(styles.error);
+  }
+
+  public clearError() {
+    this.inner.classList.remove(styles.error);
   }
 }
