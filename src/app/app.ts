@@ -8,10 +8,10 @@ import { session } from '@api/api';
 import { ApiRoot } from '@commercetools/platform-sdk';
 
 export enum RouterPages {
-  signup = 'signup',
-  signin = 'signin',
+  main = 'Main',
+  signup = 'SignUp',
+  signin = 'SignIn',
   not_found = 'not_found',
-  main = 'main',
 }
 
 export default class App {

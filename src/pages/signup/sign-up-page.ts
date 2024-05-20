@@ -124,7 +124,7 @@ export default class SignUpPage extends View {
 
     this.router = router;
     this.auth = auth;
-    
+
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],

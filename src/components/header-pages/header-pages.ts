@@ -25,18 +25,20 @@ export default class HeaderPages extends View {
       tag: 'header',
       classNames: [styles.header],
     };
-
     super(params);
-    this.router = router;
 
+    this.router = router;
     this.buttons = [];
+
     this.logOutButton = new ElementCreator({
       tag: 'button',
       classNames: [buttonStyles.button],
       callback: [{ event: 'click', callback: this.logOut.bind(this) }],
       textContent: 'Log out',
     }).getElement();
+
     this.blockButton = new ElementCreator({ tag: 'div', classNames: [styles.blockButton] }).getElement();
+
     this.configureView();
     this.updateLogOutButton(!!isAuthorized);
     authState.subscribe((state) => {
@@ -64,7 +66,31 @@ export default class HeaderPages extends View {
     this.buttons.forEach((button: HeaderButton): void => {
       this.blockButton.append(button.getElement());
     });
-    container.append(image.getElement(), this.blockButton);
+
+    const burgerMenuBtn: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.burgerMenuBtn],
+      callback: [{ event: 'click', callback: this.openPopup.bind(this) }],
+    }).getElement();
+
+    const burgerLine1: ElementCreator = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.burgerLine, styles.burgerLine1],
+    });
+    const burgerLine2: ElementCreator = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.burgerLine, styles.burgerLine2],
+    });
+
+    burgerMenuBtn.append(burgerLine1.getElement(), burgerLine2.getElement());
+
+    const burgerMenuPopup: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.burgerMenuPopup],
+    }).getElement();
+    burgerMenuPopup.append(this.blockButton.cloneNode(true));
+
+    container.append(image.getElement(), this.blockButton, burgerMenuBtn, burgerMenuPopup);
     currentElement.append(container);
   }
 
@@ -89,5 +115,33 @@ export default class HeaderPages extends View {
     authState.getState().setIsAuthorized(false);
     apiInstance.createAnonymousSession();
     this.handlerClickButton(RouterPages.main);
+  }
+
+  private openPopup(e: Event) {
+    e.preventDefault();
+    const popup = Array.from(document.body.getElementsByClassName(`${styles.burgerMenuPopup}`));
+    const lines = Array.from(document.body.getElementsByClassName(`${styles.burgerLine}`));
+    popup?.map((el) => el.classList.toggle(`${styles.open}`));
+    lines.map((el) => el.classList.toggle(`${styles.active}`));
+    document.body.classList.toggle(`${styles.noscroll}`);
+
+    const links = Array.from(Array.from(document.body.getElementsByClassName(`${buttonStyles.button}`)));
+    links.forEach((link) => {
+      link.addEventListener('click', this.closeOnClick.bind(this));
+    });
+  }
+
+  private closeOnClick(e: Event) {
+    // change later
+    const btn = e.target as HTMLElement;
+    if (btn.textContent === 'Main') this.handlerClickButton(RouterPages.main);
+    if (btn.textContent === 'SignIn') this.handlerClickButton(RouterPages.signin);
+    if (btn.textContent === 'SignUp') this.handlerClickButton(RouterPages.signup);
+
+    const popup = Array.from(document.body.getElementsByClassName(`${styles.burgerMenuPopup}`));
+    const lines = Array.from(document.body.getElementsByClassName(`${styles.burgerLine}`));
+    popup?.map((el) => el.classList.remove(`${styles.open}`));
+    lines.map((el) => el.classList.remove(`${styles.active}`));
+    document.body.classList.remove(`${styles.noscroll}`);
   }
 }

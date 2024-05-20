@@ -2,14 +2,58 @@
   @apply w-full bg-bgHeader;
 
   .container {
-    @apply m-auto flex w-[1280px] max-w-screen-lg items-center justify-between gap-2 p-3;
+    @apply m-auto flex w-[1280px] max-w-screen-lg items-center justify-between gap-4 p-3;
   }
 
   .blockButton {
-    @apply flex justify-between;
+    @apply flex justify-between tablet:hidden;
   }
 }
 
 .image {
   @apply h-full w-14;
+}
+
+.burgerMenuBtn,
+.burgerMenuPopup {
+  @apply hidden;
+}
+
+@media screen and (max-width: 640px) {
+  .burgerMenuBtn {
+    @apply relative flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-1 rounded-full border-2 border-solid border-bgBody;
+
+    .burgerLine1,
+    .burgerLine2 {
+      @apply h-0.5 w-7 rounded-lg bg-bgBody duration-500;
+    }
+  }
+
+  .burgerMenuPopup {
+    @apply fixed -right-full top-20 z-20 flex h-full w-full justify-center bg-bgBody duration-500;
+
+    .blockButton {
+      @apply flex flex-col items-center justify-start;
+
+      button {
+        @apply text-textDark;
+      }
+    }
+  }
+
+  .burgerLine1.active {
+    transform: rotate(-45deg) translate(-2px, 3px);
+  }
+
+  .burgerLine2.active {
+    transform: rotate(45deg) translate(-2px, -3px);
+  }
+
+  .burgerMenuPopup.open {
+    @apply right-0;
+  }
+
+  body.noscroll {
+    @apply overflow-hidden;
+  }
 }
