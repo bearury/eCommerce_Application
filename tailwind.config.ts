@@ -26,7 +26,7 @@ export default {
       },
       boxShadow: {
         card: '-5px 5px 10px 5px rgba(0, 0, 0, 0.3)',
-        button: '0px 0px 25px 10px rgba(0,0,0,0.5);',
+        button: '0px 0px 10px 1px rgba(0,0,0,0.5);',
       },
       transitionTimingFunction: {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
