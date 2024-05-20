@@ -1,6 +1,6 @@
 import { apiInstance, projectKey, session } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
-import { authState, loaderState, toastState } from '@state/state';
+import { authState } from '@state/state';
 
 class Auth {
   private readonly customerBuilder: ByProjectKeyRequestBuilder;
@@ -31,13 +31,9 @@ class Auth {
 
   async register(user: CustomerDraft) {
     try {
-      loaderState.getState().loader.show();
       const data = await this.customerBuilder.customers().post({ body: user }).execute();
       if (user.password) {
         if (data.statusCode === 201) {
-          console.log(data.body);
-          console.log('User created');
-          toastState.getState().toast.showSuccess('Registration successful');
           localStorage.setItem('email', user.email);
           localStorage.setItem('password', user.password);
           await this.login({ email: user.email, password: user.password });
@@ -46,11 +42,8 @@ class Auth {
       return data;
     } catch (error) {
       if (error instanceof Error) {
-        toastState.getState().toast.showError(error.message);
         console.error(error);
       }
-    } finally {
-      loaderState.getState().loader.close();
     }
   }
 }
