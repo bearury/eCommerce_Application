@@ -59,6 +59,13 @@ export default class HandlerRouter {
 
   private handleRoutePopState(): void {
     const historyPath = window.location.pathname.split('/')[1];
+
+    if (authState.getState().isAuthorized && historyPath === RouterPages.signin) {
+      this.navigate(RouterPages.main);
+      routerState.getState().setPage(RouterPages.main);
+      return;
+    }
+
     if (historyPath) {
       this.callback({ path: historyPath, resource: '' });
       this.setHistory(historyPath);

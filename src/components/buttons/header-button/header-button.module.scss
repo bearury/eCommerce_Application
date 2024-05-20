@@ -1,5 +1,5 @@
 .button {
-  @apply border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out;
+  @apply border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out min-w-[130px];
 
   &:hover {
     @apply cursor-pointer font-bold;
@@ -8,10 +8,14 @@
   &:nth-child(2) {
     @apply mr-10;
   }
+
+  &:first-letter {
+    @apply uppercase;
+  }
 }
 
 .active {
-  @apply font-bold text-textAccent underline;
+  @apply font-bold text-textAccent underline underline-offset-8;
 
   &:hover {
     @apply cursor-default;
