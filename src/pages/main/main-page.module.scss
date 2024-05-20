@@ -2,14 +2,14 @@
   @apply flex-auto px-2 pt-3;
 
   .container {
-    @apply max-w-screen-lg m-auto flex flex-col;
+    @apply m-auto flex max-w-screen-lg flex-col;
   }
 
   .title {
-    @apply mt-10 text-3xl font-bold text-center text-textDark;
+    @apply mt-10 text-center text-3xl font-bold text-textDark;
   }
 
   .button {
-    @apply mt-40 border border-bgHeader rounded w-40 m-auto;
+    @apply m-auto mt-40 w-40 rounded border border-bgHeader;
   }
 }
