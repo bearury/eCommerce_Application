@@ -37,8 +37,6 @@ export default class HandlerRouter {
   }
 
   public navigate<T extends RouterPages>(event: T): void {
-    console.log('[33] 🍄: ', event, authState.getState().isAuthorized);
-
     const arrPath = event.split('/');
     if (arrPath.length === 1) {
       this.callback({ path: arrPath[0], resource: '' });
@@ -61,6 +59,13 @@ export default class HandlerRouter {
 
   private handleRoutePopState(): void {
     const historyPath = window.location.pathname.split('/')[1];
+
+    if (authState.getState().isAuthorized && historyPath === RouterPages.signin) {
+      this.navigate(RouterPages.main);
+      routerState.getState().setPage(RouterPages.main);
+      return;
+    }
+
     if (historyPath) {
       this.callback({ path: historyPath, resource: '' });
       this.setHistory(historyPath);
