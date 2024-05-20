@@ -2,7 +2,7 @@
   @apply w-full bg-bgHeader;
 
   .container {
-    @apply m-auto flex w-[1280px] max-w-screen-lg items-center justify-between gap-2 p-3;
+    @apply m-auto flex max-w-screen-lg items-center justify-between gap-2 p-3;
   }
 
   .blockButton {
