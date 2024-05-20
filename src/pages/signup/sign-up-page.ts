@@ -18,9 +18,9 @@ import Checkbox from '@components/checkbox/checkbox';
 import Dropdown, { ItemDropdownTitle } from '@components/dropdown/dropdown';
 import { validationPostalCode } from '../../utils/validation/postalCode';
 import { auth } from '@api/api';
-import { loaderState, toastState } from '@state/state';
-import Router from '@router/router';
 import { RouterPages } from '@app/app';
+import Router from '@router/router';
+import { loaderState, toastState } from '@state/state';
 
 type Address = {
   firstName: string;
@@ -47,6 +47,10 @@ export default class SignUpPage extends View {
   auth: Auth;
 
   labelForm: ElementCreator;
+
+  signinLink: ElementCreator;
+
+  router: Router;
 
   passwordInput: InputPasswordField;
 
@@ -110,8 +114,6 @@ export default class SignUpPage extends View {
 
   billingCountryInput: Dropdown;
 
-  router: Router;
-
   constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -119,13 +121,23 @@ export default class SignUpPage extends View {
       textContent: '',
     };
     super(params);
-    this.auth = auth;
+
     this.router = router;
+    this.auth = auth;
+    
     this.labelForm = new ElementCreator({
       tag: 'span',
       classNames: [styles.label],
       textContent: 'Registration',
     });
+
+    this.signinLink = new ElementCreator({
+      tag: 'a',
+      classNames: [styles.link],
+      textContent: 'Already have an account? Login!',
+      callback: [{ event: 'click', callback: this.followingLink.bind(this) }],
+    });
+
     this.isValidEmail = false;
     this.isValidPassword = false;
     this.isValidName = false;
@@ -184,7 +196,7 @@ export default class SignUpPage extends View {
       callbacks: [{ event: 'click', callback: this.register.bind(this) }],
       classNames: [inputStyles.input, inputStyles.emailInput],
       inputName: 'sign-up',
-      value: 'Sign-up',
+      value: 'Sign Up',
       disabled: true,
     });
 
@@ -252,9 +264,15 @@ export default class SignUpPage extends View {
       this.shippingAddressBlock.getElement(),
       this.anotherBillingAddressBlock.getElement(),
       this.billingAddressBlock.getElement(),
-      this.signUp.getElement()
+      this.signUp.getElement(),
+      this.signinLink.getElement()
     );
     section.append(form);
+  }
+
+  private followingLink(e: Event): void {
+    e.preventDefault();
+    this.router.navigate(RouterPages.signin);
   }
 
   private validatePostalCode(type: 'shipping' | 'billing'): void {

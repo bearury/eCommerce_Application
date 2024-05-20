@@ -1,5 +1,5 @@
 .page {
-  @apply flex flex-auto flex-col items-center justify-center pb-14 font-inter;
+  @apply flex flex-auto flex-col items-center justify-center py-14 pb-14 font-inter;
 
   .label {
     @apply mb-3 text-3xl font-bold text-textLight underline;
@@ -22,38 +22,3 @@
     }
   }
 }
-
-// a {
-// 	position: relative;
-// 	color: #00a650; /*задаём цвет ссылки*/
-// 	cursor: pointer;
-// 	line-height: 1; /*задаём высоту строки*/
-// 	text-decoration: none; /*убираем подчёркивание*/
-
-// }
-// a:after {
-// 	display: block;
-// 	position: absolute;
-// 	left: 0; /*изменить на right:0;, чтобы изменить направление подчёркивания */
-// 	width: 0;/*задаём длинну линии до наведения курсора*/
-// 	height: 2px; /*задаём ширину линии*/
-// 	background-color: #00a650; /*задаём цвет линии*/
-// 	content: "";
-// 	transition: width 0.3s ease-out; /*задаём время анимации*/
-//   //
-//   content: '';
-//   position: absolute;
-//   left: 50%;
-//   bottom: -4px;
-//   width: 0;
-//   height: 2px;
-//   background-color: var(--text-dark);
-// }
-
-// a:hover:after,
-// a:focus:after {
-// 	width: 100%; /*устанавливаем значение 100% чтобы ссылка подчёркивалась полностью*/
-
-//   transition: width 0.5s ease-in-out;
-//   transform: translateX(-50%);
-// }

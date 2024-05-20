@@ -1,8 +1,8 @@
 .header {
-  @apply bg-bgHeader w-full;
+  @apply w-full bg-bgHeader;
 
   .container {
-    @apply flex gap-2 p-3 justify-between items-center max-w-screen-lg w-[1280px] m-auto;
+    @apply m-auto flex w-[1280px] max-w-screen-lg items-center justify-between gap-2 p-3;
   }
 
   .blockButton {
@@ -11,5 +11,5 @@
 }
 
 .image {
-  @apply w-14 h-full;
+  @apply h-full w-14;
 }
