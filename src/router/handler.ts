@@ -1,5 +1,5 @@
 import { RouterPages } from '../app/app';
-import { routerState } from '@state/state.ts';
+import { authState, routerState } from '@state/state.ts';
 import getPath from '@utils/get-path.ts';
 
 export default class HandlerRouter {
@@ -12,6 +12,13 @@ export default class HandlerRouter {
     window.addEventListener('load', () => {
       const path: string = window.location.pathname.slice(1);
       const foundPath: RouterPages | null = getPath(path);
+
+      if (authState.getState().isAuthorized && path === RouterPages.signin) {
+        this.navigate(RouterPages.main);
+        routerState.getState().setPage(RouterPages.main);
+        return;
+      }
+
       if (foundPath) {
         this.navigate(foundPath);
         routerState.getState().setPage(foundPath);
@@ -41,6 +48,12 @@ export default class HandlerRouter {
 
       this.setHistory(event);
       this.callback(result);
+    }
+
+    if (authState.getState().isAuthorized && event === RouterPages.signin) {
+      this.callback({ path: RouterPages.main, resource: '' });
+      routerState.getState().setPage(RouterPages.main);
+      return;
     }
   }
 
