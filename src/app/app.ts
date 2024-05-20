@@ -73,14 +73,14 @@ export default class App {
         path: `${RouterPages.main}`,
         callback: async (): Promise<void> => {
           const { MainPage } = await import('@pages/index');
-          this.setContent(RouterPages.main, new MainPage());
+          this.setContent(RouterPages.main, new MainPage(this.router));
         },
       },
       {
         path: `${RouterPages.not_found}`,
         callback: async (): Promise<void> => {
           const { NotFoundPage } = await import('@pages/index');
-          this.setContent(RouterPages.not_found, new NotFoundPage());
+          this.setContent(RouterPages.not_found, new NotFoundPage(this.router));
         },
       },
     ];
