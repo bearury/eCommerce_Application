@@ -1,6 +1,6 @@
 import { apiInstance, projectKey, session } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
-import { authState, toastState } from '@state/state';
+import { authState, loaderState, toastState } from '@state/state';
 
 class Auth {
   private readonly customerBuilder: ByProjectKeyRequestBuilder;

@@ -134,9 +134,10 @@ export default class HeaderPages extends View {
   private closeOnClick(e: Event) {
     // change later
     const btn = e.target as HTMLElement;
-    if (btn.textContent === 'Main') this.handlerClickButton(RouterPages.main);
-    if (btn.textContent === 'SignIn') this.handlerClickButton(RouterPages.signin);
-    if (btn.textContent === 'SignUp') this.handlerClickButton(RouterPages.signup);
+    console.log(btn.textContent);
+    if (btn.textContent === '🛒 Main') this.handlerClickButton(RouterPages.main);
+    if (btn.textContent === '🗝 SignIn') this.handlerClickButton(RouterPages.signin);
+    if (btn.textContent === '🔐 SignUp') this.handlerClickButton(RouterPages.signup);
 
     const popup = Array.from(document.body.getElementsByClassName(`${styles.burgerMenuPopup}`));
     const lines = Array.from(document.body.getElementsByClassName(`${styles.burgerLine}`));

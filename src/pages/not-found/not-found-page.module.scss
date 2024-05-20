@@ -10,6 +10,6 @@
   }
 
   .button {
-    @apply border border-bgHeader px-4 py-1 rounded mt-2 hover:shadow-button transition-all;
+    @apply mt-2 rounded border border-bgHeader px-4 py-1 transition-all hover:shadow-button;
   }
 }
