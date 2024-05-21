@@ -20,7 +20,7 @@ import { validationPostalCode } from '../../utils/validation/postalCode';
 import { auth } from '@api/api';
 import { RouterPages } from '@app/app';
 import Router from '@router/router';
-import { toastState } from '@state/state';
+import { loaderState, toastState } from '@state/state';
 
 type Address = {
   firstName: string;
@@ -366,6 +366,7 @@ export default class SignUpPage extends View {
   async register(event: Event) {
     event.preventDefault();
     try {
+      loaderState.getState().loader.show();
       const request: CustomerDraft = {
         email: this.emailInput.getValue(),
         password: this.passwordInput.getValue(),
@@ -395,7 +396,7 @@ export default class SignUpPage extends View {
           firstName: this.firstNameInput.getValue(),
           lastName: this.lastNameInput.getValue(),
           email: this.emailInput.getValue(),
-          country: this.countryInput.getValue(),
+          country: this.billingCountryInput.getValue(),
           streetName: userStreetName,
           city: userCity,
           postalCode: userPostalCode,
@@ -413,6 +414,8 @@ export default class SignUpPage extends View {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      loaderState.getState().loader.close();
     }
   }
 

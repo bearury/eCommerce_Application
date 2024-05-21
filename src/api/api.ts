@@ -35,8 +35,6 @@ export class Api {
 
   private httpMiddlewareOptions: HttpMiddlewareOptions;
 
-  // private authMiddlewareOptions: AuthMiddlewareOptions;
-
   private tokenCache: TokenCache;
 
   constructor() {
@@ -50,16 +48,6 @@ export class Api {
       fetch,
     };
     this.tokenCache = new LocalStorageTokenCache();
-    // this.authMiddlewareOptions = {
-    //   host: this.authUrl,
-    //   projectKey,
-    //   credentials: {
-    //     clientId: this.clientId,
-    //     clientSecret: this.clientSecret,
-    //   },
-    //   scopes: this.scopes.split(' '),
-    //   fetch,
-    // };
     this.clientBuilder = new ClientBuilder().withHttpMiddleware(this.httpMiddlewareOptions).withLoggerMiddleware();
   }
 
@@ -75,7 +63,7 @@ export class Api {
       fetch,
       tokenCache: this.tokenCache,
     };
-    const client = this.clientBuilder.withAnonymousSessionFlow(options).build();
+    const client = this.clientBuilder.withAnonymousSessionFlow(options).withLoggerMiddleware().build();
     authState.getState().setIsAuthorized(false);
     return createApiBuilderFromCtpClient(client);
   }
@@ -97,7 +85,7 @@ export class Api {
       tokenCache: this.tokenCache,
     };
 
-    const client = this.clientBuilder.withPasswordFlow(passwordAuthMiddlewareOptions).build();
+    const client = this.clientBuilder.withPasswordFlow(passwordAuthMiddlewareOptions).withLoggerMiddleware().build();
     localStorage.setItem('isAuthorized', 'true');
     authState.getState().setIsAuthorized(true);
     return createApiBuilderFromCtpClient(client);

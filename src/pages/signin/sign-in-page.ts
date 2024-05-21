@@ -71,12 +71,21 @@ export default class SignInPage extends View {
     e.preventDefault();
     loaderState.getState().loader.show();
 
-    const response = await auth.login({
-      email: this.emailInput.getValue(),
-      password: this.passwordInput.getValue(),
-    });
-    if (response && response.statusCode === 200) {
-      this.router.navigate(RouterPages.main);
+    try {
+      const response = await auth.login({
+        email: this.emailInput.getValue(),
+        password: this.passwordInput.getValue(),
+      });
+
+      if (response && response.statusCode === 200) {
+        this.router.navigate(RouterPages.main);
+      } else {
+        console.error(response?.body);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loaderState.getState().loader.close();
     }
   }
 
