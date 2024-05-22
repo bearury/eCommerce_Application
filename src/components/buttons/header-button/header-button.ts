@@ -44,9 +44,9 @@ export default class HeaderButton extends View {
     }
 
     if (authState.getState().isAuthorized && (this.type === RouterPages.signup || this.type === RouterPages.signin)) {
-      this.getElement().classList.add(styles.hidden);
+      this.getElement().classList.add(styles.hid);
     } else {
-      this.getElement().classList.remove(styles.hidden);
+      this.getElement().classList.remove(styles.hid);
     }
   }
 }

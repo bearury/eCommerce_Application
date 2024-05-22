@@ -33,15 +33,26 @@ export default class MainPage extends View {
       callback: [{ event: 'click', callback: this.handlerClickGoLogin.bind(this) }],
     }).getElement();
 
+    const testButton2: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.button],
+      textContent: 'Go Registration Page',
+      callback: [{ event: 'click', callback: this.handlerClickGoRegistration.bind(this) }],
+    }).getElement();
+
     const container: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.container],
-      children: [title, testButton],
+      children: [title, testButton, testButton2],
     }).getElement();
     mainPage.append(container);
   }
 
   private handlerClickGoLogin(): void {
     this.router.navigate(RouterPages.signin);
+  }
+
+  private handlerClickGoRegistration(): void {
+    this.router.navigate(RouterPages.signup);
   }
 }
