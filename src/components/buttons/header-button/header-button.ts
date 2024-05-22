@@ -15,12 +15,13 @@ export default class HeaderButton extends View {
   constructor({ buttonType, callback }: HeaderButtonProps) {
     const textContent: string =
       buttonType === RouterPages.signin
-        ? `🗝 ${buttonType}`
+        ? `🗝 SignIn`
         : buttonType === RouterPages.signup
-          ? `🔐 ${buttonType}`
+          ? `🔐 SignUp`
           : buttonType === RouterPages.main
-            ? `🛒 ${buttonType}`
+            ? `🛒 Main`
             : buttonType;
+
     const params: ParamsElementCreator = {
       tag: 'button',
       classNames: [styles.button],
