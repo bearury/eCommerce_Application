@@ -312,10 +312,14 @@ export default class SignUpPage extends View {
 
   private clearPostalCode(): void {
     this.postalCodeInput.clearValue();
+    this.isValidPostalCode = false;
+    this.isAllFieldsValid();
   }
 
   private clearBillingPostalCode(): void {
     this.billingPostalCodeInput.clearValue();
+    this.isValidBillingPostalCode = false;
+    this.isAllFieldsValid();
   }
 
   private toggleBillingBlock(): void {
