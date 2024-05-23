@@ -12,7 +12,7 @@ import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
 import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
 import InputPasswordField from '@components/input/input-field/input-text-field/input-password-field';
-import { auth } from '@api/api';
+import { apiInstance } from '@api/api';
 
 export default class SignInPage extends View {
   passwordInput: InputPasswordField;
@@ -39,7 +39,7 @@ export default class SignInPage extends View {
     super(params);
 
     this.router = router;
-    this.auth = auth;
+    this.auth = new Auth(apiInstance);
 
     this.emailInput = new InputTextField({
       name: 'email',
@@ -72,7 +72,7 @@ export default class SignInPage extends View {
     loaderState.getState().loader.show();
 
     try {
-      const response = await auth.login({
+      const response = await this.auth.login({
         email: this.emailInput.getValue(),
         password: this.passwordInput.getValue(),
       });

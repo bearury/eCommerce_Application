@@ -1,24 +1,39 @@
-import { apiInstance, projectKey, session } from '@api/api';
+import { projectKey } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
 import { authState, loaderState, toastState } from '@state/state';
+import { LocalStorageTokenCache } from './tokenCache';
+import Api from './api';
 
 class Auth {
-  private readonly customerBuilder: ByProjectKeyRequestBuilder;
+  private apiInstance: Api;
 
-  constructor() {
-    this.customerBuilder = session.withProjectKey({ projectKey });
+  private customerBuilder: ByProjectKeyRequestBuilder;
+
+  constructor(apiInstance: Api) {
+    this.apiInstance = apiInstance;
+    const client = this.apiInstance.getClient();
+    if (!client) {
+      throw new Error('API client not initialized');
+    }
+    this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
   async login(user: CustomerSignin) {
     try {
       loaderState.getState().loader.show();
-      const data = await this.customerBuilder.login().post({ body: user }).execute();
-
+      const data = await this.customerBuilder.me().login().post({ body: user }).execute();
       if (data.statusCode === 200) {
         localStorage.setItem('isAuthorized', 'true');
         localStorage.setItem('email', user.email);
         localStorage.setItem('password', user.password);
-        apiInstance.createAuthenticatedSession(user);
+        new LocalStorageTokenCache().delete();
+        const newSession = this.apiInstance.createAuthenticatedSession({
+          email: user.email,
+          password: user.password,
+        });
+        this.apiInstance.setClient(newSession);
+        this.customerBuilder = newSession.withProjectKey({ projectKey });
+        this.customerBuilder.me().get().execute();
         authState.getState().setIsAuthorized(true);
         toastState.getState().toast.showSuccess('Welcome');
         return data;
