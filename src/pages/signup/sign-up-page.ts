@@ -409,6 +409,7 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
+      console.log(request);
       const response = await this.auth.register(request);
       if (response && response.statusCode === 201) {
         toastState
