@@ -7,7 +7,6 @@ import {
   TokenCache,
 } from '@commercetools/sdk-client-v2';
 import { LocalStorageTokenCache } from './tokenCache';
-import Auth from './auth';
 import { authState } from '@state/state';
 
 export const projectKey = import.meta.env.VITE_Project_key;
@@ -20,7 +19,7 @@ export const user = {
   password: password,
 };
 
-export class Api {
+class Api {
   private authUrl: string;
 
   private apiUrl: string;
@@ -37,6 +36,8 @@ export class Api {
 
   private tokenCache: TokenCache;
 
+  private apiInstance: ApiRoot;
+
   constructor() {
     this.authUrl = import.meta.env.VITE_Auth_url;
     this.apiUrl = import.meta.env.VITE_API_url;
@@ -48,7 +49,9 @@ export class Api {
       fetch,
     };
     this.tokenCache = new LocalStorageTokenCache();
-    this.clientBuilder = new ClientBuilder().withHttpMiddleware(this.httpMiddlewareOptions).withLoggerMiddleware();
+    this.clientBuilder = new ClientBuilder().withHttpMiddleware(this.httpMiddlewareOptions);
+    this.apiInstance = isAuthorized ? this.createAuthenticatedSession(user) : this.createAnonymousSession();
+    this.apiInstance.withProjectKey({ projectKey }).get().execute();
   }
 
   createAnonymousSession(): ApiRoot {
@@ -65,7 +68,9 @@ export class Api {
     };
     const client = this.clientBuilder.withAnonymousSessionFlow(options).withLoggerMiddleware().build();
     authState.getState().setIsAuthorized(false);
-    return createApiBuilderFromCtpClient(client);
+    const apiInstance = createApiBuilderFromCtpClient(client);
+    this.apiInstance = apiInstance;
+    return apiInstance;
   }
 
   createAuthenticatedSession(user: CustomerSignin): ApiRoot {
@@ -84,17 +89,20 @@ export class Api {
       fetch,
       tokenCache: this.tokenCache,
     };
-
     const client = this.clientBuilder.withPasswordFlow(passwordAuthMiddlewareOptions).withLoggerMiddleware().build();
     localStorage.setItem('isAuthorized', 'true');
     authState.getState().setIsAuthorized(true);
     return createApiBuilderFromCtpClient(client);
   }
+
+  setClient(newClient: ApiRoot) {
+    this.apiInstance = newClient;
+  }
+
+  getClient(): ApiRoot {
+    return this.apiInstance;
+  }
 }
 
 export const apiInstance = new Api();
-export const session = isAuthorized
-  ? apiInstance.createAuthenticatedSession(user)
-  : apiInstance.createAnonymousSession();
-export const auth = new Auth();
 export default Api;

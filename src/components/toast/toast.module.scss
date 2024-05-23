@@ -1,8 +1,8 @@
 .toast {
-  @apply absolute right-8 top-7 min-w-[250px]
+  @apply fixed right-8 top-7 min-w-[250px]
   max-w-[350px] translate-x-[calc(100%_+_40px)] transform overflow-hidden rounded-xl bg-bgBody
   p-3 shadow-card transition-all duration-500
-  ease-openToast;
+  ease-openToast z-[99];
 
   &.active {
     @apply translate-x-0;

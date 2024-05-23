@@ -17,10 +17,10 @@ import { validationCity } from '@utils/validation/city';
 import Checkbox from '@components/checkbox/checkbox';
 import Dropdown, { ItemDropdownTitle } from '@components/dropdown/dropdown';
 import { validationPostalCode } from '../../utils/validation/postalCode';
-import { auth } from '@api/api';
 import { RouterPages } from '@app/app';
 import Router from '@router/router';
 import { loaderState, toastState } from '@state/state';
+import { apiInstance } from '@api/api';
 
 type Address = {
   firstName: string;
@@ -123,7 +123,7 @@ export default class SignUpPage extends View {
     super(params);
 
     this.router = router;
-    this.auth = auth;
+    this.auth = new Auth(apiInstance);
 
     this.labelForm = new ElementCreator({
       tag: 'span',
@@ -409,7 +409,8 @@ export default class SignUpPage extends View {
           request.defaultBillingAddress = 1;
         }
       }
-      const response = await auth.register(request);
+      console.log(request);
+      const response = await this.auth.register(request);
       if (response && response.statusCode === 201) {
         toastState
           .getState()
