@@ -1,5 +1,5 @@
 .loaderWrapper {
-  @apply absolute left-0 top-0 -z-10 flex h-full w-full items-center justify-center bg-bgBackdrop opacity-0;
+  @apply fixed left-0 top-0 -z-10 flex min-h-full w-full items-center justify-center bg-bgBackdrop opacity-0;
 }
 
 .loaderWrapper.active {
