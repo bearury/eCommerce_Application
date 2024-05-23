@@ -7,9 +7,10 @@ import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
 import Image from '@components/image/image';
 import img from '/shopping-cart.png';
-// import img from '/logo.png';
 import { authState } from '@state/state';
 import { apiInstance, isAuthorized } from '@api/api';
+import BurgerButton from '@components/buttons/burger-button/burger-button';
+import burgerStyles from '@components/buttons/burger-button/burger-button.module.scss';
 
 export default class HeaderPages extends View {
   router: Router;
@@ -19,6 +20,12 @@ export default class HeaderPages extends View {
   logOutButton: HTMLElement;
 
   blockButton: HTMLElement;
+
+  burgerMenuButton: BurgerButton;
+
+  burgerMenuPopup: HTMLElement;
+
+  container: HTMLElement;
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
@@ -37,7 +44,20 @@ export default class HeaderPages extends View {
       textContent: '🔒 Logout',
     }).getElement();
 
-    this.blockButton = new ElementCreator({ tag: 'div', classNames: [styles.blockButton] }).getElement();
+    this.blockButton = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.blockButton, burgerStyles.blockButton],
+    }).getElement();
+
+    this.burgerMenuButton = new BurgerButton({ callbackBtn: this.togglePopup.bind(this) });
+
+    this.burgerMenuPopup = new ElementCreator({
+      tag: 'div',
+      classNames: [burgerStyles.burgerMenuPopup],
+      attribute: [{ type: 'data-state', value: 'closed' }],
+    }).getElement();
+
+    this.container = new ElementCreator({ tag: 'div', classNames: [styles.container] }).getElement();
 
     this.configureView();
     this.updateLogOutButton(!!isAuthorized);
@@ -48,7 +68,12 @@ export default class HeaderPages extends View {
 
   private configureView(): void {
     const currentElement: HTMLElement = this.getElement();
-    const container: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.container] }).getElement();
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 624 && this.blockButton.parentNode !== this.container) {
+        this.container.append(this.blockButton);
+      }
+    });
 
     const buttons: RouterPages[] = Object.values(RouterPages);
 
@@ -67,31 +92,13 @@ export default class HeaderPages extends View {
       this.blockButton.append(button.getElement());
     });
 
-    const burgerMenuBtn: HTMLElement = new ElementCreator({
-      tag: 'button',
-      classNames: [styles.burgerMenuBtn],
-      callback: [{ event: 'click', callback: this.openPopup.bind(this) }],
-    }).getElement();
-
-    const burgerLine1: ElementCreator = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.burgerLine, styles.burgerLine1],
-    });
-    const burgerLine2: ElementCreator = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.burgerLine, styles.burgerLine2],
-    });
-
-    burgerMenuBtn.append(burgerLine1.getElement(), burgerLine2.getElement());
-
-    const burgerMenuPopup: HTMLElement = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.burgerMenuPopup],
-    }).getElement();
-    burgerMenuPopup.append(this.blockButton.cloneNode(true));
-
-    container.append(image.getElement(), this.blockButton, burgerMenuBtn, burgerMenuPopup);
-    currentElement.append(container);
+    this.container.append(
+      image.getElement(),
+      this.blockButton,
+      this.burgerMenuButton.getElement(),
+      this.burgerMenuPopup
+    );
+    currentElement.append(this.container);
   }
 
   private updateLogOutButton(isAuthorized: boolean): void {
@@ -108,6 +115,8 @@ export default class HeaderPages extends View {
 
   private handlerClickButton(route: RouterPages): void {
     this.router.navigate(route);
+    this.burgerMenuButton.rotateLine();
+    this.closePopup();
   }
 
   private logOut() {
@@ -117,32 +126,28 @@ export default class HeaderPages extends View {
     this.handlerClickButton(RouterPages.main);
   }
 
-  private openPopup(e: Event) {
-    e.preventDefault();
-    const popup = Array.from(document.body.getElementsByClassName(`${styles.burgerMenuPopup}`));
-    const lines = Array.from(document.body.getElementsByClassName(`${styles.burgerLine}`));
-    popup?.map((el) => el.classList.toggle(`${styles.open}`));
-    lines.map((el) => el.classList.toggle(`${styles.active}`));
-    document.body.classList.toggle(`${styles.noscroll}`);
-
-    const links = Array.from(Array.from(document.body.getElementsByClassName(`${buttonStyles.button}`)));
-    links.forEach((link) => {
-      link.addEventListener('click', this.closeOnClick.bind(this));
-    });
+  private openPopup() {
+    this.burgerMenuPopup.removeAttribute('data-state');
+    this.container.removeChild(this.blockButton);
+    this.burgerMenuPopup.classList.add(`${burgerStyles.open}`);
+    this.burgerMenuPopup.append(this.blockButton);
+    document.body.classList.add(`${burgerStyles.noscroll}`);
   }
 
-  private closeOnClick(e: Event) {
-    // change later
-    const btn = e.target as HTMLElement;
-    console.log(btn.textContent);
-    if (btn.textContent === '🛒 Main') this.handlerClickButton(RouterPages.main);
-    if (btn.textContent === '🗝 SignIn') this.handlerClickButton(RouterPages.signin);
-    if (btn.textContent === '🔐 SignUp') this.handlerClickButton(RouterPages.signup);
+  private closePopup() {
+    this.burgerMenuPopup.setAttribute('data-state', 'closed');
+    this.container.append(this.blockButton);
+    this.burgerMenuPopup.classList.remove(`${burgerStyles.open}`);
+    document.body.classList.remove(`${burgerStyles.noscroll}`);
+  }
 
-    const popup = Array.from(document.body.getElementsByClassName(`${styles.burgerMenuPopup}`));
-    const lines = Array.from(document.body.getElementsByClassName(`${styles.burgerLine}`));
-    popup?.map((el) => el.classList.remove(`${styles.open}`));
-    lines.map((el) => el.classList.remove(`${styles.active}`));
-    document.body.classList.remove(`${styles.noscroll}`);
+  private togglePopup() {
+    this.burgerMenuButton.rotateLine();
+
+    if (this.burgerMenuPopup.hasAttribute('data-state')) {
+      this.openPopup();
+    } else {
+      this.closePopup();
+    }
   }
 }
