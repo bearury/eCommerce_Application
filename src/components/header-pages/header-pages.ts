@@ -117,8 +117,10 @@ export default class HeaderPages extends View {
 
   private handlerClickButton(route: RouterPages): void {
     this.router.navigate(route);
-    this.burgerMenuButton.rotateLine();
-    this.closePopup();
+    if (!this.burgerMenuPopup.hasAttribute('data-state')) {
+      this.burgerMenuButton.rotateLine();
+      this.closePopup();
+    }
   }
 
   private logOut() {

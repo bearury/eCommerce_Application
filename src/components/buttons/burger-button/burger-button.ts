@@ -32,8 +32,8 @@ export default class BurgerButton extends View {
   }
 
   public rotateLine() {
-    this.burgerLine1.classList.toggle(`${styles.active}`);
-    this.burgerLine2.classList.toggle(`${styles.active}`);
+    this.burgerLine1.classList.toggle(styles.active);
+    this.burgerLine2.classList.toggle(styles.active);
   }
 
   private configureView(): void {
