@@ -17,4 +17,10 @@ export class LocalStorageTokenCache implements TokenCache {
     localStorage.setItem('authTokenExpiration', tokenStore.expirationTime.toString());
     localStorage.setItem('refreshToken', tokenStore.refreshToken || '');
   }
+
+  delete(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authTokenExpiration');
+    localStorage.removeItem('refreshToken');
+  }
 }

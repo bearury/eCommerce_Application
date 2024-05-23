@@ -9,7 +9,7 @@ import Image from '@components/image/image';
 import img from '/shopping-cart.png';
 // import img from '/logo.png';
 import { authState } from '@state/state';
-import { apiInstance, isAuthorized } from '@api/api';
+import { apiInstance, isAuthorized, projectKey } from '@api/api';
 
 export default class HeaderPages extends View {
   router: Router;
@@ -113,7 +113,9 @@ export default class HeaderPages extends View {
   private logOut() {
     localStorage.clear();
     authState.getState().setIsAuthorized(false);
-    apiInstance.createAnonymousSession();
+    const newSession = apiInstance.createAnonymousSession();
+    apiInstance.setClient(newSession);
+    apiInstance.getClient().withProjectKey({ projectKey }).get().execute();
     this.handlerClickButton(RouterPages.main);
   }
 
