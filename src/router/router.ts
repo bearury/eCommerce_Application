@@ -33,7 +33,7 @@ export default class Router {
       this.handler.navigate(path);
     }
 
-    if (authState.getState().isAuthorized && route === RouterPages.signin) {
+    if (authState.getState().isAuthorized && (route === RouterPages.signin || route === RouterPages.signup)) {
       this.handler.navigate(RouterPages.main);
     }
   }

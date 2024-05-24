@@ -18,7 +18,7 @@ export default class HandlerRouter {
       const path: string = window.location.pathname.slice(1);
       const foundPath: RouterPages | null = getPath(path);
 
-      if (authState.getState().isAuthorized && path === RouterPages.signin) {
+      if (authState.getState().isAuthorized && (path === RouterPages.signin || path === RouterPages.signup)) {
         this.navigate(RouterPages.main);
         routerState.getState().setPage(RouterPages.main);
         return;
@@ -56,7 +56,7 @@ export default class HandlerRouter {
       this.callback(result);
     }
 
-    if (authState.getState().isAuthorized && event === RouterPages.signin) {
+    if (authState.getState().isAuthorized && (event === RouterPages.signin || event === RouterPages.signup)) {
       this.callback({ path: RouterPages.main, resource: '' });
       this.setHistory(RouterPages.main, NavigationDirection.forward);
       routerState.getState().setPage(RouterPages.main);
@@ -70,7 +70,10 @@ export default class HandlerRouter {
     const state = e.state || {};
     const direction = state.direction || NavigationDirection.backward;
 
-    if (authState.getState().isAuthorized && historyPath === RouterPages.signin) {
+    if (
+      authState.getState().isAuthorized &&
+      (historyPath === RouterPages.signin || historyPath === RouterPages.signup)
+    ) {
       if (direction === NavigationDirection.forward) {
         window.history.replaceState({ direction: NavigationDirection.backward }, '', `/${historyPath}`);
         window.history.go(-1);
