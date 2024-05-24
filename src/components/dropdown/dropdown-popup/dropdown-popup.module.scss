@@ -1,0 +1,22 @@
+.popup {
+  @apply absolute left-0 top-full z-10 hidden w-full
+  max-w-full rounded-bl rounded-br border border-bgHeader bg-bgBody p-1;
+
+  .menu {
+    @apply flex h-full flex-col gap-0 overflow-auto bg-bgBody;
+
+    .button {
+      @apply bg-transparent px-0 px-1 text-left text-lg text-textDark;
+
+      @media (any-hover: hover) and (pointer: fine) {
+        &:hover {
+          @apply bg-bgContainer text-white;
+        }
+      }
+    }
+  }
+}
+
+.popupActive {
+  @apply block border-t-0;
+}
