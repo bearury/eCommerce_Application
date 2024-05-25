@@ -15,6 +15,11 @@ export default class Router {
     this.handler = new HandlerRouter(this.urlChangedHandler.bind(this));
   }
 
+  public resourceNavigation(id: string): void {
+    this.handler.navigate(RouterPages.product, id);
+    routerState.getState().setPage(RouterPages.product);
+  }
+
   public redirectToNotFoundPage(): void {
     const notFoundPage = this.routes.find((item) => item.path === RouterPages.not_found);
     if (notFoundPage) {
