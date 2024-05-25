@@ -8,6 +8,7 @@ export enum RouterPages {
   main = 'main',
   products = 'products',
   product = 'product',
+  profile = 'profile',
   signup = 'signup',
   signin = 'signin',
   not_found = 'not_found',
@@ -81,6 +82,13 @@ export default class App {
         callback: async (resource: string): Promise<void> => {
           const { CardProductPage } = await import('@pages/index');
           this.setContent(RouterPages.product, new CardProductPage(resource));
+        },
+      },
+      {
+        path: `${RouterPages.profile}`,
+        callback: async (): Promise<void> => {
+          const { ProfilePage } = await import('@pages/index');
+          this.setContent(RouterPages.profile, new ProfilePage());
         },
       },
       {

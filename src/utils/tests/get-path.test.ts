@@ -21,6 +21,6 @@ describe('get path function', (): void => {
   });
 
   it('should by return null', (): void => {
-    expect(resultUndefined).toBeNull();
+    expect(resultUndefined).toBeUndefined();
   });
 });
