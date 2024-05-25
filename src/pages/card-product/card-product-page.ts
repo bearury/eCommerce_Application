@@ -16,6 +16,6 @@ export default class CardProductPage extends View {
   private configureView(resource: string): void {
     const cardProduct: HTMLElement = this.getElement();
 
-    cardProduct.textContent = `Card product ${resource}}`;
+    cardProduct.textContent = `Card product ID ----->  ${resource}`;
   }
 }
