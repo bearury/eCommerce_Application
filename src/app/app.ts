@@ -7,6 +7,7 @@ import Loader from '@components/loader/loader';
 export enum RouterPages {
   main = 'main',
   products = 'products',
+  product = 'product',
   signup = 'signup',
   signin = 'signin',
   not_found = 'not_found',
@@ -76,10 +77,10 @@ export default class App {
         },
       },
       {
-        path: `${RouterPages.products}/{id}`,
+        path: `${RouterPages.product}/{id}`,
         callback: async (resource: string): Promise<void> => {
           const { CardProductPage } = await import('@pages/index');
-          this.setContent(RouterPages.products, new CardProductPage(resource));
+          this.setContent(RouterPages.product, new CardProductPage(resource));
         },
       },
       {

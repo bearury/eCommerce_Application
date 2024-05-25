@@ -10,6 +10,8 @@ export default function getPath(currentPath: string): RouterPages | null {
       return RouterPages.signup;
     case RouterPages.products:
       return RouterPages.products;
+    case RouterPages.product:
+      return RouterPages.product;
     default:
       return null;
   }

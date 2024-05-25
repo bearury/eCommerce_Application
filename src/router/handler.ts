@@ -14,58 +14,27 @@ export default class HandlerRouter {
     this.callback = callback;
 
     window.addEventListener('popstate', (e: PopStateEvent) => this.handleRoutePopState.call(this, e));
-    window.addEventListener('load', () => {
-      const path: string = window.location.pathname.slice(1);
-      const foundPath: RouterPages | null = getPath(path);
-
-      if (authState.getState().isAuthorized && (path === RouterPages.signin || path === RouterPages.signup)) {
-        this.navigate(RouterPages.main);
-        routerState.getState().setPage(RouterPages.main);
-        return;
-      }
-
-      if (foundPath) {
-        this.navigate(foundPath);
-        routerState.getState().setPage(foundPath);
-        return;
-      }
-
-      if (!path) {
-        this.navigate(RouterPages.main);
-        routerState.getState().setPage(RouterPages.main);
-        return;
-      }
-
-      this.navigate(RouterPages.not_found);
-      routerState.getState().setPage(RouterPages.not_found);
-    });
+    window.addEventListener('load', this.renderPageOnLoad.bind(this));
   }
 
-  public navigate<T extends RouterPages>(event: T): void {
-    const arrPath = event.split('/');
-
-    if (arrPath.length === 1) {
-      this.callback({ path: arrPath[0], resource: '' });
-      this.setHistory(arrPath[0], NavigationDirection.forward);
-    } else {
-      const urlString = window.location.pathname.slice(1);
-      const result = { path: '', resource: '' };
-      [result.path = '', result.resource = ''] = urlString.split('/');
-
-      this.setHistory(event, NavigationDirection.forward);
-      this.callback(result);
-    }
-
+  public navigate<T extends RouterPages>(event: T, resource = ''): void {
     if (authState.getState().isAuthorized && (event === RouterPages.signin || event === RouterPages.signup)) {
       this.callback({ path: RouterPages.main, resource: '' });
       this.setHistory(RouterPages.main, NavigationDirection.forward);
       routerState.getState().setPage(RouterPages.main);
       return;
     }
+
+    const historyUrl = resource ? `${event}/${resource}` : event;
+
+    this.callback({ path: event, resource });
+    this.setHistory(historyUrl, NavigationDirection.forward);
   }
 
   private handleRoutePopState(e: PopStateEvent): void {
-    const historyPath = window.location.pathname.split('/')[1];
+    const path: string[] = window.location.pathname.slice(1).split('/');
+    const historyPath: RouterPages | null = getPath(path[0]);
+    const resource = path[1];
 
     const state = e.state || {};
     const direction = state.direction || NavigationDirection.backward;
@@ -75,17 +44,21 @@ export default class HandlerRouter {
       (historyPath === RouterPages.signin || historyPath === RouterPages.signup)
     ) {
       if (direction === NavigationDirection.forward) {
-        window.history.replaceState({ direction: NavigationDirection.backward }, '', `/${historyPath}`);
+        window.history.replaceState({ direction: NavigationDirection.backward }, '', `/${path.join('/')}`);
         window.history.go(-1);
       } else {
-        window.history.replaceState({ direction: NavigationDirection.forward }, '', `/${historyPath}`);
+        window.history.replaceState({ direction: NavigationDirection.forward }, '', `/${path.join('/')}`);
         window.history.go(1);
       }
       return;
     }
 
     if (historyPath) {
-      this.callback({ path: historyPath, resource: '' });
+      if (resource) {
+        this.callback({ path: historyPath, resource });
+      } else {
+        this.callback({ path: historyPath, resource: '' });
+      }
       const route = getPath(historyPath);
       if (route) routerState.getState().setPage(route);
     }
@@ -93,5 +66,36 @@ export default class HandlerRouter {
 
   private setHistory(url: string, direction: NavigationDirection): void {
     window.history.pushState({ direction }, '', `/${url}`);
+  }
+
+  private renderPageOnLoad(): void {
+    const path: string[] = window.location.pathname.slice(1).split('/');
+    const foundPath: RouterPages | null = getPath(path[0]);
+    const resource = path[1];
+
+    if (authState.getState().isAuthorized && (foundPath === RouterPages.signin || foundPath === RouterPages.signup)) {
+      this.navigate(RouterPages.main);
+      routerState.getState().setPage(RouterPages.main);
+      return;
+    }
+
+    if (foundPath === RouterPages.product && resource) {
+      this.navigate(RouterPages.product, resource);
+      routerState.getState().setPage(RouterPages.product);
+      return;
+    } else if (foundPath) {
+      this.navigate(foundPath);
+      routerState.getState().setPage(foundPath);
+      return;
+    }
+
+    if (!foundPath) {
+      this.navigate(RouterPages.main);
+      routerState.getState().setPage(RouterPages.main);
+      return;
+    }
+
+    this.navigate(RouterPages.not_found);
+    routerState.getState().setPage(RouterPages.not_found);
   }
 }
