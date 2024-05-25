@@ -31,7 +31,7 @@ export default class Router {
     const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
 
     if (!foundPage) return;
-    const path: RouterPages | null = getPath(foundPage.path);
+    const path: RouterPages | undefined = getPath(foundPage.path);
 
     if (path) {
       routerState.getState().setPage(path);

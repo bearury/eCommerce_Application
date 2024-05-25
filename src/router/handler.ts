@@ -33,7 +33,7 @@ export default class HandlerRouter {
 
   private handleRoutePopState(e: PopStateEvent): void {
     const path: string[] = window.location.pathname.slice(1).split('/');
-    const historyPath: RouterPages | null = getPath(path[0]);
+    const historyPath: RouterPages | undefined = getPath(path[0]);
     const resource = path[1];
 
     const state = e.state || {};
@@ -70,7 +70,7 @@ export default class HandlerRouter {
 
   private renderPageOnLoad(): void {
     const path: string[] = window.location.pathname.slice(1).split('/');
-    const foundPath: RouterPages | null = getPath(path[0]);
+    const foundPath: RouterPages | undefined = getPath(path[0]);
     const resource = path[1];
 
     if (authState.getState().isAuthorized && (foundPath === RouterPages.signin || foundPath === RouterPages.signup)) {
