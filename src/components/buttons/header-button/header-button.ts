@@ -18,11 +18,13 @@ export default class HeaderButton extends View {
         ? `🗝 SignIn`
         : buttonType === RouterPages.signup
           ? `🔐 SignUp`
-          : buttonType === RouterPages.main
-            ? `🛒 Main`
-            : buttonType === RouterPages.products
-              ? `🧰 Products`
-              : buttonType;
+          : buttonType === RouterPages.profile
+            ? `👤 Profile`
+            : buttonType === RouterPages.main
+              ? `🛒 Main`
+              : buttonType === RouterPages.products
+                ? `🧰 Products`
+                : buttonType;
 
     const params: ParamsElementCreator = {
       tag: 'button',
@@ -38,17 +40,19 @@ export default class HeaderButton extends View {
   }
 
   private handlerChangePage(): void {
+    const element: HTMLElement = this.getElement();
     const currentPage: RouterPages | null = routerState.getState().page;
-    if (currentPage && currentPage === this.type) {
-      this.getElement().classList.add(styles.active);
-    } else {
-      this.getElement().classList.remove(styles.active);
-    }
+    const isAuthorized: boolean = authState.getState().isAuthorized;
 
-    if (authState.getState().isAuthorized && (this.type === RouterPages.signup || this.type === RouterPages.signin)) {
-      this.getElement().classList.add(styles.hid);
+    element.classList.toggle(styles.active, currentPage === this.type);
+
+    if (
+      (isAuthorized && (this.type === RouterPages.signup || this.type === RouterPages.signin)) ||
+      (!isAuthorized && this.type === RouterPages.profile)
+    ) {
+      element.classList.add(styles.hid);
     } else {
-      this.getElement().classList.remove(styles.hid);
+      element.classList.remove(styles.hid);
     }
   }
 }
