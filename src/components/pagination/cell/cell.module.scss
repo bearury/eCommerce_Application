@@ -1,0 +1,8 @@
+.cell {
+  @apply flex h-6 w-6 items-center justify-center 
+  rounded border border-bgBackdrop bg-bgContainer text-textLight transition-all;
+
+  &:disabled {
+    @apply border-bgDisabled bg-bgBackdrop transition-all;
+  }
+}

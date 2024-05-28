@@ -8,6 +8,7 @@ import { loaderState, productsDataState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
+import Pagination from '@components/pagination/pagination';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -15,6 +16,10 @@ export default class ProductsPage extends View {
   container: HTMLElement;
 
   productsApi: ProductsApi;
+
+  pagination: Pagination;
+
+  cardsContainer: HTMLElement;
 
   //TODO временный инпут для проверки
   input: InputTextField;
@@ -31,6 +36,9 @@ export default class ProductsPage extends View {
 
     this.productsApi = new ProductsApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
+
+    this.pagination = new Pagination();
+    this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
 
     //TODO временный инпут для проверки
     this.input = new InputTextField({ name: 'Введите ID карточки', callback: this.handleInput });
@@ -59,7 +67,7 @@ export default class ProductsPage extends View {
 
     wrapperInput.append(this.input.getElement(), button.getElement(), button2.getElement());
 
-    this.container.append(wrapperInput);
+    this.container.append(wrapperInput, this.cardsContainer, this.pagination.getElement());
   }
 
   private handleClick(): void {
@@ -93,15 +101,11 @@ export default class ProductsPage extends View {
   private renderCards() {
     const data = productsDataState.getState().data;
 
-    const cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
-
     console.log('✅: ', data);
 
     data?.body.results.forEach((product) => {
       const cardProduct = new ProductsCard(product).getElement();
-      cardsContainer.append(cardProduct);
+      this.cardsContainer.append(cardProduct);
     });
-
-    this.container.append(cardsContainer);
   }
 }

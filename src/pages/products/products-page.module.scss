@@ -2,7 +2,7 @@
   @apply flex justify-between items-center;
 
   .cardContainer {
-    @apply grid gap-3 grid-cols-4 justify-between;
+    @apply grid gap-3 grid-cols-4 justify-between p-4 md:grid-cols-3 tablet:grid-cols-2 sm:grid-cols-1;
   }
 }
 

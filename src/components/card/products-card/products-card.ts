@@ -3,6 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './products-card.module.scss';
 import { Product, ProductVariant } from '@commercetools/platform-sdk';
 import Image from '@components/image/image';
+import noImage from '/no-image.jpg';
 
 export class ProductsCard extends View {
   constructor(data: Product) {
@@ -26,20 +27,23 @@ export class ProductsCard extends View {
 
     const stagedVariants: ProductVariant = data.masterData.staged.masterVariant;
 
+    console.log('🧬:', stagedVariants.images);
+
     const name = new ElementCreator({
       tag: 'span',
       classNames: [styles.name],
       textContent: textName,
     }).getElement();
 
+    let image: HTMLElement;
+
     if (stagedVariants && stagedVariants.images) {
-      const img = stagedVariants.images[1].url as string;
-
-      const image = new Image({ classNames: [styles.image], img }).getElement();
-
-      card.append(image);
+      const img = stagedVariants.images[0].url as string;
+      image = new Image({ classNames: [styles.image], img }).getElement();
+    } else {
+      image = new Image({ classNames: [styles.image], img: noImage }).getElement();
     }
 
-    card.append(name);
+    card.append(image, name);
   }
 }

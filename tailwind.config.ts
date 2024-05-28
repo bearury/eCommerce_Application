@@ -56,7 +56,7 @@ export default {
       lg: '1280px',
       md: { max: '768px' },
       tablet: { max: '640px' },
-      sm: '440px',
+      sm: {max: '440px'},
       min: '120px',
     },
   },

@@ -23,7 +23,7 @@ class ProductsApi {
   async get(): Promise<ClientResponse<ProductPagedQueryResponse>> {
     return this.customerBuilder
       .products()
-      .get({ queryArgs: { limit: 10, offset: 100 } })
+      .get({ queryArgs: { limit: 10, offset: 10 } })
       .execute();
   }
 

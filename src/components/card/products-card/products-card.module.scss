@@ -3,5 +3,9 @@
 
   .image {
     @apply w-full;
+
+    img {
+      @apply w-full h-52;
+    }
   }
 }
