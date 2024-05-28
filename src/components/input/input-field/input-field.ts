@@ -26,7 +26,7 @@ export default class InputField extends View {
   constructor({ name, type, callback, disabled = false, additionalClasses = [] }: InputFiledProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [...styles.inputItem, ...additionalClasses],
+      classNames: [styles.inputItem, ...additionalClasses],
     };
     super(params);
     const attributes = [

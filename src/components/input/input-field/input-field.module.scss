@@ -53,7 +53,7 @@
 
   .input {
     @apply block h-9 w-full border border-solid
-    border-textAccent bg-transparent px-4 outline-none
+    border-textAccent bg-transparent px-4 text-textDark outline-none
     transition-all;
   }
 

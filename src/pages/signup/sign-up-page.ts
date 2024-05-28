@@ -41,6 +41,8 @@ type CustomerDraft = {
   addresses: Address[];
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
+  shippingAddresses?: number[];
+  billingAddresses?: number[];
 };
 
 export default class SignUpPage extends View {
@@ -388,6 +390,7 @@ export default class SignUpPage extends View {
             postalCode: this.postalCodeInput.getValue(),
           },
         ],
+        shippingAddresses: [0],
       };
       if (this.setDefaultAddress.getStatus()) {
         request.defaultShippingAddress = 0;
@@ -405,11 +408,11 @@ export default class SignUpPage extends View {
           city: userCity,
           postalCode: userPostalCode,
         });
+        request.billingAddresses = [1];
         if (this.setDefaultBillingAddress.getStatus()) {
           request.defaultBillingAddress = 1;
         }
       }
-      console.log(request);
       const response = await this.auth.register(request);
       if (response && response.statusCode === 201) {
         toastState
