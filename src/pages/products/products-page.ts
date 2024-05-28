@@ -3,7 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
 import Container from '@components/container/container';
-import InputTextField from '@components/input/input-field/input-password-field/input-text-field.ts';
+import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
 
 export default class ProductsPage extends View {
   router: Router;

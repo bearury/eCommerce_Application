@@ -6,6 +6,8 @@ export interface InputFiledProps {
   name: string;
   type: InputFieldType;
   callback: () => void;
+  disabled?: boolean;
+  additionalClasses?: string[];
 }
 
 export const enum InputFieldType {
@@ -21,23 +23,26 @@ export default class InputField extends View {
 
   error: ElementCreator;
 
-  constructor({ name, type, callback }: InputFiledProps) {
+  constructor({ name, type, callback, disabled = false, additionalClasses = [] }: InputFiledProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [styles.inputItem],
+      classNames: [...styles.inputItem, ...additionalClasses],
     };
     super(params);
-
+    const attributes = [
+      { type: 'id', value: name },
+      { type: 'autocomplete', value: 'off' },
+      { type: 'required', value: name },
+      { type: 'type', value: type },
+    ];
+    if (disabled) {
+      attributes.push({ type: 'disabled', value: 'disabled' });
+    }
     this.input = new ElementCreator({
       tag: 'input',
       classNames: [styles.input],
       callback: [{ event: 'input', callback }],
-      attribute: [
-        { type: 'id', value: name },
-        { type: 'autocomplete', value: 'off' },
-        { type: 'required', value: name },
-        { type: 'type', value: type },
-      ],
+      attribute: attributes,
     });
     this.label = new ElementCreator({
       tag: 'label',
@@ -96,5 +101,10 @@ export default class InputField extends View {
 
   public clearErrors() {
     this.setErrors([]);
+  }
+
+  public setValue(value: string): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.value = value;
   }
 }

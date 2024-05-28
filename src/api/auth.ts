@@ -24,6 +24,7 @@ class Auth {
       const data = await this.customerBuilder.me().login().post({ body: user }).execute();
       if (data.statusCode === 200) {
         localStorage.setItem('isAuthorized', 'true');
+        localStorage.setItem('customerID', data.body.customer.id);
         localStorage.setItem('email', user.email);
         localStorage.setItem('password', user.password);
         new LocalStorageTokenCache().delete();
