@@ -4,10 +4,9 @@ import styles from './input-field.module.scss';
 
 export interface InputFiledProps {
   name: string;
-  type: InputFieldType;
   callback: () => void;
-  disabled?: boolean;
-  additionalClasses?: string[];
+  attributes?: { type: string; value: string }[];
+  additionalClassNames?: string[];
 }
 
 export const enum InputFieldType {
@@ -23,21 +22,12 @@ export default class InputField extends View {
 
   error: ElementCreator;
 
-  constructor({ name, type, callback, disabled = false, additionalClasses = [] }: InputFiledProps) {
+  constructor({ name, callback, attributes, additionalClassNames = [] }: InputFiledProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [styles.inputItem, ...additionalClasses],
+      classNames: [styles.inputItem, ...additionalClassNames],
     };
     super(params);
-    const attributes = [
-      { type: 'id', value: name },
-      { type: 'autocomplete', value: 'off' },
-      { type: 'required', value: name },
-      { type: 'type', value: type },
-    ];
-    if (disabled) {
-      attributes.push({ type: 'disabled', value: 'disabled' });
-    }
     this.input = new ElementCreator({
       tag: 'input',
       classNames: [styles.input],

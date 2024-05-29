@@ -153,7 +153,11 @@ export default class SignUpPage extends View {
     this.isValidBillingPostalCode = false;
 
     this.emailInput = new InputTextField({ name: 'email', callback: this.validateEmail.bind(this) });
-    this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
+    this.passwordInput = new InputPasswordField({
+      name: 'password',
+      callback: this.validatePassword.bind(this),
+      attributes: [{ type: 'type', value: 'password' }],
+    });
 
     this.firstNameInput = new InputTextField({ name: 'first name', callback: this.validateName.bind(this) });
     this.lastNameInput = new InputTextField({ name: 'last name', callback: this.validateLastName.bind(this) });
@@ -161,6 +165,7 @@ export default class SignUpPage extends View {
     this.dateOfBirthInput = new InputDateField({
       name: 'Date of birth',
       callback: this.validateDateOfBirth.bind(this),
+      attributes: [{ type: 'type', value: 'date' }],
     });
 
     this.streetNameInput = new InputTextField({

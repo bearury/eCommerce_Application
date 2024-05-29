@@ -1,4 +1,4 @@
-import InputField, { InputFieldType, InputFiledProps } from '@components/input/input-field/input-field';
+import InputField, { InputFiledProps } from '@components/input/input-field/input-field';
 import { ElementCreator } from '@utils/element-creator.ts';
 import { svgHtmlEye } from '@components/svg/eye';
 import styles from './input-password-field.module.scss';
@@ -6,8 +6,8 @@ import styles from './input-password-field.module.scss';
 type InputPasswordFieldProps = Omit<InputFiledProps, 'type'>;
 
 export default class InputPasswordField extends InputField {
-  constructor({ name, callback }: InputPasswordFieldProps) {
-    super({ name, type: InputFieldType.password, callback });
+  constructor({ name, callback, attributes }: InputPasswordFieldProps) {
+    super({ name, callback, attributes });
 
     this.renderButton();
   }
