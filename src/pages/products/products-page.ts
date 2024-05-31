@@ -2,7 +2,6 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
-import Container from '@components/container/container';
 import { loaderState, productsDataState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
@@ -12,8 +11,6 @@ import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetoo
 
 export default class ProductsPage extends View {
   router: Router;
-
-  container: HTMLElement;
 
   productsApi: ProductsApi;
 
@@ -28,8 +25,6 @@ export default class ProductsPage extends View {
     };
     super(params);
     this.router = router;
-    this.container = Container.get();
-    this.getElement().append(this.container);
 
     this.productsApi = new ProductsApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
@@ -42,7 +37,7 @@ export default class ProductsPage extends View {
   }
 
   private configureView(): void {
-    this.container.append(this.cardsContainer, this.pagination.getElement());
+    this.getElement().append(this.cardsContainer, this.pagination.getElement());
   }
 
   private async getProductApi(page: number = 1): Promise<void> {

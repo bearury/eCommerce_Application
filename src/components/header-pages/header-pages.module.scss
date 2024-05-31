@@ -1,5 +1,5 @@
 .header {
-  @apply w-full bg-bgHeader px-3;
+  @apply w-full bg-bgHeader px-3 fixed z-10;
 
   .container {
     @apply m-auto flex max-w-screen-lg items-center justify-between gap-2 p-3;
