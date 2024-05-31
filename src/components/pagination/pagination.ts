@@ -2,7 +2,7 @@ import View from '@utils/view';
 import { ParamsElementCreator } from '@utils/element-creator';
 import styles from './pagination.module.scss';
 import Cell from '@components/pagination/cell/cell';
-import { ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import MissingCell from '@components/pagination/missing-cell/missing-cell';
 
 export const enum CellIconType {
@@ -26,19 +26,19 @@ export default class Pagination extends View {
     this.cells = [] as Cell[];
   }
 
-  public setParams(body: ProductPagedQueryResponse): void {
+  public setParams(body: ProductProjectionPagedSearchResponse): void {
     this.getElement().replaceChildren();
     this.configureView(body);
   }
 
-  private configureView(body: ProductPagedQueryResponse): void {
+  private configureView(body: ProductProjectionPagedSearchResponse): void {
     const { offset, total, limit } = body;
 
     if (!total || total < 12) return;
 
-    const countPages: number = Math.floor(total / limit);
+    const countPages: number = Math.ceil(total / limit);
     const activePage: number = offset / limit;
-    const arrPage: number[] = Array.from({ length: countPages }, (_, i) => i + 1);
+    const arrPage: number[] = Array.from({ length: countPages - 1 }, (_, i) => i + 1);
     const step = 3;
 
     const paginationElement: HTMLElement = this.getElement();
@@ -101,7 +101,7 @@ export default class Pagination extends View {
       callback: this.handleClickCell.bind(this),
     });
 
-    if (activePage === countPages) {
+    if (activePage === countPages - 1) {
       cellRight.setActive();
     } else {
       cellRight.removeActive();
