@@ -7,6 +7,7 @@ import Image from '@components/image/image';
 import { loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
+import noImage from '/noImage.png';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -64,7 +65,7 @@ export default class CardProductPage extends View {
           const desc = data.body.masterData.current.description;
           this.description.textContent = desc ? desc[locale] : '0';
           const imgArray = data.body.masterData.staged.masterVariant.images;
-          const img = imgArray ? imgArray[0].url : '0';
+          const img = imgArray ? imgArray[0].url : noImage;
           const image: Image = new Image({ classNames: [styles.img], img });
           this.imgBlock.append(image.getElement());
         })
