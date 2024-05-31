@@ -8,7 +8,7 @@
 }
 
 .wrapper.loaded .img {
-  @apply opacity-100;
+  @apply opacity-100 relative;
   transition: opacity .7s ease, transform .3s linear;
 }
 
