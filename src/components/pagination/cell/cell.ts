@@ -35,7 +35,7 @@ export default class Cell extends View {
     this.getElement().removeAttribute('disabled');
   }
 
-  public getValue() {
+  public getValue(): string {
     return this.value;
   }
 }

@@ -21,7 +21,7 @@ class ProductsApi {
   }
 
   async get(page: number): Promise<ClientResponse<ProductPagedQueryResponse>> {
-    const countProducts = 10;
+    const countProducts = 12;
     return this.customerBuilder
       .products()
       .get({ queryArgs: { limit: countProducts, offset: page * countProducts } })

@@ -10,6 +10,8 @@ export default class MissingCell extends View {
       textContent: '...',
     };
     super(params);
+
+    this.hide();
   }
 
   public hide(): void {

@@ -48,12 +48,16 @@ const authState = createStore(
 interface ProductsDataState {
   data: ClientResponse<ProductPagedQueryResponse> | null;
   setData: (data: ClientResponse<ProductPagedQueryResponse>) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
 }
 
 const productsDataState = createStore(
   devtools<ProductsDataState>((set) => ({
     data: null,
+    currentPage: 1,
     setData: (data: ClientResponse<ProductPagedQueryResponse>) => set(() => ({ data })),
+    setCurrentPage: (currentPage: number) => set(() => ({ currentPage })),
   }))
 );
 

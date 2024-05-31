@@ -1,3 +1,7 @@
 .cell {
-  @apply font-bold;
+  @apply font-bold text-textDark;
+
+  &.hide {
+    @apply hidden;
+  }
 }

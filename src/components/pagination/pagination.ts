@@ -3,7 +3,12 @@ import { ParamsElementCreator } from '@utils/element-creator';
 import styles from './pagination.module.scss';
 import Cell from '@components/pagination/cell/cell';
 import { ProductPagedQueryResponse } from '@commercetools/platform-sdk';
-import MissingCell from '@components/pagination/missing-cell/missing-cell.ts';
+import MissingCell from '@components/pagination/missing-cell/missing-cell';
+
+export const enum CellIconType {
+  left = '\u25C0',
+  right = '\u25BA',
+}
 
 export default class Pagination extends View {
   cells: Cell[];
@@ -29,7 +34,7 @@ export default class Pagination extends View {
   private configureView(body: ProductPagedQueryResponse): void {
     const { offset, total, limit } = body;
 
-    if (!total || total < 10) return;
+    if (!total || total < 12) return;
 
     const countPages: number = Math.floor(total / limit);
     const activePage: number = offset / limit;
@@ -38,10 +43,13 @@ export default class Pagination extends View {
 
     const paginationElement: HTMLElement = this.getElement();
 
-    const leftMissingCell = new MissingCell().getElement();
+    this.cells = [];
+
+    const leftMissingCell: MissingCell = new MissingCell();
+    const rightMissingCell: MissingCell = new MissingCell();
 
     const cellLeft: Cell = new Cell({
-      numberPage: '\u25C0',
+      numberPage: CellIconType.left,
       callback: this.handleClickCell.bind(this),
     });
 
@@ -61,7 +69,7 @@ export default class Pagination extends View {
         cell.removeActive();
       }
 
-      if (index < activePage - step && index !== 0) {
+      if ((index < activePage - step && index !== 0) || (index > activePage + 1 && index !== arrPage.length - 1)) {
         cell.hide();
       } else {
         cell.show();
@@ -70,16 +78,26 @@ export default class Pagination extends View {
       this.cells.push(cell);
 
       paginationElement.append(cell.getElement());
+
+      if (arrPage.length > step && index === 0) paginationElement.append(leftMissingCell.getElement());
+      if (arrPage.length > step && index === arrPage.length - 2)
+        paginationElement.append(rightMissingCell.getElement());
     });
 
-    if (activePage > step) {
-      this.cells[1].getElement().after(leftMissingCell);
+    if (activePage - 1 > step) {
+      leftMissingCell.show();
+    } else {
+      leftMissingCell.hide();
+    }
 
-      console.log('🆘: ', this.cells[0]);
+    if (activePage < arrPage.length - step) {
+      rightMissingCell.show();
+    } else {
+      rightMissingCell.hide();
     }
 
     const cellRight: Cell = new Cell({
-      numberPage: '\u25BA',
+      numberPage: CellIconType.right,
       callback: this.handleClickCell.bind(this),
     });
 
