@@ -1,3 +1,19 @@
 .cardProduct {
-  @apply p-2 border border-bgHeader rounded;
+  @apply my-24 flex items-center justify-center gap-12 p-4 tablet:flex-col;
+
+  .infoBlock {
+    @apply max-w-96;
+
+    .name {
+      @apply mb-5 text-center text-5xl font-bold;
+    }
+
+    .description {
+      @apply indent-2 font-extralight;
+    }
+  }
+
+  .imgBlock {
+    @apply max-w-96;
+  }
 }

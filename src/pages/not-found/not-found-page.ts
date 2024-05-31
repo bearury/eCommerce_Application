@@ -25,7 +25,7 @@ export default class NotFoundPage extends View {
     const subtitle = new ElementCreator({
       tag: 'div',
       classNames: [styles.subtitle],
-      textContent: 'Page no fount',
+      textContent: 'Page not fount',
     });
     const title: HTMLElement = new ElementCreator({
       tag: 'div',
