@@ -20,10 +20,11 @@ class ProductsApi {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async get(): Promise<ClientResponse<ProductPagedQueryResponse>> {
+  async get(page: number): Promise<ClientResponse<ProductPagedQueryResponse>> {
+    const countProducts = 10;
     return this.customerBuilder
       .products()
-      .get({ queryArgs: { limit: 10, offset: 10 } })
+      .get({ queryArgs: { limit: countProducts, offset: page * countProducts } })
       .execute();
   }
 

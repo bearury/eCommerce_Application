@@ -17,7 +17,7 @@ export class ProductsCard extends View {
   }
 
   private configureView(data: Product): void {
-    console.log('🍁: ', data.masterData.current.variants);
+    // console.log('🍁: ', data.masterData.current.variants);
 
     const card: HTMLElement = this.getElement();
 
@@ -27,7 +27,7 @@ export class ProductsCard extends View {
 
     const stagedVariants: ProductVariant = data.masterData.staged.masterVariant;
 
-    console.log('🧬:', stagedVariants.images);
+    // console.log('🧬:', stagedVariants.images);
 
     const name = new ElementCreator({
       tag: 'span',

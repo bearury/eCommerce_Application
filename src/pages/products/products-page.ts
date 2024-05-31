@@ -9,6 +9,7 @@ import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination from '@components/pagination/pagination';
+import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -37,7 +38,7 @@ export default class ProductsPage extends View {
     this.productsApi = new ProductsApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
 
-    this.pagination = new Pagination();
+    this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
 
     //TODO временный инпут для проверки
@@ -62,7 +63,7 @@ export default class ProductsPage extends View {
       tag: 'button',
       textContent: 'Get products',
       classNames: [styles.button],
-      callback: [{ event: 'click', callback: this.handleClick2.bind(this) }],
+      callback: [{ event: 'click', callback: () => this.handleClick2.call(this, 1) }],
     });
 
     wrapperInput.append(this.input.getElement(), button.getElement(), button2.getElement());
@@ -77,10 +78,11 @@ export default class ProductsPage extends View {
     }
   }
 
-  private async handleClick2(): Promise<void> {
+  private async handleClick2(page: number = 1): Promise<void> {
     loaderState.getState().loader.show();
+
     await this.productsApi
-      .get()
+      .get(page)
       .then((data) => {
         productsDataState.getState().setData(data);
       })
@@ -98,14 +100,32 @@ export default class ProductsPage extends View {
     // this.router.resourceNavigation('2');
   }
 
-  private renderCards() {
-    const data = productsDataState.getState().data;
+  private renderCards(): void {
+    const data: ClientResponse<ProductPagedQueryResponse> | null = productsDataState.getState().data;
 
     console.log('✅: ', data);
 
-    data?.body.results.forEach((product) => {
-      const cardProduct = new ProductsCard(product).getElement();
-      this.cardsContainer.append(cardProduct);
-    });
+    this.cardsContainer.replaceChildren();
+
+    if (data) {
+      this.pagination.setParams(data.body);
+      data.body.results.forEach((product: Product): void => {
+        const cardProduct: HTMLElement = new ProductsCard(product).getElement();
+        this.cardsContainer.append(cardProduct);
+      });
+    }
+  }
+
+  private handleChangePage(page: string): void {
+    const offset = productsDataState.getState().data?.body.offset as number;
+    const activePage = offset / 10;
+
+    if (page === '\u25BA') {
+      this.handleClick2(Number(activePage + 1));
+    } else if (page === '\u25C0') {
+      this.handleClick2(Number(activePage - 1));
+    } else {
+      this.handleClick2(Number(page));
+    }
   }
 }

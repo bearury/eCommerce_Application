@@ -5,9 +5,9 @@ import styles from './cell.module.scss';
 export default class Cell extends View {
   page: HTMLElement;
 
-  value: number;
+  value: string;
 
-  constructor({ numberPage, callback }: { numberPage: number; callback: (params: number) => void }) {
+  constructor({ numberPage, callback }: { numberPage: string; callback: (params: string) => void }) {
     const params: ParamsElementCreator = {
       tag: 'button',
       classNames: [styles.cell],
@@ -17,6 +17,14 @@ export default class Cell extends View {
     this.value = numberPage;
     this.page = new ElementCreator({ tag: 'span', textContent: numberPage.toString() }).getElement();
     this.getElement().append(this.page);
+  }
+
+  public hide(): void {
+    this.getElement().classList.add(styles.hide);
+  }
+
+  public show(): void {
+    this.getElement().classList.remove(styles.hide);
   }
 
   public setActive(): void {
