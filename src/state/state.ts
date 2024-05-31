@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
 import Loader from '@components/loader/loader';
+import { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 
 interface RouterState {
   page: RouterPages | null;
@@ -43,4 +44,21 @@ const authState = createStore(
     setIsAuthorized: (isAuthorized: boolean) => set(() => ({ isAuthorized })),
   }))
 );
-export { routerState, toastState, loaderState, authState };
+
+interface ProductsDataState {
+  data: ClientResponse<ProductPagedQueryResponse> | null;
+  setData: (data: ClientResponse<ProductPagedQueryResponse>) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
+}
+
+const productsDataState = createStore(
+  devtools<ProductsDataState>((set) => ({
+    data: null,
+    currentPage: 1,
+    setData: (data: ClientResponse<ProductPagedQueryResponse>) => set(() => ({ data })),
+    setCurrentPage: (currentPage: number) => set(() => ({ currentPage })),
+  }))
+);
+
+export { routerState, toastState, loaderState, authState, productsDataState };

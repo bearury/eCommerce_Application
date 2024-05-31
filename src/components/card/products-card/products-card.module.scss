@@ -1,0 +1,26 @@
+.card {
+  @apply flex flex-col border border-bgHeader rounded p-3 hover:shadow-button cursor-pointer transition-all;
+
+  .image {
+    @apply w-auto h-[200px];
+  }
+
+  .pricesWrapper {
+    @apply flex gap-3;
+  }
+
+  .name {
+    @apply font-bold mt-4;
+  }
+
+  .price {
+    @apply font-black text-lime-900;
+    &:first-child {
+      @apply text-green-700;
+    }
+  }
+
+  .description {
+    @apply font-light text-sm text-textDark line-clamp-3;
+  }
+}
