@@ -1,8 +1,8 @@
 .card {
-  @apply flex flex-col border border-bgHeader rounded p-3 hover:shadow-button cursor-pointer transition-all;
+  @apply flex cursor-pointer flex-col rounded border border-bgHeader p-3 transition-all hover:shadow-button;
 
   .image {
-    @apply w-auto h-[200px];
+    @apply h-[200px] w-auto;
   }
 
   .pricesWrapper {
@@ -10,7 +10,7 @@
   }
 
   .name {
-    @apply font-bold mt-4;
+    @apply mt-4 font-bold;
   }
 
   .price {
@@ -21,6 +21,6 @@
   }
 
   .description {
-    @apply font-light text-sm text-textDark line-clamp-3;
+    @apply line-clamp-3 text-sm font-light text-textDark;
   }
 }

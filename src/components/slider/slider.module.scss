@@ -1,0 +1,40 @@
+.slider {
+  @apply relative m-auto flex flex-col items-center justify-center;
+}
+.slidesBlock {
+  @apply flex;
+
+  .img {
+    @apply h-full w-full object-contain;
+  }
+}
+
+.navigation {
+  @apply flex items-center justify-center text-black tablet:hidden;
+
+  .nextBtn,
+  .prevBtn {
+    top: 37%;
+    @apply absolute z-10 flex h-8 w-8 translate-y-2/4 cursor-pointer items-center justify-center rounded-full text-2xl font-bold hover:bg-bgBackdrop;
+  }
+
+  .nextBtn {
+    @apply right-2.5;
+  }
+
+  .prevBtn {
+    @apply left-2.5;
+  }
+}
+
+.pagination {
+  @apply mt-5 flex gap-1;
+
+  .dot {
+    @apply h-1.5 w-6 rounded-xl border border-bgContainer bg-bgBody;
+
+    &.active {
+      @apply bg-bgContainer;
+    }
+  }
+}

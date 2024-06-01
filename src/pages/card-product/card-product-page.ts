@@ -3,11 +3,12 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
 import { apiInstance } from '@api/api';
-import Image from '@components/image/image';
+// import Image from '@components/image/image';
 import { loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
-import noImage from '/noImage.png';
+// import noImage from '/noImage.png';
+import { Slider } from '@components/slider/slider';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -65,9 +66,16 @@ export default class CardProductPage extends View {
           const desc = data.body.masterData.current.description;
           this.description.textContent = desc ? desc[locale] : '0';
           const imgArray = data.body.masterData.staged.masterVariant.images;
-          const img = imgArray ? imgArray[0].url : noImage;
-          const image: Image = new Image({ classNames: [styles.img], img });
-          this.imgBlock.append(image.getElement());
+          const imgUrlArray: string[] = [];
+          if (imgArray) {
+            imgArray.forEach((elem) => {
+              imgUrlArray.push(elem.url);
+            });
+          }
+          const slider = new Slider(imgUrlArray);
+          slider.updateSlider();
+
+          this.imgBlock.append(slider.getElement());
         })
         .catch(() => {
           toastState.getState().toast.showError('This product was not found');
