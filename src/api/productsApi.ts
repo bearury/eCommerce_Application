@@ -1,10 +1,5 @@
 import Api, { projectKey } from '@api/api.ts';
-import {
-  ByProjectKeyRequestBuilder,
-  ClientResponse,
-  Product,
-  ProductPagedQueryResponse,
-} from '@commercetools/platform-sdk';
+import { ByProjectKeyRequestBuilder, ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 
 class ProductsApi {
   private apiInstance: Api;
@@ -28,8 +23,13 @@ class ProductsApi {
       .execute();
   }
 
-  async getOne(id: string): Promise<ClientResponse<Product>> {
-    return this.customerBuilder.products().withId({ ID: id }).get().execute();
+  async getAttr() {
+    return this.customerBuilder
+      .products()
+      .get({
+        queryArgs: {},
+      })
+      .execute();
   }
 }
 

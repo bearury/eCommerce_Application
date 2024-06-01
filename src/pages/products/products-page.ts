@@ -8,6 +8,7 @@ import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import Aside from '@pages/products/aside/aside.ts';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -37,7 +38,12 @@ export default class ProductsPage extends View {
   }
 
   private configureView(): void {
-    this.getElement().append(this.cardsContainer, this.pagination.getElement());
+    const aside = new Aside().getElement();
+    const content = new ElementCreator({
+      tag: 'div',
+      children: [this.cardsContainer, this.pagination.getElement()],
+    }).getElement();
+    this.getElement().append(aside, content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
@@ -61,6 +67,8 @@ export default class ProductsPage extends View {
   private renderCards(): void {
     const data: ClientResponse<ProductPagedQueryResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
+
+    console.log('[71] 🎯: ', data);
 
     if (data) {
       this.pagination.setParams(data.body);
