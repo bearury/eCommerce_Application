@@ -5,14 +5,14 @@
     @apply relative max-h-0 overflow-hidden opacity-0 transition-all;
 
     &.active {
-      @apply mt-2 max-h-32 rounded border border-borderLight p-2 opacity-100;
+      @apply mt-2 max-h-fit rounded border border-borderLight p-2 opacity-100;
       transition:
         opacity 200ms linear,
         max-height 500ms linear;
     }
   }
 
-  .sendButton {
-    @apply mt-3 rounded border border-borderLight bg-bgContainer px-4 py-2 text-bgBody transition-all hover:bg-bgDisabled hover:text-textAccent;
+  .rangeWrapper {
+    @apply mt-3 flex w-full flex-col gap-4 rounded border border-borderLight p-4;
   }
 }

@@ -19,7 +19,7 @@ class ProductsApi {
     const countProducts = 12;
     return this.customerBuilder
       .products()
-      .get({ queryArgs: { limit: countProducts, offset: page * countProducts } })
+      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page : page * countProducts } })
       .execute();
   }
 

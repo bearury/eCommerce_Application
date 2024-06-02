@@ -2,6 +2,7 @@
   margin-top: 4px;
   height: 8px;
   border-radius: 4px;
+  width: 100%;
 }
 
 .range,
@@ -10,11 +11,7 @@
 }
 
 .range .noUi-tooltip {
-  @apply hidden h-7 w-7 items-center justify-center rounded-full text-center text-sm text-textAccent;
-}
-
-.range .noUi-active .noUi-tooltip {
-  @apply flex;
+  @apply -bottom-1 flex h-7 w-fit items-center justify-center rounded-full text-center text-sm text-textAccent;
 }
 
 /*Hide markers on slider handles */

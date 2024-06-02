@@ -1,51 +1,48 @@
 import View from '@utils/view.ts';
-import { ParamsElementCreator } from '@utils/element-creator.ts';
-import noUiSlider from 'nouislider';
-import 'nouislider/dist/nouislider.css';
-import './range.css';
+import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
+import styles from './range.module.scss';
+import RangeElement, { RangeElementProps } from '@components/range/range-element/range-element';
+import Checkbox from '@components/checkbox/checkbox';
 
-export default class RangeComponent extends View {
-  value: { min: number; max: number };
-
-  constructor() {
+export class RangeComponent extends View {
+  constructor(label: string, props: RangeElementProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: ['range'],
+      classNames: [styles.range],
     };
     super(params);
-    this.value = { min: 10, max: 50 };
-    this.configureView();
+    this.configureView(label, props);
   }
 
-  public getValue(): { min: number; max: number } {
-    return this.value;
+  private configureView(labelValue: string, props: RangeElementProps): void {
+    const rangeComponent: HTMLElement = new RangeElement(props).getElement();
+
+    const checkbox = new Checkbox({
+      label: 'Apply filter',
+      callback: this.handleCheckboxClick.bind(this),
+    }).getElement();
+
+    const checkboxBlock = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.checkboxBlock],
+      children: [checkbox],
+    }).getElement();
+
+    const blockLabel = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.blockLabel],
+      children: [checkboxBlock, rangeComponent],
+    }).getElement();
+
+    const label: HTMLElement = new ElementCreator({
+      tag: 'label',
+      classNames: [styles.label],
+      textContent: labelValue,
+      children: [blockLabel],
+    }).getElement();
+
+    this.getElement().append(label);
   }
 
-  private configureView(): void {
-    const range = this.getElement() as HTMLInputElement;
-    const slider = noUiSlider.create(range, {
-      start: [this.value.min, this.value.max],
-      connect: true,
-      tooltips: [
-        {
-          to: function (value: number) {
-            return Math.round(value);
-          },
-        },
-        {
-          to: function (value: number) {
-            return Math.round(value);
-          },
-        },
-      ],
-      range: {
-        min: 0,
-        max: 100,
-      },
-    });
-
-    slider.on('update', function (values) {
-      console.log('🍁: ', Math.round(Number(values[0])));
-    });
-  }
+  private handleCheckboxClick(): void {}
 }

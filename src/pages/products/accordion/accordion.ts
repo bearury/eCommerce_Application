@@ -1,14 +1,17 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './accordion.module.scss';
-import Dropdown from '@components/dropdown/dropdown';
 import AccordionButton from '@components/buttons/accordion-button/accordion-button';
-import RangeComponent from '@components/range/range';
+import { ButtonsGroup } from '@pages/products/accordion/buttons-group/buttons-group';
+import { RangeComponent } from '@components/range/range';
+import { DropdownGroup } from '@pages/products/accordion/dropdown-group/dropdown-group';
 
 export default class Accordion extends View {
-  dropdown: Dropdown;
-
   content: HTMLElement | null;
+
+  dropdowns: DropdownGroup;
+
+  buttons: ButtonsGroup;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -16,7 +19,9 @@ export default class Accordion extends View {
       classNames: [styles.accordion],
     };
     super(params);
-    this.dropdown = new Dropdown(this.handleDropdownChange.bind(this));
+
+    this.buttons = new ButtonsGroup();
+    this.dropdowns = new DropdownGroup();
     this.content = null;
     this.configureView();
   }
@@ -34,24 +39,25 @@ export default class Accordion extends View {
       classNames: [styles.content],
     }).getElement();
 
-    const applyButton = new ElementCreator({
-      tag: 'button',
-      classNames: [styles.sendButton],
-      textContent: 'Apply',
+    const rangeWattage = new RangeComponent('⚡ Select a Wattage', { minValue: 0, maxValue: 100 }).getElement();
+    const rangePrice = new RangeComponent('💰 Select a price', { minValue: 0, maxValue: 10000 }).getElement();
+
+    const rangeWrapper = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.rangeWrapper],
+      children: [rangePrice, rangeWattage],
     }).getElement();
 
-    const range = new RangeComponent().getElement();
-
-    this.content.append(this.dropdown.getElement(), range, applyButton);
+    this.content.append(this.dropdowns.getElement(), rangeWrapper, this.buttons.getElement());
 
     item.append(toggleButton, this.content);
 
     accordion.append(item);
   }
 
-  private handleDropdownChange(): void {
-    console.log('🧨: ', this.dropdown.getValue());
-  }
+  // private handleDropdownChange(): void {
+  //   console.log('🧨: ', this.dropdowns.getValue());
+  // }
 
   private handleClickOpenAccordion(): void {
     this.content?.classList.toggle(styles.active);
