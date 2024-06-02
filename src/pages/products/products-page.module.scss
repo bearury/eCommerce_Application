@@ -1,12 +1,6 @@
 .products {
-  @apply flex flex-wrap items-center justify-between gap-3;
-}
-
-//TODO временно потом удалить
-.button {
-  @apply rounded border border-borderLight p-3 text-textLight;
-}
-
-.wrapperInput {
-  @apply bg-bgContainer p-3;
+  @apply flex flex-col items-center justify-between gap-3;
+  .cardContainer {
+    @apply grid grid-cols-4 justify-between gap-3 p-4 md:grid-cols-3 tablet:grid-cols-2 sm:grid-cols-1;
+  }
 }
