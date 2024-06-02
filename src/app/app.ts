@@ -81,7 +81,7 @@ export default class App {
         path: `${RouterPages.product}/{id}`,
         callback: async (resource: string): Promise<void> => {
           const { CardProductPage } = await import('@pages/index');
-          this.setContent(RouterPages.product, new CardProductPage(resource));
+          this.setContent(RouterPages.product, new CardProductPage(resource, this.router));
         },
       },
       {

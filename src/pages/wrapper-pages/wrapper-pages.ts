@@ -5,11 +5,14 @@ import HeaderPages from '@components/header-pages/header-pages';
 import Router from '@router/router.ts';
 import { toastState } from '@state/state.ts';
 import Toast from '@components/toast/toast';
+import Container from '@components/container/container';
 
 export default class WrapperPages extends View {
   headerPages: HeaderPages;
 
   toast: Toast;
+
+  container: HTMLElement;
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
@@ -20,25 +23,24 @@ export default class WrapperPages extends View {
 
     this.headerPages = new HeaderPages(router);
     this.toast = toastState.getState().toast;
+    this.container = Container.get();
     this.configureView();
   }
 
   public setContent(view: View) {
     const childElement = view.getElement();
-    const currentElement = this.getElement();
 
-    if (currentElement.childNodes.length) {
-      currentElement.childNodes.forEach((nodeElement: ChildNode) => {
-        if (nodeElement === this.headerPages.getElement() || nodeElement === this.toast.getElement()) return;
+    if (this.container.childNodes.length) {
+      this.container.childNodes.forEach((nodeElement: ChildNode) => {
         nodeElement.remove();
       });
     }
 
-    this.elementCreator.element.append(childElement);
+    this.container.append(childElement);
   }
 
   private configureView() {
     const currentElement = this.getElement();
-    currentElement.append(this.headerPages.getElement(), this.toast.getElement());
+    currentElement.append(this.headerPages.getElement(), this.container, this.toast.getElement());
   }
 }
