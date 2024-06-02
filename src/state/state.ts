@@ -61,4 +61,24 @@ const productsDataState = createStore(
   }))
 );
 
-export { routerState, toastState, loaderState, authState, productsDataState };
+interface FilterState {
+  color: string | null;
+  brand: string | null;
+  wattage: number | null;
+  setColor: (color: string) => void;
+  setBrand: (brand: string) => void;
+  setWattage: (wattage: number) => void;
+}
+
+const filterState = createStore(
+  devtools<FilterState>((set) => ({
+    color: null,
+    brand: null,
+    wattage: null,
+    setColor: (color: string | null) => set(() => ({ color })),
+    setBrand: (brand: string | null) => set(() => ({ brand })),
+    setWattage: (wattage: number | null) => set(() => ({ wattage })),
+  }))
+);
+
+export { routerState, toastState, loaderState, authState, filterState, productsDataState };

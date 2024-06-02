@@ -8,10 +8,12 @@ import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
-import Aside from '@pages/products/aside/aside.ts';
+import Accordion from '@pages/products/accordion/accordion';
 
 export default class ProductsPage extends View {
   router: Router;
+
+  accordion: Accordion;
 
   productsApi: ProductsApi;
 
@@ -32,18 +34,17 @@ export default class ProductsPage extends View {
 
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
-
+    this.accordion = new Accordion();
     this.configureView();
     this.getProductApi(productsDataState.getState().currentPage);
   }
 
   private configureView(): void {
-    const aside = new Aside().getElement();
     const content = new ElementCreator({
       tag: 'div',
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
-    this.getElement().append(aside, content);
+    this.getElement().append(this.accordion.getElement(), content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {

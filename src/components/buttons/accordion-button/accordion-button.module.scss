@@ -1,0 +1,32 @@
+.accordionButton {
+  @apply relative block text-left w-full text-bgBody text-xl border-none outline-none;
+
+  &:hover {
+    @apply cursor-pointer text-textAccent;
+    &::after {
+      @apply border border-green-500;
+    }
+  }
+
+  .title {
+    @apply pl-10;
+  }
+
+  .icon {
+    @apply absolute top-[2px] left-0 w-6 h-6 border border-borderLight rounded-full flex items-center justify-center;
+
+    &::before, &::after {
+      @apply block absolute content-empty w-3 h-[2px] bg-bgBody;
+    }
+
+    &::after {
+      @apply -rotate-90 transition-all;
+    }
+
+    &.active {
+      &::after {
+        @apply rotate-0 transition-all;
+      }
+    }
+  }
+}

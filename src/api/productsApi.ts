@@ -24,10 +24,17 @@ class ProductsApi {
   }
 
   async getAttr() {
+    // const filterStr = 'variants.price.centAmount: range(20 to 100), variants.attributes.color-filter.key: "black"';
+    //
+    // const range = 'variants.price.centAmount: range(20 to 950)';
+
     return this.customerBuilder
-      .products()
+      .productProjections()
+      .search()
       .get({
-        queryArgs: {},
+        queryArgs: {
+          'filter.query': ['variants.attributes.wattage: 10'],
+        },
       })
       .execute();
   }

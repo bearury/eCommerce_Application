@@ -1,0 +1,16 @@
+.accordion {
+  @apply bg-bgContainer mt-2 p-2 rounded mx-4;
+
+  .content {
+    @apply opacity-0 max-h-0 overflow-hidden transition-all relative;
+
+    &.active {
+      @apply opacity-100 max-h-32 mt-2 p-2 rounded border border-borderLight;
+      transition: opacity 200ms linear, max-height 500ms linear;
+    }
+  }
+
+  .sendButton {
+    @apply px-4 py-2 bg-bgContainer text-bgBody border border-borderLight mt-3 rounded hover:text-textAccent hover:bg-bgDisabled transition-all;
+  }
+}

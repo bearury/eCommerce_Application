@@ -1,0 +1,63 @@
+.range {
+    margin-top: 4px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.range,
+.range .noUi-handle {
+    box-shadow: none;
+}
+
+.range .noUi-tooltip {
+    @apply rounded-full w-7 h-7 items-center justify-center text-center text-textAccent text-sm hidden;
+}
+
+.range .noUi-active .noUi-tooltip {
+    @apply flex;
+}
+
+/*Hide markers on slider handles */
+.range .noUi-handle::before,
+.range .noUi-handle::after {
+    display: none;
+}
+
+.range .noUi-connects {
+    @apply bg-bgContainer;
+}
+
+.range .noUi-connect {
+    @apply bg-bgBody;
+}
+
+.range .noUi-handle {
+    @apply bg-textAccent border-textAccent;
+    z-index: 55;
+    height: 20px;
+    width: 20px;
+    top: -7px;
+    right: -10px; /* half the width */
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgb(36 38 41 / 24%);
+    cursor: pointer;
+
+    transition: transform 0.1s ease-in;
+}
+
+.noUi-touch-area:active {
+    @apply bg-textAccent;
+    border-radius: 50%;
+    transition: all 0.3s ease 0s;
+}
+
+.noUi-touch-area {
+    background-color: inherit;
+    border-radius: 50%;
+    transition: all 0.3s ease 0s;
+}
+
+
+.range .noUi-handle:hover {
+    transform: scale(1.3);
+}
