@@ -3,7 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './products-card.module.scss';
 import { Price, ProductProjection } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price.ts';
-import Image from '@components/image/image.ts';
+import Image from '@components/image/image';
 import noImage from '/noImage.png';
 
 export class ProductsCard extends View {

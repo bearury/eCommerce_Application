@@ -37,7 +37,7 @@ class ProductsApi {
     return this.customerBuilder
       .productProjections()
       .search()
-      .get({ queryArgs: { limit: countProducts, offset: page * countProducts } })
+      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page : page * countProducts } })
       .execute();
   }
 }
