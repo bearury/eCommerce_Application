@@ -1,13 +1,13 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './products-card.module.scss';
-import { Price, Product, ProductVariant } from '@commercetools/platform-sdk';
-import Image from '@components/image/image';
-import noImage from '/no-image.jpg';
+import { Price, ProductProjection } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price.ts';
+import Image from '@components/image/image.ts';
+import noImage from '/noImage.png';
 
 export class ProductsCard extends View {
-  constructor({ data, callback }: { data: Product; callback: (id: string) => void }) {
+  constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
@@ -17,29 +17,19 @@ export class ProductsCard extends View {
     this.configureView(data);
   }
 
-  private configureView(data: Product): void {
+  private configureView(data: ProductProjection): void {
     const card: HTMLElement = this.getElement();
-    const textName = data.masterData.current.name['en-US'];
-    const stagedVariants: ProductVariant = data.masterData.staged.masterVariant;
-    const pricesValue: Price[] | undefined = data.masterData.staged.masterVariant.prices?.filter(
+    const textName = data.name['en-US'];
+    const images = data.masterVariant.images;
+    const pricesValue: Price[] | undefined = data.masterVariant.prices?.filter(
       (price: Price) => price.value.currencyCode === 'EUR' || price.value.currencyCode === 'USD'
     );
-    const descriptionValue: string | undefined = data.masterData.staged.description?.['en-US'];
+    const descriptionValue: string | undefined = data.description?.['en-US'];
 
     const pricesWrapper: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.pricesWrapper],
     }).getElement();
-
-    pricesValue?.forEach((price) => {
-      const priceElement: HTMLElement = new ElementCreator({
-        tag: 'span',
-        classNames: [styles.price],
-        textContent: `${converterPrice(price)} ${price.value.currencyCode}`,
-      }).getElement();
-
-      pricesWrapper.append(priceElement);
-    });
 
     const name: HTMLElement = new ElementCreator({
       tag: 'span',
@@ -55,13 +45,43 @@ export class ProductsCard extends View {
 
     let image: HTMLElement;
 
-    if (stagedVariants && stagedVariants.images) {
-      const img = stagedVariants.images[0].url as string;
+    if (images?.length) {
+      const img = images[0].url as string;
       image = new Image({ classNames: [styles.image], img }).getElement();
     } else {
       image = new Image({ classNames: [styles.image], img: noImage }).getElement();
     }
 
-    card.append(image, name, pricesWrapper, description);
+    const discountUsd = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.discount],
+    }).getElement();
+
+    const discountEur = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.discount, styles.usd],
+    }).getElement();
+
+    pricesValue?.forEach((price) => {
+      const priceElement: HTMLElement = new ElementCreator({
+        tag: 'span',
+        classNames: [styles.price],
+        textContent: `${converterPrice(price.value)} ${price.value.currencyCode}`,
+      }).getElement();
+
+      if (price.discounted) {
+        priceElement.classList.add(styles.priceDiscount);
+
+        if (price.country === 'US') {
+          discountUsd.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
+        } else if (price.country === 'DE') {
+          discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
+        }
+      }
+
+      pricesWrapper.append(priceElement);
+    });
+
+    card.append(image, name, pricesWrapper, description, discountUsd, discountEur);
   }
 }

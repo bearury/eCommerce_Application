@@ -7,7 +7,7 @@ import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
-import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -59,12 +59,14 @@ export default class ProductsPage extends View {
   }
 
   private renderCards(): void {
-    const data: ClientResponse<ProductPagedQueryResponse> | null = productsDataState.getState().data;
+    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
+
+    console.log('[65] 🥕: ', data);
 
     if (data) {
       this.pagination.setParams(data.body);
-      data.body.results.forEach((product: Product): void => {
+      data.body.results.forEach((product: ProductProjection): void => {
         const cardProduct: HTMLElement = new ProductsCard({
           data: product,
           callback: this.handleClickCard.bind(this),
