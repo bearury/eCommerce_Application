@@ -1,5 +1,5 @@
 .profile {
-  @apply border border-green-500;
+  @apply border p-2;
 }
 .page {
   @apply flex flex-auto flex-col items-center justify-center py-14 pb-14 font-inter;
@@ -30,9 +30,13 @@
 }
 
 .addressBlock {
-  @apply flex w-full flex-col gap-2 border-y-2 border-borderLight py-1;
+  @apply flex w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
 }
 
 .postalCodeBlock {
   @apply flex justify-between gap-2;
+}
+
+.header {
+  @apply my-4 text-center text-lg;
 }

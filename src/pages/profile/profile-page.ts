@@ -42,6 +42,10 @@ export default class ProfilePage extends View {
 
   userAddresses: ElementCreator;
 
+  shippingTitle: ElementCreator;
+
+  billingTitle: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -71,19 +75,30 @@ export default class ProfilePage extends View {
     this.shippingAddresses = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.addressBlock}`],
-      textContent: 'Shipping addresses',
     });
     this.billingAddresses = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.addressBlock}`],
-      textContent: 'Billing addresses',
     });
-
+    this.shippingTitle = new ElementCreator({
+      tag: 'div',
+      textContent: 'Shipping addresses 🚚',
+      classNames: [`${styles.header}`],
+    });
+    this.billingTitle = new ElementCreator({
+      tag: 'div',
+      textContent: 'Billing addresses 💶',
+      classNames: [`${styles.header}`],
+    });
     this.userAddresses = new ElementCreator({
       tag: 'div',
       classNames: [styles.userAddresses],
-      textContent: 'Your addresses',
-      children: [this.shippingAddresses.getElement(), this.billingAddresses.getElement()],
+      children: [
+        this.shippingTitle.getElement(),
+        this.shippingAddresses.getElement(),
+        this.billingTitle.getElement(),
+        this.billingAddresses.getElement(),
+      ],
     });
 
     this.isValidName = false;
@@ -97,8 +112,7 @@ export default class ProfilePage extends View {
   }
 
   private configureView(): void {
-    const title = new ElementCreator({ tag: 'span', textContent: 'Your info ⭐' });
-
+    const title = new ElementCreator({ tag: 'div', textContent: 'Your info ⭐', classNames: [`${styles.header}`] });
     const userInfo = new ElementCreator({
       tag: 'div',
       classNames: [styles.userInfo],
@@ -148,30 +162,43 @@ export default class ProfilePage extends View {
   ): Promise<void> {
     const shippingIds = addressesInfo.shippingAddressIds;
     const billingIds = addressesInfo.billingAddressIds;
+    const defaultShippingAddressId = addressesInfo.defaultShippingAddressId;
+    const defaultBillingAddressId = addressesInfo.defaultBillingAddressId;
     const shippingAddressesBlock = this.shippingAddresses.getElement();
     const billingAddressesBlock = this.billingAddresses.getElement();
-    addressesInfo.addresses.forEach((address) => {
-      const currentAddress: Address | undefined = address;
-      if (
-        currentAddress &&
-        currentAddress.streetName &&
-        currentAddress.city &&
-        currentAddress.postalCode &&
-        currentAddress.country
-      ) {
-        const address = new AddressBlock({
-          street: currentAddress.streetName,
-          city: currentAddress.city,
-          postalCode: currentAddress.postalCode,
-          country: currentAddress.country,
-        }).getElement();
-        if (shippingIds && currentAddress.id && shippingIds.includes(currentAddress.id)) {
-          shippingAddressesBlock.append(address);
-        } else if (billingIds && currentAddress.id && billingIds.includes(currentAddress.id)) {
-          billingAddressesBlock.append(address);
+    if (addressesInfo.addresses) {
+      addressesInfo.addresses.forEach((address) => {
+        const currentAddress: Address = address;
+        if (
+          currentAddress &&
+          currentAddress.streetName &&
+          currentAddress.city &&
+          currentAddress.postalCode &&
+          currentAddress.country
+        ) {
+          const addressParams = {
+            street: currentAddress.streetName,
+            city: currentAddress.city,
+            postalCode: currentAddress.postalCode,
+            country: currentAddress.country,
+            isDefaultShipping: 'no',
+            isDefaultBilling: 'no',
+          };
+          if (defaultShippingAddressId && currentAddress.id && defaultShippingAddressId.includes(currentAddress.id)) {
+            addressParams.isDefaultShipping = 'yes';
+          }
+          if (defaultBillingAddressId && currentAddress.id && defaultBillingAddressId.includes(currentAddress.id)) {
+            addressParams.isDefaultBilling = 'yes';
+          }
+          const address = new AddressBlock(addressParams).getElement();
+          if (shippingIds && currentAddress.id && shippingIds.includes(currentAddress.id)) {
+            shippingAddressesBlock.append(address);
+          } else if (billingIds && currentAddress.id && billingIds.includes(currentAddress.id)) {
+            billingAddressesBlock.append(address);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   private validateDateOfBirth(): void {

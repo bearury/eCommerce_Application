@@ -14,6 +14,8 @@ export type AddressBlockParams = {
   city: string;
   postalCode: string;
   country: string;
+  isDefaultBilling?: string;
+  isDefaultShipping?: string;
 };
 
 export default class AddressBlock extends View {
@@ -33,12 +35,19 @@ export default class AddressBlock extends View {
 
   postalAndCountryBlock: ElementCreator;
 
-  constructor({ street, city, postalCode, country }: AddressBlockParams) {
+  defaultLabel: ElementCreator;
+
+  constructor({ street, city, postalCode, country, isDefaultShipping, isDefaultBilling }: AddressBlockParams) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [`${styles.addressBlock}`],
     };
     super(params);
+    this.defaultLabel = new ElementCreator({
+      tag: 'div',
+      textContent: 'Default',
+      classNames: [`${styles.defaultLabel}`],
+    });
     this.postalAndCountryBlock = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.postalCodeBlock}`],
@@ -76,6 +85,9 @@ export default class AddressBlock extends View {
     this.countryInput = new Dropdown(this.clearPostalCode.bind(this), [`${dropdownStyles.dropdown}`]);
     this.countryInput.setValue(country);
     this.setDisabledAll(true);
+    if (isDefaultBilling === 'yes' || isDefaultShipping === 'yes') {
+      this.getElement().appendChild(this.defaultLabel.getElement());
+    }
     this.getElement().appendChild(this.streetNameInput.getElement());
     this.getElement().appendChild(this.cityInput.getElement());
     this.postalAndCountryBlock.getElement().appendChild(this.postalCodeInput.getElement());
