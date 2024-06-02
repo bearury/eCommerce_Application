@@ -146,30 +146,32 @@ export default class ProfilePage extends View {
       'addresses' | 'shippingAddressIds' | 'defaultShippingAddressId' | 'billingAddressIds' | 'defaultBillingAddressId'
     >
   ): Promise<void> {
-    console.log('🚀 ~ ProfilePage ~ addressesInfo:', addressesInfo);
     const shippingIds = addressesInfo.shippingAddressIds;
-    if (shippingIds) {
-      shippingIds.forEach((id) => {
-        const currentAddress: Address | undefined = addressesInfo.addresses.find((address) => address.id === id);
-        if (
-          currentAddress &&
-          currentAddress.streetName &&
-          currentAddress.city &&
-          currentAddress.postalCode &&
-          currentAddress.country
-        ) {
-          const addressesBlock = this.shippingAddresses.getElement();
-          const address = new AddressBlock({
-            street: currentAddress.streetName,
-            city: currentAddress.city,
-            postalCode: currentAddress.postalCode,
-            country: currentAddress.country,
-          });
-          console.log('🚀 ~ ProfilePage ~ address:', address);
-          addressesBlock.append(address.getElement());
+    const billingIds = addressesInfo.billingAddressIds;
+    const shippingAddressesBlock = this.shippingAddresses.getElement();
+    const billingAddressesBlock = this.billingAddresses.getElement();
+    addressesInfo.addresses.forEach((address) => {
+      const currentAddress: Address | undefined = address;
+      if (
+        currentAddress &&
+        currentAddress.streetName &&
+        currentAddress.city &&
+        currentAddress.postalCode &&
+        currentAddress.country
+      ) {
+        const address = new AddressBlock({
+          street: currentAddress.streetName,
+          city: currentAddress.city,
+          postalCode: currentAddress.postalCode,
+          country: currentAddress.country,
+        }).getElement();
+        if (shippingIds && currentAddress.id && shippingIds.includes(currentAddress.id)) {
+          shippingAddressesBlock.append(address);
+        } else if (billingIds && currentAddress.id && billingIds.includes(currentAddress.id)) {
+          billingAddressesBlock.append(address);
         }
-      });
-    }
+      }
+    });
   }
 
   private validateDateOfBirth(): void {
