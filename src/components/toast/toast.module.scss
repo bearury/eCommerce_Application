@@ -13,7 +13,7 @@
   @apply flex items-center;
 
   .message {
-    @apply mx-4 flex flex-col w-fit;
+    @apply mx-4 flex w-fit flex-col;
 
     .text {
       @apply text-[16px] text-textDark;

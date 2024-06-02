@@ -5,7 +5,7 @@ import HeaderPages from '@components/header-pages/header-pages';
 import Router from '@router/router.ts';
 import { toastState } from '@state/state.ts';
 import Toast from '@components/toast/toast';
-import Container from '@components/container/container.ts';
+import Container from '@components/container/container';
 
 export default class WrapperPages extends View {
   headerPages: HeaderPages;
