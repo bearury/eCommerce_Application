@@ -1,14 +1,17 @@
 .wrapper {
-  @apply flex relative overflow-hidden justify-center items-center;
+  @apply relative flex items-center justify-center overflow-hidden;
 
   .img {
-    @apply h-full absolute object-cover opacity-0 rounded;
-    transition: opacity .7s ease, transform .3s linear;
+    @apply absolute h-full rounded object-cover opacity-0;
+    transition:
+      opacity 0.7s ease,
+      transform 0.3s linear;
   }
 }
 
 .wrapper.loaded .img {
-  @apply opacity-100 relative;
-  transition: opacity .7s ease, transform .3s linear;
+  @apply relative opacity-100;
+  transition:
+    opacity 0.7s ease,
+    transform 0.3s linear;
 }
-

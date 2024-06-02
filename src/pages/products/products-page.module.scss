@@ -1,7 +1,6 @@
 .products {
   @apply flex flex-col;
   .cardContainer {
-    @apply grid gap-3 grid-cols-4 justify-between p-4 md:grid-cols-3 tablet:grid-cols-2 sm:grid-cols-1;
+    @apply grid grid-cols-4 justify-between gap-3 p-4 md:grid-cols-3 tablet:grid-cols-2 sm:grid-cols-1;
   }
 }
-

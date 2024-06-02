@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-    @font-face {
-        font-family: Inter;
-        font-weight: 400;
-        src: url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-    }
+  @font-face {
+    font-family: Inter;
+    font-weight: 400;
+    src: url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+  }
 }
 
 body {
-    @apply relative h-screen overflow-x-hidden bg-bgBody font-inter;
+  @apply relative h-screen overflow-x-hidden bg-bgBody font-inter;
 }
