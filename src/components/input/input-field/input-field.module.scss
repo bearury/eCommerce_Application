@@ -50,16 +50,14 @@
   .wrapperInput {
     @apply relative rounded;
   }
-
   .input {
     @apply block h-9 w-full border border-solid
-    border-textAccent bg-transparent px-4 text-textDark outline-none
+    border-bgHeader bg-transparent px-4 text-textLight outline-none
     transition-all;
   }
 
   .label {
-    @apply absolute left-3 top-1/2
-    inline-block -translate-y-1/2 cursor-text bg-bgContainer  px-3 text-sm text-textLight transition-all;
+    @apply top-0 text-xs font-bold transition-all;
   }
 
   .label::first-letter {
@@ -74,7 +72,9 @@
   .input:valid + .label {
     @apply top-0 text-xs font-bold;
   }
-
+  .input:disabled + .label {
+    @apply top-0 text-xs font-bold transition-all;
+  }
   .input + .label {
     @apply text-textLight;
   }

@@ -27,6 +27,7 @@ export default class InputField extends View {
       tag: 'div',
       classNames: [styles.inputItem, ...additionalClassNames],
     };
+    console.log(additionalClassNames);
     super(params);
     this.input = new ElementCreator({
       tag: 'input',
@@ -96,5 +97,15 @@ export default class InputField extends View {
   public setValue(value: string): void {
     const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
     input.value = value;
+  }
+
+  public toggleDisabled(isDisabled: boolean): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.disabled = isDisabled;
+  }
+
+  public removeDisabled(): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.disabled = false;
   }
 }

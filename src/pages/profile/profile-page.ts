@@ -10,9 +10,8 @@ import InputDateField from '@components/input/input-field/input-date-field/input
 import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
 import { validationDate } from '@utils/validation/date';
 import { validationName } from '@utils/validation/name';
-import { validationBase } from '@utils/validation/street';
-import { validationCity } from '@utils/validation/city';
-import Dropdown from '@components/dropdown/dropdown';
+import AddressBlock from '@components/addressBlock/addressBlock';
+// import Dropdown from '@components/dropdown/dropdown';
 
 export default class ProfilePage extends View {
   container: HTMLElement;
@@ -41,6 +40,8 @@ export default class ProfilePage extends View {
 
   billingAddresses: ElementCreator;
 
+  userAddresses: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -51,32 +52,40 @@ export default class ProfilePage extends View {
     this.firstNameInput = new InputTextField({
       name: 'first name',
       callback: this.validateName.bind(this),
-      disabled: true,
-      additionalClasses: [`${inputStyles.userInputItem}`],
+      attributes: [{ type: 'disabled', value: 'true' }],
+      additionalClassNames: [`${inputStyles.userInputItem}`],
     });
     this.lastNameInput = new InputTextField({
       name: 'last name',
       callback: this.validateLastName.bind(this),
-      disabled: true,
-      additionalClasses: [`${inputStyles.userInputItem}`],
+      attributes: [{ type: 'disabled', value: 'true' }],
+      additionalClassNames: [`${inputStyles.userInputItem}`],
     });
 
     this.dateOfBirthInput = new InputTextField({
       name: 'Date of birth',
       callback: this.validateDateOfBirth.bind(this),
-      disabled: true,
-      additionalClasses: [`${inputStyles.userInputItem}`],
+      attributes: [{ type: 'disabled', value: 'true' }],
+      additionalClassNames: [`${inputStyles.userInputItem}`],
     });
     this.shippingAddresses = new ElementCreator({
       tag: 'div',
-      classNames: [styles.userAddresses],
+      classNames: [`${styles.addressBlock}`],
       textContent: 'Shipping addresses',
     });
     this.billingAddresses = new ElementCreator({
       tag: 'div',
-      classNames: [styles.userAddresses],
+      classNames: [`${styles.addressBlock}`],
       textContent: 'Billing addresses',
     });
+
+    this.userAddresses = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.userAddresses],
+      textContent: 'Your addresses',
+      children: [this.shippingAddresses.getElement(), this.billingAddresses.getElement()],
+    });
+
     this.isValidName = false;
     this.isValidLastName = false;
     this.isValidDateOfBirth = false;
@@ -84,7 +93,7 @@ export default class ProfilePage extends View {
     this.isValidCity = false;
     this.getElement().append(this.container);
     this.configureView();
-    this.setcustomerInfo();
+    this.setСustomerInfo();
   }
 
   private configureView(): void {
@@ -96,16 +105,10 @@ export default class ProfilePage extends View {
       children: [this.firstNameInput.getElement(), this.lastNameInput.getElement(), this.dateOfBirthInput.getElement()],
     });
 
-    const userAddresses = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.userAddresses],
-      textContent: 'Your addresses',
-      children: [this.shippingAddresses.getElement(), this.billingAddresses.getElement()],
-    });
     const userInfoBlock = new ElementCreator({
       tag: 'div',
       classNames: [styles.userInfoBlock],
-      children: [userInfo.getElement(), userAddresses.getElement()],
+      children: [userInfo.getElement(), this.userAddresses.getElement()],
     });
     this.container.append(title.getElement(), userInfoBlock.getElement());
   }
@@ -119,7 +122,7 @@ export default class ProfilePage extends View {
     }
   }
 
-  private async setcustomerInfo(): Promise<void> {
+  private async setСustomerInfo(): Promise<void> {
     const customerInfo = await this.getcustomerInfo();
     if (customerInfo) {
       if (customerInfo.firstName && customerInfo.lastName && customerInfo.dateOfBirth) {
@@ -148,35 +151,22 @@ export default class ProfilePage extends View {
     if (shippingIds) {
       shippingIds.forEach((id) => {
         const currentAddress: Address | undefined = addressesInfo.addresses.find((address) => address.id === id);
-        if (currentAddress && currentAddress.streetName && currentAddress.city) {
-          const streetNameInput = new InputTextField({
-            name: currentAddress.streetName,
-            callback: () => this.validateStreet(streetNameInput),
+        if (
+          currentAddress &&
+          currentAddress.streetName &&
+          currentAddress.city &&
+          currentAddress.postalCode &&
+          currentAddress.country
+        ) {
+          const addressesBlock = this.shippingAddresses.getElement();
+          const address = new AddressBlock({
+            street: currentAddress.streetName,
+            city: currentAddress.city,
+            postalCode: currentAddress.postalCode,
+            country: currentAddress.country,
           });
-          streetNameInput.setValue(currentAddress.streetName);
-          this.shippingAddresses.getElement().append(streetNameInput.getElement());
-          const cityInput = new InputTextField({
-            name: currentAddress.city,
-            callback: () => this.validateCity(cityInput),
-            disabled: true,
-          });
-          // this.billingCountryInput = new Dropdown(this.clearBillingPostalCode.bind(this));
-          /*
-          const countryInput = new InputTextField({
-            name: 'Postal code',
-            callback: () => this.validatePostalCode.call(this, 'shipping'),
-            disabled: true,
-          }); 
-          const postalCodeInput = new InputTextField({
-            name: 'Postal code',
-            callback: () => this.validatePostalCode.call(this, 'shipping'),
-            disabled: true,
-          });
-          const shippingAddress = new ElementCreator({
-            tag: 'div',
-            classNames: [styles.shippingAddress],
-            attribute: [{ type: 'data-id', value: id }],
-          });*/
+          console.log('🚀 ~ ProfilePage ~ address:', address);
+          addressesBlock.append(address.getElement());
         }
       });
     }
@@ -200,20 +190,6 @@ export default class ProfilePage extends View {
     const validationMessages: string[] = validationName(this.lastNameInput.getValue());
     this.lastNameInput.setErrors(validationMessages);
     this.isValidLastName = !validationMessages.length;
-    this.isAllFieldsValid();
-  }
-
-  private validateStreet(streetInput: InputTextField): void {
-    const validationMessages: string[] = validationBase(streetInput.getValue());
-    streetInput.setErrors(validationMessages);
-    this.isValidStreet = !validationMessages.length;
-    this.isAllFieldsValid();
-  }
-
-  private validateCity(cityInput: InputTextField): void {
-    const validationMessages: string[] = validationCity(cityInput.getValue());
-    cityInput.setErrors(validationMessages);
-    this.isValidCity = !validationMessages.length;
     this.isAllFieldsValid();
   }
 
