@@ -1,7 +1,6 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './slider.module.scss';
-import Image from '@components/image/image';
 
 export class Slider extends View {
   navigation: HTMLElement;
@@ -14,7 +13,7 @@ export class Slider extends View {
 
   pagination: HTMLElement;
 
-  slides: Image[];
+  slides: HTMLElement[];
 
   slideCount: number;
 
@@ -77,9 +76,9 @@ export class Slider extends View {
   public updateSlider() {
     this.slides.forEach((slide, index) => {
       if (index === this.slideIndex) {
-        slide.getElement().style.display = 'block';
+        slide.style.display = 'flex';
       } else {
-        slide.getElement().style.display = 'none';
+        slide.style.display = 'none';
       }
     });
     Array.from(this.pagination.children).forEach((dot, index) => {
@@ -95,10 +94,12 @@ export class Slider extends View {
     const slider: HTMLElement = this.getElement();
 
     images.map((img: string) => {
-      const elem = new Image({ classNames: [styles.img], img });
+      // const elem = new Image({ classNames: [styles.img], img });
+      const el = new ElementCreator({ tag: 'div', classNames: [styles.img] });
+      el.getElement().style.backgroundImage = `url(${img})`;
       const dot = new ElementCreator({ tag: 'span', classNames: [styles.dot] });
-      this.slides.push(elem);
-      this.slidesBlock.append(elem.getElement());
+      this.slides.push(el.getElement());
+      this.slidesBlock.append(el.getElement());
       this.pagination.append(dot.getElement());
     });
 
