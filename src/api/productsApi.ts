@@ -4,7 +4,7 @@ import {
   ClientResponse,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
-import { SelectBrand, SelectColor } from '@utils/variables.ts';
+import { countProductsOnOnePage, SelectBrand, SelectColor } from '@utils/variables.ts';
 import { RangeComponentValue } from '@components/range/range';
 
 export interface GetFilterParams {
@@ -28,16 +28,20 @@ class ProductsApi {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  // async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-  //   const countProducts = 12;
-  //   return this.customerBuilder
-  //     .productProjections()
-  //     .search()
-  //     .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page - 1 : page * countProducts } })
-  //     .execute();
-  // }
+  async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
+    return this.customerBuilder
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: { limit: countProductsOnOnePage, offset: page === 1 ? page - 1 : page * countProductsOnOnePage },
+      })
+      .execute();
+  }
 
-  async getFilter(params: GetFilterParams) {
+  async getFilter(
+    params: GetFilterParams,
+    page: number
+  ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const filterStr = [];
 
     if (params.color) {
@@ -66,17 +70,10 @@ class ProductsApi {
       .get({
         queryArgs: {
           'filter.query': filterStr,
+          limit: countProductsOnOnePage,
+          offset: page === 1 ? page - 1 : page * countProductsOnOnePage,
         },
       })
-      .execute();
-  }
-
-  async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const countProducts = 12;
-    return this.customerBuilder
-      .productProjections()
-      .search()
-      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page : page * countProducts } })
       .execute();
   }
 }
