@@ -9,6 +9,9 @@ import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
+import CategoriesSelect from '@pages/products/aside/categories-select';
+import CategoriesApi from '@api/categoriesApi.ts';
+import { categoriesCreator } from '@utils/categories-creator.ts';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -17,9 +20,13 @@ export default class ProductsPage extends View {
 
   productsApi: ProductsApi;
 
+  categoriesApi: CategoriesApi;
+
   pagination: Pagination;
 
   cardsContainer: HTMLElement;
+
+  categories: CategoriesSelect;
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
@@ -30,11 +37,13 @@ export default class ProductsPage extends View {
     this.router = router;
 
     this.productsApi = new ProductsApi(apiInstance);
+    this.categoriesApi = new CategoriesApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
 
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
     this.accordion = new Accordion();
+    this.categories = new CategoriesSelect();
     this.configureView();
     this.getProductApi(productsDataState.getState().currentPage);
   }
@@ -44,16 +53,17 @@ export default class ProductsPage extends View {
       tag: 'div',
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
-    this.getElement().append(this.accordion.getElement(), content);
+
+    this.getElement().append(this.accordion.getElement(), this.categories.getElement(), content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
     loaderState.getState().loader.show();
-
     await this.productsApi
       .get(page)
       .then((data) => {
         productsDataState.getState().setData(data);
+        this.getCategoriesApi();
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -63,6 +73,12 @@ export default class ProductsPage extends View {
       .finally(() => {
         loaderState.getState().loader.close();
       });
+  }
+
+  private async getCategoriesApi(): Promise<void> {
+    await this.categoriesApi.get().then((data) => {
+      this.categories.renderFree(categoriesCreator(data));
+    });
   }
 
   private renderCards(): void {
