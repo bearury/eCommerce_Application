@@ -30,8 +30,6 @@ export default class Router {
   public navigate(route: RouterPages): void {
     const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
 
-    console.log('[33] 🎯: ', route);
-
     if (!foundPage) return;
     const path: RouterPages | undefined = getPath(foundPage.path);
 
