@@ -44,3 +44,48 @@
     @apply top-0 text-xs font-bold;
   }
 }
+.userInputItem {
+  @apply mb-4 w-full font-inter;
+
+  .wrapperInput {
+    @apply relative rounded;
+  }
+  .input {
+    @apply block h-9 w-full border border-solid
+    border-bgHeader bg-transparent px-4 text-textLight outline-none
+    transition-all;
+  }
+
+  .label {
+    @apply top-0 text-xs font-bold transition-all;
+  }
+
+  .label::first-letter {
+    @apply uppercase;
+  }
+
+  .error {
+    @apply list-disc pl-5 text-xs text-red-300;
+  }
+
+  .input + .label,
+  .input:valid + .label {
+    @apply top-0 text-xs font-bold;
+  }
+  .input:disabled + .label {
+    @apply top-0 text-xs font-bold transition-all;
+  }
+  .input + .label {
+    @apply text-textLight;
+  }
+
+  .input:-webkit-autofill {
+    -webkit-box-shadow: inset 0 0 0 50px #665f55 !important;
+    -webkit-text-fill-color: #999 !important;
+    color: #999 !important;
+  }
+
+  .input:-webkit-autofill + .label {
+    @apply top-0 text-xs font-bold;
+  }
+}

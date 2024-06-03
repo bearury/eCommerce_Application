@@ -36,9 +36,9 @@ export default class Pagination extends View {
 
     if (!total || total < 12) return;
 
-    const countPages: number = Math.floor(total / limit);
+    const countPages: number = Math.ceil(total / limit);
     const activePage: number = offset / limit;
-    const arrPage: number[] = Array.from({ length: countPages }, (_, i) => i + 1);
+    const arrPage: number[] = Array.from({ length: countPages - 1 }, (_, i) => i + 1);
     const step = 3;
 
     const paginationElement: HTMLElement = this.getElement();
@@ -101,7 +101,7 @@ export default class Pagination extends View {
       callback: this.handleClickCell.bind(this),
     });
 
-    if (activePage === countPages) {
+    if (activePage === countPages - 1) {
       cellRight.setActive();
     } else {
       cellRight.removeActive();

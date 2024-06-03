@@ -2,6 +2,7 @@ import Api, { projectKey } from '@api/api.ts';
 import {
   ByProjectKeyRequestBuilder,
   ClientResponse,
+  Product,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 import { SelectBrand, SelectColor } from '@utils/variables.ts';
@@ -27,6 +28,7 @@ class ProductsApi {
     }
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
+
 
   async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const countProducts = 12;
@@ -68,6 +70,15 @@ class ProductsApi {
           'filter.query': filterStr,
         },
       })
+      .execute();
+  }
+
+  async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
+    const countProducts = 12;
+    return this.customerBuilder
+      .productProjections()
+      .search()
+      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page : page * countProducts } })
       .execute();
   }
 }

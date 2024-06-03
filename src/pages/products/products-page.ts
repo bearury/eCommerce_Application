@@ -68,7 +68,6 @@ export default class ProductsPage extends View {
   private renderCards(): void {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
-
     console.log('[71] 🎯: ', data);
 
     if (data?.body.results.length) {
