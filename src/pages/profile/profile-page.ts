@@ -88,7 +88,7 @@ export default class ProfilePage extends View {
     this.getElement().append(this.container);
     this.configureView();
     this.setСustomerInfo();
-    this.getAllChildrens();
+    this.getAllAddresses();
   }
 
   private configureView(): void {
@@ -210,7 +210,7 @@ export default class ProfilePage extends View {
     }
   }
 
-  private getAllChildrens() {
+  private getAllAddresses() {
     console.log(this.shippingAddresses.element.childNodes);
   }
 }

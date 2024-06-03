@@ -62,6 +62,8 @@ export default class AddressBlock extends View {
 
   addressType?: string;
 
+  deleteButton: ElementCreator;
+
   constructor({
     street,
     city,
@@ -89,13 +91,19 @@ export default class AddressBlock extends View {
       callback: [{ event: 'click', callback: this.editAddress.bind(this) }],
       classNames: [`${styles.editButton}`],
     });
+    this.deleteButton = new ElementCreator({
+      tag: 'span',
+      textContent: 'Delete 🗑️',
+      callback: [{ event: 'click', callback: this.deleteAddress.bind(this) }],
+      classNames: [`${styles.editButton}`],
+    });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
       callback: [{ event: 'click', callback: this.cancelEditAddress.bind(this) }],
       classNames: [`${styles.editButton}`],
     });
-    this.addressType = addressType || 'shipping';
+    this.addressType = addressType;
     this.postalAndCountryBlock = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.postalCodeBlock}`],
@@ -146,6 +154,7 @@ export default class AddressBlock extends View {
     this.isNewAddress = isNewAddress || 'no';
     if (this.isNewAddress !== 'yes') {
       this.getElement().appendChild(this.editButton.getElement());
+      this.getElement().appendChild(this.deleteButton.getElement());
       this.setDisabledAll(true);
     }
     this.getElement().appendChild(this.streetNameInput.getElement());
@@ -279,21 +288,33 @@ export default class AddressBlock extends View {
       country: this.countryInput.getValue(),
     });
     if (response.statusCode === 200) {
-      const responseUser = await this.customerApi.setBillingOrShipping(
-        this.customerId,
-        response.body,
-        this.addressType
-      );
-      const addressId = responseUser.body.addresses.at(-1)?.id;
-      if (!addressId) {
-        throw new Error('No address id!');
+      if (this.addressType === 'shipping' || this.addressType === 'billing') {
+        const responseUser = await this.customerApi.setBillingOrShipping(
+          this.customerId,
+          response.body,
+          this.addressType
+        );
+        const addressId = responseUser.body.addresses.at(-1)?.id;
+        if (!addressId) {
+          throw new Error('No address id!');
+        }
+        this.setAddressId(addressId);
+        this.addressId = addressId;
+        this.setDisabledAll(true);
+        this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
+        this.getElement().removeChild(this.addAddressButton.getElement());
+        toastState.getState().toast.showSuccess('Address added!');
       }
-      this.setAddressId(addressId);
-      this.addressId = addressId;
-      this.setDisabledAll(true);
-      this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
-      this.getElement().removeChild(this.addAddressButton.getElement());
-      toastState.getState().toast.showSuccess('Address added!');
+    }
+  }
+
+  private async deleteAddress(): Promise<void> {
+    if (this.customerId) {
+      const response = await this.customerApi.deleteAddress(this.addressId, this.customerId);
+      console.log('🚀 ~ AddressBlock ~ deleteAddress ~ response:', response);
+      if (response.statusCode === 200) {
+        this.getElement().remove();
+      }
     }
   }
 

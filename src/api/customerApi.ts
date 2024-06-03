@@ -9,6 +9,7 @@ import {
   CustomerChangeAddressAction,
   CustomerChangeEmailAction,
   CustomerChangePassword,
+  CustomerRemoveAddressAction,
   CustomerSetDateOfBirthAction,
   CustomerSetFirstNameAction,
   CustomerSetLastNameAction,
@@ -150,6 +151,37 @@ class CustomerApi {
         console.error(error);
       }
       throw error;
+    }
+  }
+
+  public async deleteAddress(addressId: string, customerID: string) {
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: 'removeAddress',
+          addressId: addressId,
+        } as CustomerRemoveAddressAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      toastState.getState().toast.showSuccess('Address deleted!');
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
     }
   }
 
