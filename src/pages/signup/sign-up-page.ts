@@ -41,6 +41,8 @@ type CustomerDraft = {
   addresses: Address[];
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
+  shippingAddresses?: number[];
+  billingAddresses?: number[];
 };
 
 export default class SignUpPage extends View {
@@ -151,7 +153,11 @@ export default class SignUpPage extends View {
     this.isValidBillingPostalCode = false;
 
     this.emailInput = new InputTextField({ name: 'email', callback: this.validateEmail.bind(this) });
-    this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
+    this.passwordInput = new InputPasswordField({
+      name: 'password',
+      callback: this.validatePassword.bind(this),
+      attributes: [{ type: 'type', value: 'password' }],
+    });
 
     this.firstNameInput = new InputTextField({ name: 'first name', callback: this.validateName.bind(this) });
     this.lastNameInput = new InputTextField({ name: 'last name', callback: this.validateLastName.bind(this) });
@@ -159,6 +165,7 @@ export default class SignUpPage extends View {
     this.dateOfBirthInput = new InputDateField({
       name: 'Date of birth',
       callback: this.validateDateOfBirth.bind(this),
+      attributes: [{ type: 'type', value: 'date' }],
     });
 
     this.streetNameInput = new InputTextField({
@@ -388,6 +395,7 @@ export default class SignUpPage extends View {
             postalCode: this.postalCodeInput.getValue(),
           },
         ],
+        shippingAddresses: [0],
       };
       if (this.setDefaultAddress.getStatus()) {
         request.defaultShippingAddress = 0;
@@ -405,11 +413,11 @@ export default class SignUpPage extends View {
           city: userCity,
           postalCode: userPostalCode,
         });
+        request.billingAddresses = [1];
         if (this.setDefaultBillingAddress.getStatus()) {
           request.defaultBillingAddress = 1;
         }
       }
-      console.log(request);
       const response = await this.auth.register(request);
       if (response && response.statusCode === 201) {
         toastState

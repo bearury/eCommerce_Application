@@ -4,8 +4,9 @@ import styles from './input-field.module.scss';
 
 export interface InputFiledProps {
   name: string;
-  type: InputFieldType;
   callback: () => void;
+  attributes?: { type: string; value: string }[];
+  additionalClassNames?: string[];
 }
 
 export const enum InputFieldType {
@@ -21,23 +22,18 @@ export default class InputField extends View {
 
   error: ElementCreator;
 
-  constructor({ name, type, callback }: InputFiledProps) {
+  constructor({ name, callback, attributes, additionalClassNames = [] }: InputFiledProps) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [styles.inputItem],
+      classNames: [styles.inputItem, ...additionalClassNames],
     };
+    console.log(additionalClassNames);
     super(params);
-
     this.input = new ElementCreator({
       tag: 'input',
       classNames: [styles.input],
       callback: [{ event: 'input', callback }],
-      attribute: [
-        { type: 'id', value: name },
-        { type: 'autocomplete', value: 'off' },
-        { type: 'required', value: name },
-        { type: 'type', value: type },
-      ],
+      attribute: attributes,
     });
     this.label = new ElementCreator({
       tag: 'label',
@@ -96,5 +92,20 @@ export default class InputField extends View {
 
   public clearErrors() {
     this.setErrors([]);
+  }
+
+  public setValue(value: string): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.value = value;
+  }
+
+  public toggleDisabled(isDisabled: boolean): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.disabled = isDisabled;
+  }
+
+  public removeDisabled(): void {
+    const input: HTMLInputElement = this.input.getElement() as HTMLInputElement;
+    input.disabled = false;
   }
 }
