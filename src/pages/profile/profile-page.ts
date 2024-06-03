@@ -139,10 +139,11 @@ export default class ProfilePage extends View {
   private async setСustomerInfo(): Promise<void> {
     const customerInfo = await this.getcustomerInfo();
     if (customerInfo) {
-      if (customerInfo.firstName && customerInfo.lastName && customerInfo.dateOfBirth) {
+      if (customerInfo.firstName && customerInfo.lastName && customerInfo.dateOfBirth && customerInfo.version) {
         this.firstNameInput.setValue(customerInfo.firstName);
         this.lastNameInput.setValue(customerInfo.lastName);
         this.dateOfBirthInput.setValue(customerInfo.dateOfBirth);
+        localStorage.setItem('customerVersion', `${customerInfo.version}`);
       }
       this.setCustomerAddresses({
         addresses: customerInfo.addresses,
@@ -174,7 +175,8 @@ export default class ProfilePage extends View {
           currentAddress.streetName &&
           currentAddress.city &&
           currentAddress.postalCode &&
-          currentAddress.country
+          currentAddress.country &&
+          currentAddress.id
         ) {
           const addressParams = {
             street: currentAddress.streetName,
@@ -183,6 +185,7 @@ export default class ProfilePage extends View {
             country: currentAddress.country,
             isDefaultShipping: 'no',
             isDefaultBilling: 'no',
+            addressId: currentAddress.id,
           };
           if (defaultShippingAddressId && currentAddress.id && defaultShippingAddressId.includes(currentAddress.id)) {
             addressParams.isDefaultShipping = 'yes';

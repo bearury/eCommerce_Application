@@ -1,5 +1,12 @@
-import { ByProjectKeyRequestBuilder, ClientResponse, Customer } from '@commercetools/platform-sdk';
+import {
+  BaseAddress,
+  ByProjectKeyRequestBuilder,
+  ClientResponse,
+  Customer,
+  CustomerChangeAddressAction,
+} from '@commercetools/platform-sdk';
 import Api, { projectKey } from './api';
+import { loaderState, toastState } from '@state/state';
 
 class CustomerApi {
   private apiInstance: Api;
@@ -32,6 +39,38 @@ class CustomerApi {
     } catch (error) {
       console.error(error);
       throw error;
+    }
+  }
+
+  async changeAddress(customerID: string, addressID: string, address: BaseAddress): Promise<ClientResponse<Customer>> {
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: 'changeAddress',
+          addressId: addressID,
+          address: address,
+        } as CustomerChangeAddressAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      toastState.getState().toast.showSuccess('Address changed!');
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
     }
   }
 }
