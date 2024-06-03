@@ -8,6 +8,7 @@ const colors = {
   bgHeader: '#413e3b',
   bgContainer: '#665F55',
   bgBackdrop: 'rgba(64, 63, 61, 0.3)',
+  bgModal: 'rgba(64, 63, 61, 0.8)',
   bgDisabled: '#5b5653',
   borderLight: '#C1B6AD',
   borderDark: '#665F55',
