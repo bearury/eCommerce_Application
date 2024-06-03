@@ -1,0 +1,7 @@
+.userInfo {
+  @apply flex max-w-[100%] flex-col items-center justify-center gap-2 rounded-xl bg-bgContainer p-7;
+}
+
+.userInfoBlock {
+  @apply flex max-w-[50%] flex-grow flex-col items-center justify-center gap-2 rounded-xl bg-bgContainer p-7;
+}
