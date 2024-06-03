@@ -1,7 +1,7 @@
 import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
 import inputStyles from '@components/input/input-field/input-field.module.scss';
 import View from '@utils/view';
-import styles from './userInfoBlock.module.css';
+import styles from './userInfoBlock.module.scss';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator';
 import Input, { InputType } from '@components/input/input';
 import { apiInstance } from '@api/api';

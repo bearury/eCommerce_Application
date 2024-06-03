@@ -5,7 +5,7 @@ import { validationPostalCode } from '@utils/validation/postalCode';
 import { validationBase } from '@utils/validation/street';
 import inputStyles from '@components/input/input-field/input-field.module.scss';
 import View from '@utils/view';
-import styles from './address-block.module.css';
+import styles from './address-block.module.scss';
 import dropdownStyles from '@components/dropdown/dropdown.module.scss';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator';
 import Input, { InputType } from '@components/input/input';
