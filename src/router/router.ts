@@ -30,6 +30,8 @@ export default class Router {
   public navigate(route: RouterPages): void {
     const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
 
+    console.log('[33] 🎯: ', route);
+
     if (!foundPage) return;
     const path: RouterPages | undefined = getPath(foundPage.path);
 
@@ -38,7 +40,10 @@ export default class Router {
       this.handler.navigate(path);
     }
 
-    if (authState.getState().isAuthorized && (route === RouterPages.signin || route === RouterPages.signup)) {
+    if (
+      (authState.getState().isAuthorized && (route === RouterPages.signin || route === RouterPages.signup)) ||
+      (!authState.getState().isAuthorized && route === RouterPages.profile)
+    ) {
       this.handler.navigate(RouterPages.main);
     }
   }
