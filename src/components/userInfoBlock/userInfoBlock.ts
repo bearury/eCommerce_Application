@@ -9,11 +9,13 @@ import CustomerApi from '@api/customerApi';
 import InputDateField from '@components/input/input-field/input-date-field/input-date-field';
 import { validationDate } from '@utils/validation/date';
 import { validationName } from '@utils/validation/name';
+import { validationEmail } from '@utils/validation/email';
 
 export type UserInfoBlockParams = {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
+  email: string;
 };
 
 export default class UserInfoBlock extends View {
@@ -27,11 +29,15 @@ export default class UserInfoBlock extends View {
 
   firstNameInput: InputTextField;
 
+  emailInput: InputTextField;
+
   isValidName: boolean;
 
   isValidLastName: boolean;
 
   isValidDateOfBirth: boolean;
+
+  isValidEmail: boolean;
 
   saveButton: Input;
 
@@ -39,7 +45,7 @@ export default class UserInfoBlock extends View {
 
   cancelButton: ElementCreator;
 
-  constructor({ firstName, lastName, dateOfBirth }: UserInfoBlockParams) {
+  constructor({ firstName, lastName, dateOfBirth, email }: UserInfoBlockParams) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [`${styles.userInfoBlock}`],
@@ -87,6 +93,16 @@ export default class UserInfoBlock extends View {
       additionalClassNames: [`${inputStyles.userInputItem}`],
     });
     this.dateOfBirthInput.setValue(dateOfBirth);
+    this.emailInput = new InputTextField({
+      name: 'email',
+      callback: this.validateEmail.bind(this),
+      attributes: [
+        { type: 'name', value: 'email' },
+        { type: 'type', value: 'email' },
+      ],
+      additionalClassNames: [`${inputStyles.userInputItem}`],
+    });
+    this.emailInput.setValue(email);
     this.setDisabledAll(true);
     this.getElement().appendChild(this.editButton.getElement());
     this.saveButton = new Input({
@@ -100,15 +116,18 @@ export default class UserInfoBlock extends View {
     this.getElement().appendChild(this.firstNameInput.getElement());
     this.getElement().appendChild(this.lastNameInput.getElement());
     this.getElement().appendChild(this.dateOfBirthInput.getElement());
+    this.getElement().appendChild(this.emailInput.getElement());
     this.isValidName = true;
     this.isValidLastName = true;
     this.isValidDateOfBirth = true;
+    this.isValidEmail = true;
   }
 
   private setDisabledAll(isDisabled: boolean): void {
     this.firstNameInput.toggleDisabled(isDisabled);
     this.lastNameInput.toggleDisabled(isDisabled);
     this.dateOfBirthInput.toggleDisabled(isDisabled);
+    this.emailInput.toggleDisabled(isDisabled);
   }
 
   private validateDateOfBirth(): void {
@@ -132,9 +151,16 @@ export default class UserInfoBlock extends View {
     this.isAllFieldsValid();
   }
 
+  private validateEmail(): void {
+    const validationMessages: string[] = validationEmail(this.emailInput.getValue());
+    this.emailInput.setErrors(validationMessages);
+    this.isValidEmail = !validationMessages.length;
+    this.isAllFieldsValid();
+  }
+
   private isAllFieldsValid(): void {
     const saveButton = this.saveButton.getElement() as HTMLButtonElement;
-    if (this.isValidName && this.isValidLastName && this.isValidDateOfBirth) {
+    if (this.isValidName && this.isValidLastName && this.isValidDateOfBirth && this.isValidEmail) {
       saveButton.disabled = false;
     } else {
       saveButton.disabled = true;
@@ -151,6 +177,7 @@ export default class UserInfoBlock extends View {
       firstName: this.firstNameInput.getValue(),
       lastName: this.lastNameInput.getValue(),
       dateOfBirth: this.dateOfBirthInput.getValue(),
+      email: this.emailInput.getValue(),
     });
     localStorage.setItem('currentUserData', currentUserData);
   }
@@ -168,6 +195,8 @@ export default class UserInfoBlock extends View {
       this.lastNameInput.clearErrors();
       this.dateOfBirthInput.setValue(parsedUserData.dateOfBirth);
       this.dateOfBirthInput.clearErrors();
+      this.emailInput.setValue(parsedUserData.email);
+      this.emailInput.clearErrors();
     }
   }
 
@@ -177,7 +206,8 @@ export default class UserInfoBlock extends View {
         this.customerId,
         this.firstNameInput.getValue(),
         this.lastNameInput.getValue(),
-        this.dateOfBirthInput.getValue()
+        this.dateOfBirthInput.getValue(),
+        this.emailInput.getValue()
       );
       if (response.statusCode === 200) {
         this.setDisabledAll(true);

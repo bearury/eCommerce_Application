@@ -4,6 +4,7 @@ import {
   ClientResponse,
   Customer,
   CustomerChangeAddressAction,
+  CustomerChangeEmailAction,
   CustomerSetDateOfBirthAction,
   CustomerSetFirstNameAction,
   CustomerSetLastNameAction,
@@ -81,7 +82,8 @@ class CustomerApi {
     customerID: string,
     firstName: string,
     lastName: string,
-    dateOfBirth: string
+    dateOfBirth: string,
+    email: string
   ): Promise<ClientResponse<Customer>> {
     const requestBody = {
       version: Number(localStorage.getItem('customerVersion')),
@@ -98,6 +100,10 @@ class CustomerApi {
           action: 'setDateOfBirth',
           dateOfBirth: dateOfBirth,
         } as CustomerSetDateOfBirthAction,
+        {
+          action: 'changeEmail',
+          email: email,
+        } as CustomerChangeEmailAction,
       ],
     };
     try {

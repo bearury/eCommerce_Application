@@ -94,11 +94,18 @@ export default class ProfilePage extends View {
   private async setСustomerInfo(): Promise<void> {
     const customerInfo = await this.getcustomerInfo();
     if (customerInfo) {
-      if (customerInfo.firstName && customerInfo.lastName && customerInfo.dateOfBirth && customerInfo.version) {
+      if (
+        customerInfo.firstName &&
+        customerInfo.lastName &&
+        customerInfo.dateOfBirth &&
+        customerInfo.version &&
+        customerInfo.email
+      ) {
         const userInfoBlock = new UserInfoBlock({
           firstName: customerInfo.firstName,
           lastName: customerInfo.lastName,
           dateOfBirth: customerInfo.dateOfBirth,
+          email: customerInfo.email,
         });
         console.log('🚀 ~ ProfilePage ~ setСustomerInfo ~ userInfoBlock:', userInfoBlock);
         this.userInfo.getElement().appendChild(userInfoBlock.getElement());
