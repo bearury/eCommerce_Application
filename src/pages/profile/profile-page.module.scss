@@ -36,3 +36,6 @@
 .header {
   @apply my-4 text-center text-lg;
 }
+.userInfo {
+  @apply flex w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
+}

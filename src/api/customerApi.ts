@@ -5,6 +5,7 @@ import {
   Customer,
   CustomerChangeAddressAction,
   CustomerChangeEmailAction,
+  CustomerChangePassword,
   CustomerSetDateOfBirthAction,
   CustomerSetFirstNameAction,
   CustomerSetLastNameAction,
@@ -118,6 +119,33 @@ class CustomerApi {
     } catch (error) {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update user info process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
+  async changePassword(
+    customerID: string,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<ClientResponse<Customer>> {
+    const requestBody: CustomerChangePassword = {
+      id: customerID,
+      version: Number(localStorage.getItem('customerVersion')),
+      currentPassword: oldPassword,
+      newPassword: newPassword,
+    };
+    try {
+      const response = await this.customerBuilder.customers().password().post({ body: requestBody }).execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update password process, please check your inputs.';
         toastState.getState().toast.showError(message);
         console.error(error);
       }

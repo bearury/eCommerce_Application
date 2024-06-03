@@ -7,6 +7,7 @@ import { apiInstance } from '@api/api';
 import { Address, ClientResponse, Customer } from '@commercetools/platform-sdk';
 import AddressBlock from '@components/addressBlock/addressBlock';
 import UserInfoBlock from '@components/userInfoBlock/userInfoBlock';
+import ChangePasswordBlock from '@components/changePasswordBlock/changePasswordBlock';
 
 export default class ProfilePage extends View {
   container: HTMLElement;
@@ -107,8 +108,9 @@ export default class ProfilePage extends View {
           dateOfBirth: customerInfo.dateOfBirth,
           email: customerInfo.email,
         });
-        console.log('🚀 ~ ProfilePage ~ setСustomerInfo ~ userInfoBlock:', userInfoBlock);
+        const changePasswordBlock = new ChangePasswordBlock();
         this.userInfo.getElement().appendChild(userInfoBlock.getElement());
+        this.userInfo.getElement().appendChild(changePasswordBlock.getElement());
         localStorage.setItem('customerVersion', `${customerInfo.version}`);
       }
       this.setCustomerAddresses({
