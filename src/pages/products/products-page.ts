@@ -7,7 +7,7 @@ import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
-import { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
 
 export default class ProductsPage extends View {
@@ -66,20 +66,27 @@ export default class ProductsPage extends View {
   }
 
   private renderCards(): void {
-    const data: ClientResponse<ProductPagedQueryResponse> | null = productsDataState.getState().data;
+    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
 
     console.log('[71] 🎯: ', data);
 
-    if (data) {
+    if (data?.body.results.length) {
       this.pagination.setParams(data.body);
-      data.body.results.forEach((product: Product): void => {
+      data.body.results.forEach((product: ProductProjection): void => {
         const cardProduct: HTMLElement = new ProductsCard({
           data: product,
           callback: this.handleClickCard.bind(this),
         }).getElement();
         this.cardsContainer.append(cardProduct);
       });
+    } else {
+      const notFountElement = new ElementCreator({
+        tag: 'div',
+        classNames: [styles.notFound],
+        textContent: 'Products not found',
+      }).getElement();
+      this.cardsContainer.append(notFountElement);
     }
   }
 

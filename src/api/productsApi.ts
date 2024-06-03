@@ -1,5 +1,18 @@
 import Api, { projectKey } from '@api/api.ts';
-import { ByProjectKeyRequestBuilder, ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import {
+  ByProjectKeyRequestBuilder,
+  ClientResponse,
+  ProductProjectionPagedSearchResponse,
+} from '@commercetools/platform-sdk';
+import { SelectBrand, SelectColor } from '@utils/variables.ts';
+import { RangeComponentValue } from '@components/range/range';
+
+export interface GetFilterParams {
+  color: SelectColor | SelectBrand | '';
+  brand: SelectColor | SelectBrand | '';
+  price: RangeComponentValue;
+  wattage: RangeComponentValue;
+}
 
 class ProductsApi {
   private apiInstance: Api;
@@ -15,25 +28,44 @@ class ProductsApi {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async get(page: number): Promise<ClientResponse<ProductPagedQueryResponse>> {
+  async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const countProducts = 12;
     return this.customerBuilder
-      .products()
-      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page : page * countProducts } })
+      .productProjections()
+      .search()
+      .get({ queryArgs: { limit: countProducts, offset: page === 1 ? page - 1 : page * countProducts } })
       .execute();
   }
 
-  async getAttr() {
-    // const filterStr = 'variants.price.centAmount: range(20 to 100), variants.attributes.color-filter.key: "black"';
-    //
-    // const range = 'variants.price.centAmount: range(20 to 950)';
+  async getFilter(params: GetFilterParams) {
+    const filterStr = [];
+
+    if (params.color) {
+      filterStr.push(`variants.attributes.color-filter.key: "${params.color}"`);
+    }
+
+    if (params.brand) {
+      filterStr.push(`variants.attributes.brand: "${params.brand}"`);
+    }
+
+    if (params.price.statusCheckbox) {
+      filterStr.push(
+        `variants.price.centAmount: range(${String(params.price.value.min)} to ${String(params.price.value.max)}00)`
+      );
+    }
+
+    if (params.wattage.statusCheckbox) {
+      filterStr.push(
+        `variants.attributes.wattage: range(${String(params.wattage.value.min)} to ${String(params.wattage.value.max)})`
+      );
+    }
 
     return this.customerBuilder
       .productProjections()
       .search()
       .get({
         queryArgs: {
-          'filter.query': ['variants.attributes.wattage: 10'],
+          'filter.query': filterStr,
         },
       })
       .execute();

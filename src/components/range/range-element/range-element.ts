@@ -11,8 +11,13 @@ export interface RangeElementProps {
   maxValue: number;
 }
 
+export interface RangeValue {
+  min: number;
+  max: number;
+}
+
 export default class RangeElement extends View {
-  value: { min: number; max: number };
+  value: RangeValue;
 
   constructor({
     maxValue,
@@ -25,19 +30,25 @@ export default class RangeElement extends View {
       classNames: ['range'],
     };
     super(params);
-    this.value = { min: minCurrentValue, max: maxCurrentValue };
+    this.value = { max: maxCurrentValue, min: minCurrentValue };
     this.configureView({ min: minValue, max: maxValue });
   }
 
-  public getValue(): { min: number; max: number } {
+  public getValue(): RangeValue {
     return this.value;
   }
 
   private configureView({ min, max }: { min: number; max: number }): void {
     const range = this.getElement() as HTMLInputElement;
+
+    const setValue = (value: RangeValue): void => {
+      this.value = value;
+    };
+
     const slider = noUiSlider.create(range, {
       start: [this.value.min, this.value.max],
       connect: true,
+      step: max > 100 ? 10 : 1,
       tooltips: [
         {
           to: function (value: number) {
@@ -57,7 +68,7 @@ export default class RangeElement extends View {
     });
 
     slider.on('update', function (values) {
-      console.log('🍁: ', Math.round(Number(values[0])));
+      setValue({ min: Number(values[0]), max: Number(values[1]) });
     });
   }
 }

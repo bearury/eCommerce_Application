@@ -1,40 +1,50 @@
 import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './dropdown-group.module.scss';
-import { selectBrand, selectColor } from '@utils/variables.ts';
+import { SelectBrand, selectBrand, SelectColor, selectColor } from '@utils/variables.ts';
 import { DropdownElement } from '@pages/products/accordion/dropdown-group/dropdown-element/dropdown-element';
 
+export interface DropdownGroupValue {
+  brand: SelectBrand | SelectColor | '';
+  color: SelectBrand | SelectColor | '';
+}
+
 export class DropdownGroup extends View {
+  brandDropdown: DropdownElement;
+
+  colorDropdown: DropdownElement;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.blockDropdown],
     };
     super(params);
-    this.configureView();
-  }
-
-  public getValue() {
-    return 'test';
-  }
-
-  private configureView(): void {
-    const brandDropdown: HTMLElement = new DropdownElement({
+    this.brandDropdown = new DropdownElement({
       title: '🏷 Select Brand',
       callback: this.handleDropdownChange.bind(this),
       select: selectBrand,
-    }).getElement();
+    });
 
-    const colorDropdown: HTMLElement = new DropdownElement({
+    this.colorDropdown = new DropdownElement({
       title: '🖌 Select Color',
       callback: this.handleDropdownChange.bind(this),
       select: selectColor,
-    }).getElement();
-
-    this.getElement().append(colorDropdown, brandDropdown);
+    });
+    this.configureView();
   }
 
-  private handleDropdownChange(): void {
-    console.log('[30] 🎯: dropdownChange');
+  public getValue(): DropdownGroupValue {
+    return { brand: this.brandDropdown.getValue(), color: this.colorDropdown.getValue() };
   }
+
+  public clearValue(): void {
+    this.colorDropdown.clearValue();
+  }
+
+  private configureView(): void {
+    this.getElement().append(this.colorDropdown.getElement(), this.brandDropdown.getElement());
+  }
+
+  private handleDropdownChange(): void {}
 }

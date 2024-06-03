@@ -5,6 +5,8 @@ import DropdownNew from '@components/dropdown/dropdown-new/dropdown-new';
 import { ItemDropdownProps, SelectBrand, SelectColor } from '@utils/variables.ts';
 
 export class DropdownElement extends View {
+  dropdown: DropdownNew;
+
   constructor({
     title,
     callback,
@@ -20,8 +22,16 @@ export class DropdownElement extends View {
       textContent: title,
     };
     super(params);
-    const dropdown: HTMLElement = new DropdownNew(callback, select).getElement();
+    this.dropdown = new DropdownNew(callback, select);
 
-    this.getElement().append(dropdown);
+    this.getElement().append(this.dropdown.getElement());
+  }
+
+  public getValue(): SelectColor | SelectBrand | '' {
+    return this.dropdown.getValue();
+  }
+
+  public clearValue(): void {
+    this.dropdown.clearValue();
   }
 }

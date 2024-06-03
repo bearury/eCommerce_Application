@@ -55,7 +55,11 @@ export default class DropdownNew extends View {
     this.inner.classList.remove(styles.error);
   }
 
-  //
+  public clearValue() {
+    const input = this.input.getElement() as HTMLInputElement;
+    input.value = '';
+  }
+
   private configureView(): void {
     const dropdown: HTMLElement = this.getElement();
 
