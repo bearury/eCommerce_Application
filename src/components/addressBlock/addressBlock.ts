@@ -244,7 +244,11 @@ export default class AddressBlock extends View {
         city: this.cityInput.getValue(),
         country: this.countryInput.getValue(),
       });
-      console.log('🚀 ~ AddressBlock ~ saveChanges ~ response:', response);
+      if (response.statusCode === 200) {
+        this.setDisabledAll(true);
+        this.getElement().replaceChild(this.editButton.getElement(), this.cancelButton.getElement());
+        this.getElement().removeChild(this.saveButton.getElement());
+      }
     }
   }
 }

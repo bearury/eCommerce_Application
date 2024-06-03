@@ -25,10 +25,6 @@
     }
   }
 }
-.userInfo {
-  @apply flex max-w-[100%] flex-col items-center justify-center gap-2 rounded-xl bg-bgContainer p-7;
-}
-
 .addressBlock {
   @apply flex w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
 }

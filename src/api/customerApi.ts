@@ -4,6 +4,9 @@ import {
   ClientResponse,
   Customer,
   CustomerChangeAddressAction,
+  CustomerSetDateOfBirthAction,
+  CustomerSetFirstNameAction,
+  CustomerSetLastNameAction,
 } from '@commercetools/platform-sdk';
 import Api, { projectKey } from './api';
 import { loaderState, toastState } from '@state/state';
@@ -65,6 +68,50 @@ class CustomerApi {
     } catch (error) {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
+  async changeUserInfo(
+    customerID: string,
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string
+  ): Promise<ClientResponse<Customer>> {
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: 'setFirstName',
+          firstName: firstName,
+        } as CustomerSetFirstNameAction,
+        {
+          action: 'setLastName',
+          lastName: lastName,
+        } as CustomerSetLastNameAction,
+        {
+          action: 'setDateOfBirth',
+          dateOfBirth: dateOfBirth,
+        } as CustomerSetDateOfBirthAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      toastState.getState().toast.showSuccess('User info changed!');
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update user info process, please try again.';
         toastState.getState().toast.showError(message);
         console.error(error);
       }

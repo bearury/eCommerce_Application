@@ -1,17 +1,12 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
-import inputStyles from '@components/input/input-field/input-field.module.scss';
 import styles from './profile-page.module.scss';
 import Container from '@components/container/container';
 import CustomerApi from '@api/customerApi';
 import { apiInstance } from '@api/api';
 import { Address, ClientResponse, Customer } from '@commercetools/platform-sdk';
-import InputDateField from '@components/input/input-field/input-date-field/input-date-field';
-import InputTextField from '@components/input/input-field/input-password-field/input-text-field';
-import { validationDate } from '@utils/validation/date';
-import { validationName } from '@utils/validation/name';
 import AddressBlock from '@components/addressBlock/addressBlock';
-// import Dropdown from '@components/dropdown/dropdown';
+import UserInfoBlock from '@components/userInfoBlock/userInfoBlock';
 
 export default class ProfilePage extends View {
   container: HTMLElement;
@@ -19,22 +14,6 @@ export default class ProfilePage extends View {
   customerId: string = localStorage.getItem('customerID') || '';
 
   customerApi: CustomerApi = new CustomerApi(apiInstance);
-
-  dateOfBirthInput: InputDateField;
-
-  lastNameInput: InputTextField;
-
-  firstNameInput: InputTextField;
-
-  isValidName: boolean;
-
-  isValidLastName: boolean;
-
-  isValidDateOfBirth: boolean;
-
-  isValidStreet: boolean;
-
-  isValidCity: boolean;
 
   shippingAddresses: ElementCreator;
 
@@ -46,6 +25,8 @@ export default class ProfilePage extends View {
 
   billingTitle: ElementCreator;
 
+  userInfo: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -53,24 +34,9 @@ export default class ProfilePage extends View {
     };
     super(params);
     this.container = Container.get();
-    this.firstNameInput = new InputTextField({
-      name: 'first name',
-      callback: this.validateName.bind(this),
-      attributes: [{ type: 'disabled', value: 'true' }],
-      additionalClassNames: [`${inputStyles.userInputItem}`],
-    });
-    this.lastNameInput = new InputTextField({
-      name: 'last name',
-      callback: this.validateLastName.bind(this),
-      attributes: [{ type: 'disabled', value: 'true' }],
-      additionalClassNames: [`${inputStyles.userInputItem}`],
-    });
-
-    this.dateOfBirthInput = new InputTextField({
-      name: 'Date of birth',
-      callback: this.validateDateOfBirth.bind(this),
-      attributes: [{ type: 'disabled', value: 'true' }],
-      additionalClassNames: [`${inputStyles.userInputItem}`],
+    this.userInfo = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.userInfo],
     });
     this.shippingAddresses = new ElementCreator({
       tag: 'div',
@@ -100,12 +66,6 @@ export default class ProfilePage extends View {
         this.billingAddresses.getElement(),
       ],
     });
-
-    this.isValidName = false;
-    this.isValidLastName = false;
-    this.isValidDateOfBirth = false;
-    this.isValidStreet = false;
-    this.isValidCity = false;
     this.getElement().append(this.container);
     this.configureView();
     this.setСustomerInfo();
@@ -113,16 +73,11 @@ export default class ProfilePage extends View {
 
   private configureView(): void {
     const title = new ElementCreator({ tag: 'div', textContent: 'Your info ⭐', classNames: [`${styles.header}`] });
-    const userInfo = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.userInfo],
-      children: [this.firstNameInput.getElement(), this.lastNameInput.getElement(), this.dateOfBirthInput.getElement()],
-    });
 
     const userInfoBlock = new ElementCreator({
       tag: 'div',
       classNames: [styles.userInfoBlock],
-      children: [userInfo.getElement(), this.userAddresses.getElement()],
+      children: [this.userInfo.getElement(), this.userAddresses.getElement()],
     });
     this.container.append(title.getElement(), userInfoBlock.getElement());
   }
@@ -140,9 +95,13 @@ export default class ProfilePage extends View {
     const customerInfo = await this.getcustomerInfo();
     if (customerInfo) {
       if (customerInfo.firstName && customerInfo.lastName && customerInfo.dateOfBirth && customerInfo.version) {
-        this.firstNameInput.setValue(customerInfo.firstName);
-        this.lastNameInput.setValue(customerInfo.lastName);
-        this.dateOfBirthInput.setValue(customerInfo.dateOfBirth);
+        const userInfoBlock = new UserInfoBlock({
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          dateOfBirth: customerInfo.dateOfBirth,
+        });
+        console.log('🚀 ~ ProfilePage ~ setСustomerInfo ~ userInfoBlock:', userInfoBlock);
+        this.userInfo.getElement().appendChild(userInfoBlock.getElement());
         localStorage.setItem('customerVersion', `${customerInfo.version}`);
       }
       this.setCustomerAddresses({
@@ -152,6 +111,8 @@ export default class ProfilePage extends View {
         billingAddressIds: customerInfo.billingAddressIds,
         defaultBillingAddressId: customerInfo.defaultBillingAddressId,
       });
+    } else {
+      console.error('Wrong customer data!');
     }
   }
 
@@ -201,35 +162,6 @@ export default class ProfilePage extends View {
           }
         }
       });
-    }
-  }
-
-  private validateDateOfBirth(): void {
-    const validationMessages: string[] = validationDate(this.dateOfBirthInput.getValue());
-    this.dateOfBirthInput.setErrors(validationMessages);
-    this.isValidDateOfBirth = !validationMessages.length;
-    this.isAllFieldsValid();
-  }
-
-  private validateName(): void {
-    const validationMessages: string[] = validationName(this.firstNameInput.getValue());
-    this.firstNameInput.setErrors(validationMessages);
-    this.isValidName = !validationMessages.length;
-    this.isAllFieldsValid();
-  }
-
-  private validateLastName(): void {
-    const validationMessages: string[] = validationName(this.lastNameInput.getValue());
-    this.lastNameInput.setErrors(validationMessages);
-    this.isValidLastName = !validationMessages.length;
-    this.isAllFieldsValid();
-  }
-
-  isAllFieldsValid() {
-    if (this.isValidName && this.isValidLastName && this.isValidDateOfBirth) {
-      return true;
-    } else {
-      return false;
     }
   }
 }
