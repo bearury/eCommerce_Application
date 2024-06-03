@@ -28,6 +28,8 @@ export default class ProfilePage extends View {
 
   userInfo: ElementCreator;
 
+  addShippingAddress: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -47,6 +49,12 @@ export default class ProfilePage extends View {
       tag: 'div',
       classNames: [`${styles.addressBlock}`],
     });
+    this.addShippingAddress = new ElementCreator({
+      tag: 'span',
+      textContent: 'Add',
+      callback: [{ event: 'click', callback: this.addAddress.bind(this) }],
+      classNames: [`${styles.header}`],
+    });
     this.shippingTitle = new ElementCreator({
       tag: 'div',
       textContent: 'Shipping addresses 🚚',
@@ -57,6 +65,7 @@ export default class ProfilePage extends View {
       textContent: 'Billing addresses 💶',
       classNames: [`${styles.header}`],
     });
+    this.shippingTitle.getElement().appendChild(this.addShippingAddress.getElement());
     this.userAddresses = new ElementCreator({
       tag: 'div',
       classNames: [styles.userAddresses],
@@ -70,6 +79,7 @@ export default class ProfilePage extends View {
     this.getElement().append(this.container);
     this.configureView();
     this.setСustomerInfo();
+    this.getAllChildrens();
   }
 
   private configureView(): void {
@@ -125,6 +135,21 @@ export default class ProfilePage extends View {
     }
   }
 
+  private addAddress() {
+    const addressParams = {
+      street: '',
+      city: '',
+      postalCode: '',
+      country: 'US',
+      isDefaultShipping: 'no',
+      isDefaultBilling: 'no',
+      addressId: '',
+      isNewAddress: 'yes',
+    };
+    const address = new AddressBlock(addressParams).getElement();
+    this.shippingAddresses.getElement().appendChild(address);
+  }
+
   private async setCustomerAddresses(
     addressesInfo: Pick<
       Customer,
@@ -172,5 +197,9 @@ export default class ProfilePage extends View {
         }
       });
     }
+  }
+
+  private getAllChildrens() {
+    console.log(this.shippingAddresses.element.childNodes);
   }
 }

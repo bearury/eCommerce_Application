@@ -11,6 +11,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator';
 import Input, { InputType } from '@components/input/input';
 import { apiInstance } from '@api/api';
 import CustomerApi from '@api/customerApi';
+import { toastState } from '@state/state';
 
 export type AddressBlockParams = {
   street: string;
@@ -19,6 +20,7 @@ export type AddressBlockParams = {
   country: string;
   isDefaultBilling?: string;
   isDefaultShipping?: string;
+  isNewAddress?: string;
   addressId: string;
 };
 
@@ -47,11 +49,15 @@ export default class AddressBlock extends View {
 
   saveButton: Input;
 
+  addAddressButton: Input;
+
   editButton: ElementCreator;
 
   cancelButton: ElementCreator;
 
   addressId: string;
+
+  isNewAddress: string;
 
   constructor({
     street,
@@ -61,6 +67,7 @@ export default class AddressBlock extends View {
     isDefaultShipping,
     isDefaultBilling,
     addressId,
+    isNewAddress,
   }: AddressBlockParams) {
     const params: ParamsElementCreator = {
       tag: 'div',
@@ -120,11 +127,22 @@ export default class AddressBlock extends View {
     this.postalCodeInput.setValue(postalCode);
     this.countryInput = new Dropdown(this.clearPostalCode.bind(this), [`${dropdownStyles.dropdown}`]);
     this.countryInput.setValue(country);
-    this.setDisabledAll(true);
+    this.addAddressButton = new Input({
+      inputType: InputType.submit,
+      callbacks: [{ event: 'click', callback: this.addAddress.bind(this) }],
+      classNames: [inputStyles.input, inputStyles.emailInput],
+      inputName: 'addAddress',
+      value: 'Add',
+      disabled: true,
+    });
     if (isDefaultBilling === 'yes' || isDefaultShipping === 'yes') {
       this.getElement().appendChild(this.defaultLabel.getElement());
     }
-    this.getElement().appendChild(this.editButton.getElement());
+    this.isNewAddress = isNewAddress || 'no';
+    if (this.isNewAddress !== 'yes') {
+      this.getElement().appendChild(this.editButton.getElement());
+      this.setDisabledAll(true);
+    }
     this.getElement().appendChild(this.streetNameInput.getElement());
     this.getElement().appendChild(this.cityInput.getElement());
     this.postalAndCountryBlock.getElement().appendChild(this.postalCodeInput.getElement());
@@ -133,6 +151,12 @@ export default class AddressBlock extends View {
     this.isValidStreet = true;
     this.isValidCity = true;
     this.isValidPostalCode = true;
+    if (this.isNewAddress === 'yes') {
+      this.getElement().appendChild(this.addAddressButton.getElement());
+      this.isValidStreet = false;
+      this.isValidCity = false;
+      this.isValidPostalCode = false;
+    }
     this.saveButton = new Input({
       inputType: InputType.submit,
       callbacks: [{ event: 'click', callback: this.saveChanges.bind(this) }],
@@ -140,6 +164,7 @@ export default class AddressBlock extends View {
       inputName: 'save',
       value: 'Save',
     });
+
     this.addressId = addressId;
     this.setAddressId(this.addressId);
   }
@@ -152,7 +177,6 @@ export default class AddressBlock extends View {
   }
 
   private validateStreet(): void {
-    console.log(this.streetNameInput.getValue());
     const validationMessages: string[] = validationBase(this.streetNameInput.getValue());
     this.streetNameInput.setErrors(validationMessages);
     this.isValidStreet = !validationMessages.length;
@@ -197,9 +221,12 @@ export default class AddressBlock extends View {
 
   private isAllFieldsValid(): void {
     const saveButton = this.saveButton.getElement() as HTMLButtonElement;
+    const addAddressButton = this.addAddressButton.getElement() as HTMLButtonElement;
     if (this.isValidStreet && this.isValidCity && this.isValidPostalCode) {
+      addAddressButton.disabled = false;
       saveButton.disabled = false;
     } else {
+      addAddressButton.disabled = true;
       saveButton.disabled = true;
     }
   }
@@ -233,6 +260,31 @@ export default class AddressBlock extends View {
       this.cityInput.setValue(parsedAddress.city);
       this.cityInput.clearErrors();
       this.countryInput.setValue(parsedAddress.country);
+    }
+  }
+
+  private async addAddress() {
+    if (!this.customerId) {
+      throw new Error('Empty customer id');
+    }
+    const response = await this.customerApi.addAddress(this.customerId, {
+      streetName: this.streetNameInput.getValue(),
+      postalCode: this.postalCodeInput.getValue(),
+      city: this.cityInput.getValue(),
+      country: this.countryInput.getValue(),
+    });
+    if (response.statusCode === 200) {
+      const responseUser = await this.customerApi.setBillingOrShipping(this.customerId, response.body, 'shipping');
+      const addressId = responseUser.body.addresses.at(-1)?.id;
+      if (!addressId) {
+        throw new Error('No address id!');
+      }
+      this.setAddressId(addressId);
+      this.addressId = addressId;
+      this.setDisabledAll(true);
+      this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
+      this.getElement().removeChild(this.addAddressButton.getElement());
+      toastState.getState().toast.showSuccess('Address added!');
     }
   }
 

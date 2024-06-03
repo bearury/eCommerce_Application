@@ -3,6 +3,9 @@ import {
   ByProjectKeyRequestBuilder,
   ClientResponse,
   Customer,
+  CustomerAddAddressAction,
+  CustomerAddBillingAddressIdAction,
+  CustomerAddShippingAddressIdAction,
   CustomerChangeAddressAction,
   CustomerChangeEmailAction,
   CustomerChangePassword,
@@ -39,7 +42,6 @@ class CustomerApi {
   async getCustomer(customerID: string): Promise<ClientResponse<Customer>> {
     try {
       const customer = await this.customerBuilder.customers().withId({ ID: customerID }).get().execute();
-      console.log(customer);
       return customer;
     } catch (error) {
       console.error(error);
@@ -47,7 +49,11 @@ class CustomerApi {
     }
   }
 
-  async changeAddress(customerID: string, addressID: string, address: BaseAddress): Promise<ClientResponse<Customer>> {
+  public async changeAddress(
+    customerID: string,
+    addressID: string,
+    address: BaseAddress
+  ): Promise<ClientResponse<Customer>> {
     const requestBody = {
       version: Number(localStorage.getItem('customerVersion')),
       actions: [
@@ -79,7 +85,75 @@ class CustomerApi {
     }
   }
 
-  async changeUserInfo(
+  public async addAddress(customerID: string, address: BaseAddress): Promise<ClientResponse<Customer>> {
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: 'addAddress',
+          address: address,
+        } as CustomerAddAddressAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
+  public async setBillingOrShipping(customerID: string, responseBody: Customer, addressType: string) {
+    if (!responseBody.addresses) {
+      throw new Error("Can't find addresses");
+    }
+    const addressId = responseBody.addresses[responseBody.addresses.length - 1].id;
+    if (!addressId) {
+      throw new Error('No address id!');
+    }
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: addressType === 'shipping' ? 'addShippingAddressId' : 'addBillingAddressId',
+          addressId: addressId,
+        } as CustomerAddShippingAddressIdAction | CustomerAddBillingAddressIdAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      if (response.statusCode === 200) {
+        toastState.getState().toast.showSuccess('Address added!');
+      }
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    }
+  }
+
+  public async changeUserInfo(
     customerID: string,
     firstName: string,
     lastName: string,
@@ -128,7 +202,7 @@ class CustomerApi {
     }
   }
 
-  async changePassword(
+  public async changePassword(
     customerID: string,
     oldPassword: string,
     newPassword: string
