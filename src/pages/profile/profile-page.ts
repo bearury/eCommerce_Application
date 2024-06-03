@@ -30,6 +30,8 @@ export default class ProfilePage extends View {
 
   addShippingAddress: ElementCreator;
 
+  addBillingAddress: ElementCreator;
+
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -52,7 +54,13 @@ export default class ProfilePage extends View {
     this.addShippingAddress = new ElementCreator({
       tag: 'span',
       textContent: 'Add',
-      callback: [{ event: 'click', callback: this.addAddress.bind(this) }],
+      callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'shipping') }],
+      classNames: [`${styles.header}`],
+    });
+    this.addBillingAddress = new ElementCreator({
+      tag: 'span',
+      textContent: 'Add',
+      callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'billing') }],
       classNames: [`${styles.header}`],
     });
     this.shippingTitle = new ElementCreator({
@@ -66,6 +74,7 @@ export default class ProfilePage extends View {
       classNames: [`${styles.header}`],
     });
     this.shippingTitle.getElement().appendChild(this.addShippingAddress.getElement());
+    this.billingTitle.getElement().appendChild(this.addBillingAddress.getElement());
     this.userAddresses = new ElementCreator({
       tag: 'div',
       classNames: [styles.userAddresses],
@@ -135,7 +144,7 @@ export default class ProfilePage extends View {
     }
   }
 
-  private addAddress() {
+  private addAddress(addressType: string) {
     const addressParams = {
       street: '',
       city: '',
@@ -145,9 +154,11 @@ export default class ProfilePage extends View {
       isDefaultBilling: 'no',
       addressId: '',
       isNewAddress: 'yes',
+      addressType: addressType,
     };
     const address = new AddressBlock(addressParams).getElement();
-    this.shippingAddresses.getElement().appendChild(address);
+    if (addressType === 'shipping') this.shippingAddresses.getElement().appendChild(address);
+    if (addressType === 'billing') this.billingAddresses.getElement().appendChild(address);
   }
 
   private async setCustomerAddresses(

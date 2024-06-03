@@ -22,6 +22,7 @@ export type AddressBlockParams = {
   isDefaultShipping?: string;
   isNewAddress?: string;
   addressId: string;
+  addressType?: string;
 };
 
 export default class AddressBlock extends View {
@@ -59,6 +60,8 @@ export default class AddressBlock extends View {
 
   isNewAddress: string;
 
+  addressType?: string;
+
   constructor({
     street,
     city,
@@ -68,6 +71,7 @@ export default class AddressBlock extends View {
     isDefaultBilling,
     addressId,
     isNewAddress,
+    addressType,
   }: AddressBlockParams) {
     const params: ParamsElementCreator = {
       tag: 'div',
@@ -91,6 +95,7 @@ export default class AddressBlock extends View {
       callback: [{ event: 'click', callback: this.cancelEditAddress.bind(this) }],
       classNames: [`${styles.editButton}`],
     });
+    this.addressType = addressType || 'shipping';
     this.postalAndCountryBlock = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.postalCodeBlock}`],
@@ -274,7 +279,11 @@ export default class AddressBlock extends View {
       country: this.countryInput.getValue(),
     });
     if (response.statusCode === 200) {
-      const responseUser = await this.customerApi.setBillingOrShipping(this.customerId, response.body, 'shipping');
+      const responseUser = await this.customerApi.setBillingOrShipping(
+        this.customerId,
+        response.body,
+        this.addressType
+      );
       const addressId = responseUser.body.addresses.at(-1)?.id;
       if (!addressId) {
         throw new Error('No address id!');
