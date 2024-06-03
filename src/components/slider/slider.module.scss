@@ -6,7 +6,7 @@
   @apply flex;
 
   .img {
-    @apply h-96 w-96 bg-contain bg-center bg-no-repeat object-contain;
+    @apply h-96 w-96 cursor-pointer bg-contain bg-center bg-no-repeat object-contain;
   }
 }
 
@@ -17,7 +17,7 @@
   .nextBtn,
   .prevBtn {
     top: 37%;
-    @apply absolute z-10 flex h-8 w-8 translate-y-2/4 cursor-pointer items-center justify-center rounded-full text-2xl font-bold hover:bg-bgBackdrop sm:top-full;
+    @apply absolute flex h-8 w-8 translate-y-2/4 cursor-pointer items-center justify-center rounded-full text-2xl font-bold hover:bg-bgBackdrop sm:top-full;
   }
 
   .nextBtn {
@@ -38,5 +38,13 @@
     &.active {
       @apply bg-bgContainer;
     }
+  }
+}
+
+.subSlider {
+  .img {
+    @apply cursor-default;
+    width: 30rem;
+    height: 30rem;
   }
 }

@@ -1,6 +1,7 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './slider.module.scss';
+import { ModalSlider } from './modal-slider/modal-slider';
 
 export class Slider extends View {
   navigation: HTMLElement;
@@ -93,14 +94,13 @@ export class Slider extends View {
   private configureView(images: string[]): void {
     const slider: HTMLElement = this.getElement();
 
-    images.map((img: string) => {
-      // const elem = new Image({ classNames: [styles.img], img });
-      const el = new ElementCreator({ tag: 'div', classNames: [styles.img] });
-      el.getElement().style.backgroundImage = `url(${img})`;
+    images.map((imgUrl: string) => {
+      const imgElem = new ElementCreator({ tag: 'div', classNames: [styles.img] });
+      imgElem.getElement().style.backgroundImage = `url(${imgUrl})`;
       if (images.length === 1) this.navigation.style.display = 'none';
       const dot = new ElementCreator({ tag: 'span', classNames: [styles.dot] });
-      this.slides.push(el.getElement());
-      this.slidesBlock.append(el.getElement());
+      this.slides.push(imgElem.getElement());
+      this.slidesBlock.append(imgElem.getElement());
       this.pagination.append(dot.getElement());
     });
 
@@ -131,6 +131,18 @@ export class Slider extends View {
       }
     });
 
+    this.slides.map((slideItem) => {
+      slideItem.addEventListener('click', this.renderModal.bind(this, images));
+    });
+
     slider.append(this.navigation, this.slidesBlock, this.pagination);
+  }
+
+  private renderModal(images: string[]): void {
+    const subModalSlider = new Slider(images);
+    subModalSlider.getElement().classList.add(styles.subSlider);
+    subModalSlider.updateSlider();
+    const modal = new ModalSlider(subModalSlider).getElement();
+    document.body.append(modal);
   }
 }
