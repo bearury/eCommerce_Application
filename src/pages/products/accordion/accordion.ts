@@ -97,14 +97,20 @@ export default class Accordion extends View {
         toastState.getState().toast.showError('Select at least one condition');
         return;
       }
+
+      productsDataState.getState().setCurrentPage(1);
+
       loaderState.getState().loader.show();
       this.api
-        .getFilter({
-          brand,
-          color,
-          price,
-          wattage,
-        })
+        .getFilter(
+          {
+            brand,
+            color,
+            price,
+            wattage,
+          },
+          productsDataState.getState().currentPage
+        )
         .then((data) => {
           productsDataState.getState().setData(data);
         })

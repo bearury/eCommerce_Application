@@ -1,5 +1,5 @@
 .card {
-  @apply flex cursor-pointer flex-col rounded border border-bgHeader p-3 transition-all hover:shadow-button;
+  @apply flex cursor-pointer flex-col rounded border border-bgHeader p-3 transition-all hover:shadow-button relative;
 
 
   .image {
