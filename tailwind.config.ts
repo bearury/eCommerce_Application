@@ -11,6 +11,9 @@ const colors = {
   bgDisabled: '#5b5653',
   borderLight: '#C1B6AD',
   borderDark: '#665F55',
+  textPriceUSD: '#137b39',
+  textPriceEUR: '#24370f',
+  textPriceDiscount: '#d71b1b',
 };
 
 export default {
@@ -32,7 +35,7 @@ export default {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
       },
       content: {
-        empty: '\'\'',
+        empty: "''",
       },
       animation: {
         progress: 'progress 5s linear forwards',
