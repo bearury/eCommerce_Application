@@ -8,9 +8,12 @@ import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import Accordion from '@pages/products/accordion/accordion';
 
 export default class ProductsPage extends View {
   router: Router;
+
+  accordion: Accordion;
 
   productsApi: ProductsApi;
 
@@ -31,13 +34,17 @@ export default class ProductsPage extends View {
 
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
-
+    this.accordion = new Accordion();
     this.configureView();
     this.getProductApi(productsDataState.getState().currentPage);
   }
 
   private configureView(): void {
-    this.getElement().append(this.cardsContainer, this.pagination.getElement());
+    const content = new ElementCreator({
+      tag: 'div',
+      children: [this.cardsContainer, this.pagination.getElement()],
+    }).getElement();
+    this.getElement().append(this.accordion.getElement(), content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
@@ -61,10 +68,9 @@ export default class ProductsPage extends View {
   private renderCards(): void {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
+    console.log('[71] 🎯: ', data);
 
-    console.log('[65] 🥕: ', data);
-
-    if (data) {
+    if (data?.body.results.length) {
       this.pagination.setParams(data.body);
       data.body.results.forEach((product: ProductProjection): void => {
         const cardProduct: HTMLElement = new ProductsCard({
@@ -73,6 +79,13 @@ export default class ProductsPage extends View {
         }).getElement();
         this.cardsContainer.append(cardProduct);
       });
+    } else {
+      const notFountElement = new ElementCreator({
+        tag: 'div',
+        classNames: [styles.notFound],
+        textContent: 'Products not found',
+      }).getElement();
+      this.cardsContainer.append(notFountElement);
     }
   }
 

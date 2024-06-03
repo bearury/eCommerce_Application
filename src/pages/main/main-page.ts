@@ -59,6 +59,6 @@ export default class MainPage extends View {
 
   private handlerClickGoRegistration(): void {
     // this.router.navigate(RouterPages.signup);
-    this.api.getDisc().then((t) => console.log('[62] 🚧: ', t));
+    this.api.getAttr().then((t) => console.log('🌻:', t));
   }
 }
