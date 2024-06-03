@@ -10,11 +10,14 @@ import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
 import SortingBlock from './sorting/sorting';
+import SearchingField from './searching/searching';
 
 export default class ProductsPage extends View {
   router: Router;
 
   sortingBlock: HTMLElement;
+
+  searchingBlock: HTMLElement;
 
   accordion: Accordion;
 
@@ -35,6 +38,7 @@ export default class ProductsPage extends View {
     this.productsApi = new ProductsApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
 
+    this.searchingBlock = new SearchingField().getElement();
     this.sortingBlock = new SortingBlock().getElement();
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
@@ -48,7 +52,7 @@ export default class ProductsPage extends View {
       tag: 'div',
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
-    this.getElement().append(this.sortingBlock, this.accordion.getElement(), content);
+    this.getElement().append(this.searchingBlock, this.sortingBlock, this.accordion.getElement(), content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
