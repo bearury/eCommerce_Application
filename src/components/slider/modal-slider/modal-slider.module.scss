@@ -3,7 +3,7 @@
 }
 
 .modal {
-  @apply relative m-auto h-5/6 w-11/12 overflow-y-scroll rounded-2xl bg-bgBody transition-all;
+  @apply relative m-auto h-5/6 w-11/12 rounded-2xl bg-bgBody transition-all;
 
   .modalHeader {
     @apply flex h-14 items-center justify-end rounded-2xl bg-bgContainer px-6;
@@ -14,6 +14,6 @@
   }
 
   .sliderBlock {
-    @apply flex items-center py-6;
+    @apply flex items-center overflow-y-scroll py-6;
   }
 }

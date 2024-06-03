@@ -43,6 +43,7 @@
 
 .subSlider {
   .img {
+    @apply cursor-default;
     width: 30rem;
     height: 30rem;
   }

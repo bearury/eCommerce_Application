@@ -132,16 +132,17 @@ export class Slider extends View {
     });
 
     this.slides.map((slideItem) => {
-      slideItem.addEventListener('click', () => {
-        const subModalSlider = new Slider(images);
-        subModalSlider.getElement().classList.add(styles.subSlider);
-        subModalSlider.updateSlider();
-        const modal = new ModalSlider(subModalSlider);
-        document.body.append(modal.getElement());
-        console.log(modal);
-      });
+      slideItem.addEventListener('click', this.renderModal.bind(this, images));
     });
 
     slider.append(this.navigation, this.slidesBlock, this.pagination);
+  }
+
+  private renderModal(images: string[]): void {
+    const subModalSlider = new Slider(images);
+    subModalSlider.getElement().classList.add(styles.subSlider);
+    subModalSlider.updateSlider();
+    const modal = new ModalSlider(subModalSlider).getElement();
+    document.body.append(modal);
   }
 }
