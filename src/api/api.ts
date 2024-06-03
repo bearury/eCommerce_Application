@@ -55,7 +55,6 @@ class Api {
   }
 
   createAnonymousSession(): ApiRoot {
-    console.log('anon sess');
     const options: AnonymousAuthMiddlewareOptions = {
       host: this.authUrl,
       projectKey,
@@ -75,7 +74,6 @@ class Api {
   }
 
   createAuthenticatedSession(user: CustomerSignin): ApiRoot {
-    console.log('auth sess');
     const passwordAuthMiddlewareOptions: PasswordAuthMiddlewareOptions = {
       host: this.authUrl,
       projectKey,
