@@ -1,5 +1,6 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
+import inputStyles from '@components/input/input-field/input-field.module.scss';
 import styles from './profile-page.module.scss';
 import Container from '@components/container/container';
 import CustomerApi from '@api/customerApi';
@@ -25,13 +26,12 @@ export default class ProfilePage extends View {
   shippingTitle: ElementCreator;
 
   billingTitle: ElementCreator;
-
+  
   userInfo: ElementCreator;
 
   addShippingAddress: ElementCreator;
 
   addBillingAddress: ElementCreator;
-
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'section',
@@ -93,7 +93,6 @@ export default class ProfilePage extends View {
 
   private configureView(): void {
     const title = new ElementCreator({ tag: 'div', textContent: 'Your info ⭐', classNames: [`${styles.header}`] });
-
     const userInfoBlock = new ElementCreator({
       tag: 'div',
       classNames: [styles.userInfoBlock],
@@ -160,7 +159,6 @@ export default class ProfilePage extends View {
     if (addressType === 'shipping') this.shippingAddresses.getElement().appendChild(address);
     if (addressType === 'billing') this.billingAddresses.getElement().appendChild(address);
   }
-
   private async setCustomerAddresses(
     addressesInfo: Pick<
       Customer,

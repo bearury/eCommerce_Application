@@ -3,18 +3,22 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
 import { apiInstance } from '@api/api';
-// import Image from '@components/image/image';
 import { loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
-// import noImage from '/noImage.png';
 import { Slider } from '@components/slider/slider';
+import { Price } from '@commercetools/platform-sdk';
+import converterPrice from '@utils/converter-price';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
   name: HTMLElement;
 
   description: HTMLElement;
+
+  discountBlock: HTMLElement;
+
+  priceBlock: HTMLElement;
 
   infoBlock: HTMLElement;
 
@@ -35,6 +39,16 @@ export default class CardProductPage extends View {
       classNames: [styles.name],
     }).getElement();
 
+    this.discountBlock = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.priceBlock, styles.discountBlock],
+    }).getElement();
+
+    this.priceBlock = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.priceBlock],
+    }).getElement();
+
     this.description = new ElementCreator({
       tag: 'div',
       classNames: [styles.description],
@@ -43,7 +57,7 @@ export default class CardProductPage extends View {
     this.infoBlock = new ElementCreator({
       tag: 'div',
       classNames: [styles.infoBlock],
-      children: [this.name, this.description],
+      children: [this.name, this.discountBlock, this.priceBlock, this.description],
     }).getElement();
 
     this.imgBlock = new ElementCreator({
@@ -59,12 +73,44 @@ export default class CardProductPage extends View {
     const product = new ProductCard(apiInstance);
     try {
       loaderState.getState().loader.show();
+
       product
         .getProductByID(resource)
         .then((data) => {
           this.name.textContent = data.body.masterData.current.name[locale];
+
           const desc = data.body.masterData.current.description;
           this.description.textContent = desc ? desc[locale] : '0';
+
+          const prices: Price[] | undefined = data.body.masterData.staged.masterVariant.prices?.filter(
+            (price: Price) => price.value.currencyCode === 'EUR' || price.value.currencyCode === 'USD'
+          );
+
+          prices?.forEach((price) => {
+            const priceElement = new ElementCreator({
+              tag: 'span',
+              classNames: [styles.price],
+              textContent: `${converterPrice(price.value)} ${price.value.currencyCode}`,
+            }).getElement();
+
+            if (price.discounted) {
+              priceElement.classList.add(styles.priceDiscount);
+              const priseDiscountElement: ElementCreator = new ElementCreator({
+                tag: 'span',
+                classNames: [styles.discountPrice],
+                textContent: `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`,
+              });
+
+              if (price.country === 'US') {
+                this.discountBlock.append(priseDiscountElement.getElement());
+              } else if (price.country === 'DE') {
+                this.discountBlock.append(priseDiscountElement.getElement());
+              }
+            }
+
+            this.priceBlock.append(priceElement);
+          });
+
           const imgArray = data.body.masterData.staged.masterVariant.images;
           const imgUrlArray: string[] = [];
           if (imgArray) {

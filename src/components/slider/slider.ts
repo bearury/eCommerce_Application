@@ -97,6 +97,7 @@ export class Slider extends View {
       // const elem = new Image({ classNames: [styles.img], img });
       const el = new ElementCreator({ tag: 'div', classNames: [styles.img] });
       el.getElement().style.backgroundImage = `url(${img})`;
+      if (images.length === 1) this.navigation.style.display = 'none';
       const dot = new ElementCreator({ tag: 'span', classNames: [styles.dot] });
       this.slides.push(el.getElement());
       this.slidesBlock.append(el.getElement());

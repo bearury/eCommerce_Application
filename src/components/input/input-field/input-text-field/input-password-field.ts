@@ -7,7 +7,6 @@ type InputPasswordFieldProps = Omit<InputFiledProps, 'type'>;
 
 export default class InputPasswordField extends InputField {
   icon: ElementCreator;
-
   constructor({ name, callback, attributes }: InputPasswordFieldProps) {
     super({ name, callback, attributes });
     this.icon = new ElementCreator({

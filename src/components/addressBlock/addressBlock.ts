@@ -13,6 +13,7 @@ import { apiInstance } from '@api/api';
 import CustomerApi from '@api/customerApi';
 import { toastState } from '@state/state';
 
+
 export type AddressBlockParams = {
   street: string;
   city: string;
@@ -47,7 +48,7 @@ export default class AddressBlock extends View {
   postalAndCountryBlock: ElementCreator;
 
   defaultLabel: ElementCreator;
-
+  
   saveButton: Input;
 
   addAddressButton: Input;
@@ -227,7 +228,6 @@ export default class AddressBlock extends View {
     this.isValidPostalCode = false;
     this.isAllFieldsValid();
   }
-
   private setAddressId(id: string): void {
     const addressBlock = this.getElement() as HTMLDivElement;
     addressBlock.setAttribute('data-id', id);
