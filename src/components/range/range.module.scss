@@ -1,0 +1,15 @@
+.range {
+  @apply w-full;
+
+  .label {
+    @apply mb-2 w-full text-xl font-bold text-textAccent;
+
+    .blockLabel {
+      @apply flex items-center justify-center gap-3 pt-2;
+    }
+
+    .checkboxBlock {
+      @apply w-32 text-sm;
+    }
+  }
+}

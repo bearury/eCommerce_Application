@@ -45,10 +45,17 @@ export default class MainPage extends View {
       callback: [{ event: 'click', callback: this.handlerClickGoRegistration.bind(this) }],
     }).getElement();
 
+    const testButton3: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.button],
+      textContent: 'Go Profile Page',
+      callback: [{ event: 'click', callback: this.handlerClickGoProfilePage.bind(this) }],
+    }).getElement();
+
     const container: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.container],
-      children: [title, testButton, testButton2],
+      children: [title, testButton, testButton2, testButton3],
     }).getElement();
     mainPage.append(container);
   }
@@ -58,7 +65,10 @@ export default class MainPage extends View {
   }
 
   private handlerClickGoRegistration(): void {
-    // this.router.navigate(RouterPages.signup);
-    this.api.getDisc().then((t) => console.log('[62] 🚧: ', t));
+    this.router.navigate(RouterPages.signup);
+  }
+
+  private handlerClickGoProfilePage(): void {
+    this.router.navigate(RouterPages.profile);
   }
 }

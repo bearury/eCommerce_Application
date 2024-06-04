@@ -1,0 +1,7 @@
+.blockButton {
+  @apply flex gap-3;
+
+  .button {
+    @apply mt-3 rounded border border-borderLight bg-bgContainer px-4 py-2 text-bgBody transition-all hover:bg-bgDisabled hover:text-textAccent;
+  }
+}
