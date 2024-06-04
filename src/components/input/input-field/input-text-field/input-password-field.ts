@@ -6,9 +6,17 @@ import styles from './input-password-field.module.scss';
 type InputPasswordFieldProps = Omit<InputFiledProps, 'type'>;
 
 export default class InputPasswordField extends InputField {
+  
+  icon: ElementCreator;
+  
   constructor({ name, callback, attributes }: InputPasswordFieldProps) {
     super({ name, callback, attributes });
-
+    this.icon = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.button],
+      attribute: [{ type: 'type', value: 'button' }],
+      callback: [{ event: 'click', callback: this.changeType.bind(this) }],
+    });
     this.renderButton();
   }
 
@@ -23,13 +31,15 @@ export default class InputPasswordField extends InputField {
 
   private renderButton(): void {
     const input = this.input.getElement();
-    const icon: HTMLElement = new ElementCreator({
-      tag: 'button',
-      classNames: [styles.button],
-      attribute: [{ type: 'type', value: 'button' }],
-      callback: [{ event: 'click', callback: this.changeType.bind(this) }],
-    }).getElement();
-    icon.innerHTML = svgHtmlEye;
-    input.before(icon);
+    this.icon.getElement().innerHTML = svgHtmlEye;
+    input.before(this.icon.getElement());
+  }
+
+  public toggleDisabled(isDisabled: boolean): void {
+    super.toggleDisabled(isDisabled);
+    const input = this.input.getElement() as HTMLInputElement;
+    const icon = this.icon.getElement() as HTMLButtonElement;
+    icon.disabled = isDisabled;
+    input.disabled = isDisabled;
   }
 }
