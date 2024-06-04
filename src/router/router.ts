@@ -1,7 +1,8 @@
 import { RouterPages } from '../app/app';
 import HandlerRouter from './handler';
-import { authState, routerState } from '@state/state.ts';
+import { authState, categoryState, routerState } from '@state/state.ts';
 import getPath from '@utils/get-path.ts';
+import { getAncestorKeys } from '@utils/categories-formatter.ts';
 
 export type Route = { path: string; callback: Function };
 
@@ -13,6 +14,7 @@ export default class Router {
   constructor(routes: Array<Route>) {
     this.routes = routes;
     this.handler = new HandlerRouter(this.urlChangedHandler.bind(this));
+    categoryState.subscribe(() => this.handleCategoriesChange());
   }
 
   public resourceNavigation(id: string): void {
@@ -30,6 +32,8 @@ export default class Router {
   public navigate(route: RouterPages): void {
     const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
 
+    console.log('[33] 🍄: ', route);
+
     if (!foundPage) return;
     const path: RouterPages | undefined = getPath(foundPage.path);
 
@@ -43,6 +47,20 @@ export default class Router {
       (!authState.getState().isAuthorized && route === RouterPages.profile)
     ) {
       this.handler.navigate(RouterPages.main);
+    }
+  }
+
+  private handleCategoriesChange(): void {
+    const path = getAncestorKeys(categoryState.getState().categories, categoryState.getState().category as string).join(
+      '/'
+    );
+
+    console.log('🖌: ', path);
+
+    const fillPath = `${RouterPages.products}/${path}`;
+
+    if (path.length) {
+      this.handler.navigateForCategories(fillPath);
     }
   }
 

@@ -4,6 +4,7 @@ export interface ModifyCategory {
   id: string;
   key: string;
   ancestors: { typeId: string; id: string }[];
+  name: string;
   children?: ModifyCategory[];
 }
 
@@ -14,6 +15,7 @@ export function categoriesCreator(data: ClientResponse<CategoryPagedQueryRespons
     id: cat.id,
     key: cat.key,
     ancestors: cat.ancestors,
+    name: cat.name['en-US'],
   })) as ModifyCategory[];
 
   const categoryMap: { [id: string]: ModifyCategory & { children?: ModifyCategory[] | undefined } } = {};

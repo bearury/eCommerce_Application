@@ -27,8 +27,14 @@ export default class HandlerRouter {
 
     const historyUrl = resource ? `${event}/${resource}` : event;
 
+    console.log('[30] 🎯: ', historyUrl);
+
     this.callback({ path: event, resource });
     this.setHistory(historyUrl, NavigationDirection.forward);
+  }
+
+  public navigateForCategories(path: string): void {
+    this.setHistory(path, NavigationDirection.forward);
   }
 
   private handleRoutePopState(e: PopStateEvent): void {
@@ -73,6 +79,8 @@ export default class HandlerRouter {
     const path: string[] = window.location.pathname.slice(1).split('/');
     const foundPath: RouterPages | undefined = getPath(path[0]);
     const resource = path[1];
+
+    console.log('[83] 🚧: ', foundPath);
 
     if (
       (authState.getState().isAuthorized && (foundPath === RouterPages.signin || foundPath === RouterPages.signup)) ||

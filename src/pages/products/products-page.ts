@@ -9,9 +9,10 @@ import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
-import CategoriesSelect from '@pages/products/aside/categories-select';
+import CategoriesSelect from '@pages/products/categories-select/categories-select';
 import CategoriesApi from '@api/categoriesApi.ts';
 import { categoriesCreator } from '@utils/categories-creator.ts';
+import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -54,7 +55,9 @@ export default class ProductsPage extends View {
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
 
-    this.getElement().append(this.accordion.getElement(), this.categories.getElement(), content);
+    const breadcrumbs = new Breadcrumbs().getElement();
+
+    this.getElement().append(breadcrumbs, this.accordion.getElement(), this.categories.getElement(), content);
   }
 
   private async getProductApi(page: number = 1): Promise<void> {

@@ -4,6 +4,7 @@ import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
 import Loader from '@components/loader/loader';
 import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { ModifyCategory } from '@utils/categories-creator.ts';
 
 interface RouterState {
   page: RouterPages | null;
@@ -81,4 +82,20 @@ const filterState = createStore(
   }))
 );
 
-export { routerState, toastState, loaderState, authState, filterState, productsDataState };
+interface CategoryState {
+  categories: ModifyCategory[] | [];
+  category: string | null;
+  setCategory: (category: string) => void;
+  setCategories: (categories: ModifyCategory[]) => void;
+}
+
+const categoryState = createStore(
+  devtools<CategoryState>((set) => ({
+    categories: [],
+    category: null,
+    setCategory: (category: string) => set(() => ({ category })),
+    setCategories: (categories: ModifyCategory[]) => set(() => ({ categories })),
+  }))
+);
+
+export { routerState, toastState, loaderState, authState, filterState, productsDataState, categoryState };
