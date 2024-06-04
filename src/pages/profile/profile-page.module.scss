@@ -39,3 +39,6 @@
 .userInfo {
   @apply flex w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
 }
+.button {
+  @apply flex;
+}
