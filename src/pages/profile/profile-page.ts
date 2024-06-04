@@ -53,13 +53,13 @@ export default class ProfilePage extends View {
     });
     this.addShippingAddress = new ElementCreator({
       tag: 'span',
-      textContent: 'Add',
+      textContent: 'Add shipping address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'shipping') }],
       classNames: [`${styles.header}`],
     });
     this.addBillingAddress = new ElementCreator({
       tag: 'span',
-      textContent: 'Add',
+      textContent: 'Add billing address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'billing') }],
       classNames: [`${styles.header}`],
     });
