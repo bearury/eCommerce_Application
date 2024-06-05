@@ -2,27 +2,37 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './categories-select.module.scss';
 import { ModifyCategory } from '@utils/categories-creator.ts';
-import { categoryState } from '@state/state.ts';
+import { categoryState, loaderState, productsDataState, toastState } from '@state/state.ts';
+import ProductsApi from '@api/productsApi.ts';
+import { apiInstance } from '@api/api.ts';
+import Router from '@router/router.ts';
 
 export default class CategoriesSelect extends View {
   countApply: number;
 
   uls: HTMLElement[];
 
-  constructor() {
+  productsApi: ProductsApi;
+
+  router: Router;
+
+  constructor(router: Router) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.categories],
     };
     super(params);
+    this.router = router;
     this.uls = [];
     this.countApply = 0;
+
+    this.productsApi = new ProductsApi(apiInstance);
+    this.configureView();
   }
 
-  public renderFree(categories: ModifyCategory[]) {
+  public configureView() {
+    const categories: ModifyCategory[] | [] = categoryState.getState().categories;
     categories.forEach((category: ModifyCategory) => this.getElement().append(this.buildElement(category)));
-    categoryState.getState().setCategories(categories);
-    categoryState.getState().setCategory(categories[0].key);
   }
 
   private buildElement(category: ModifyCategory) {
@@ -38,7 +48,7 @@ export default class CategoriesSelect extends View {
       tag: 'div',
       classNames: [styles.title],
       textContent: category.name,
-      callback: [{ event: 'click', callback: () => this.handleClickItem.call(this, category.key) }],
+      callback: [{ event: 'click', callback: () => this.handleClickItem.call(this, category.id) }],
     }).getElement();
 
     const item: HTMLElement = new ElementCreator({
@@ -56,7 +66,7 @@ export default class CategoriesSelect extends View {
 
     icon.innerHTML = '&#9658;';
 
-    const wrapperContent = new ElementCreator({
+    const wrapperContent: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.wrapperContent],
       children: [title],
@@ -88,7 +98,7 @@ export default class CategoriesSelect extends View {
     });
   }
 
-  private handleClickItem(key: string): void {
+  private async handleClickItem(key: string): Promise<void> {
     this.uls.map((el) => {
       if (Number(el.dataset.id) === 0) {
         return;
@@ -100,5 +110,22 @@ export default class CategoriesSelect extends View {
     });
 
     categoryState.getState().setCategory(key);
+    this.router.categoryChange();
+
+    loaderState.getState().loader.show();
+    const defaultPage = 1;
+    await this.productsApi
+      .get(defaultPage)
+      .then((data) => {
+        productsDataState.getState().setData(data);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          toastState.getState().toast.showError(error.message);
+        }
+      })
+      .finally(() => {
+        loaderState.getState().loader.close();
+      });
   }
 }

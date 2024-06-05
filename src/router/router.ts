@@ -2,7 +2,8 @@ import { RouterPages } from '../app/app';
 import HandlerRouter from './handler';
 import { authState, categoryState, routerState } from '@state/state.ts';
 import getPath from '@utils/get-path.ts';
-import { getAncestorKeys } from '@utils/categories-formatter.ts';
+import { getAncestorCategories } from '@utils/categories-formatter.ts';
+import { ModifyCategory } from '@utils/categories-creator.ts';
 
 export type Route = { path: string; callback: Function };
 
@@ -14,7 +15,7 @@ export default class Router {
   constructor(routes: Array<Route>) {
     this.routes = routes;
     this.handler = new HandlerRouter(this.urlChangedHandler.bind(this));
-    categoryState.subscribe(() => this.handleCategoriesChange());
+    // categoryState.subscribe(() => this.handleCategoriesChange());
   }
 
   public resourceNavigation(id: string): void {
@@ -32,8 +33,6 @@ export default class Router {
   public navigate(route: RouterPages): void {
     const foundPage: Route | undefined = this.routes.find((item: Route): boolean => item.path === route);
 
-    console.log('[33] 🍄: ', route);
-
     if (!foundPage) return;
     const path: RouterPages | undefined = getPath(foundPage.path);
 
@@ -50,21 +49,27 @@ export default class Router {
     }
   }
 
-  private handleCategoriesChange(): void {
-    const path = getAncestorKeys(categoryState.getState().categories, categoryState.getState().category as string).join(
-      '/'
+  public categoryChange(): void {
+    const lineArrActiveCategories: ModifyCategory[] = getAncestorCategories(
+      categoryState.getState().categories,
+      categoryState.getState().category as string
     );
 
-    console.log('🖌: ', path);
+    const appPath: string = lineArrActiveCategories.map((cat: ModifyCategory) => cat.key).join('/');
+    const fullPath: string = `${RouterPages.products}/${appPath}`;
 
-    const fillPath = `${RouterPages.products}/${path}`;
-
-    if (path.length) {
-      this.handler.navigateForCategories(fillPath);
+    if (appPath.length) {
+      this.handler.navigateForCategories(fullPath);
     }
   }
 
   private urlChangedHandler(requestParams: { path: string; resource: string }): void {
+    if (requestParams.path === RouterPages.products) {
+      const route: Route | undefined = this.routes.find((item: Route): boolean => item.path === RouterPages.products);
+      route?.callback();
+      return;
+    }
+
     const pathForFind: string = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/{id}`;
     const route: Route | undefined = this.routes.find((item: Route): boolean => item.path === pathForFind);
 

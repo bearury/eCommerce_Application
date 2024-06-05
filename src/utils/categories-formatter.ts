@@ -1,16 +1,34 @@
 import { ModifyCategory } from '@utils/categories-creator.ts';
+import { categoryState } from '@state/state.ts';
 
-export function getAncestorKeys(data: ModifyCategory[], targetKey: string): string[] {
-  let result: string[] = [];
+export function getCategoryByKey(data: ModifyCategory[], targetKey: string): ModifyCategory | undefined {
+  for (const item of data) {
+    if (item.key === targetKey) {
+      return item;
+    }
+    if (item.children) {
+      const foundItem = getCategoryByKey(item.children, targetKey);
+      if (foundItem) {
+        return foundItem;
+      }
+    }
+  }
+  return undefined;
+}
 
-  function findItemById(items: ModifyCategory[], targetId: string): ModifyCategory | undefined {
+export function getAncestorCategories(data: ModifyCategory[], targetId: string): ModifyCategory[] {
+  const ancestors: ModifyCategory[] = [];
+
+  function traverse(items: ModifyCategory[]): ModifyCategory | undefined {
     for (const item of items) {
       if (item.id === targetId) {
+        ancestors.unshift(item);
         return item;
       }
       if (item.children) {
-        const foundItem = findItemById(item.children, targetId);
+        const foundItem = traverse(item.children);
         if (foundItem) {
+          ancestors.unshift(item);
           return foundItem;
         }
       }
@@ -18,21 +36,12 @@ export function getAncestorKeys(data: ModifyCategory[], targetKey: string): stri
     return undefined;
   }
 
-  function traverse(items: ModifyCategory[]): boolean {
-    for (const item of items) {
-      if (item.key === targetKey) {
-        result = [...item.ancestors.map((ancestor) => ancestor.id), item.id].map(
-          (id) => findItemById(data, id)?.key || ''
-        );
-        return true;
-      }
-      if (item.children && traverse(item.children)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   traverse(data);
-  return result;
+  return ancestors;
+}
+
+export function validatePath(path: string[]): boolean {
+  const data: ModifyCategory[] | [] = categoryState.getState().categories;
+  const res: string[] = path.filter((el) => getCategoryByKey(data, el));
+  return path.length - 1 === res.length;
 }

@@ -10,8 +10,6 @@ import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
 import CategoriesSelect from '@pages/products/categories-select/categories-select';
-import CategoriesApi from '@api/categoriesApi.ts';
-import { categoriesCreator } from '@utils/categories-creator.ts';
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 
 export default class ProductsPage extends View {
@@ -21,7 +19,7 @@ export default class ProductsPage extends View {
 
   productsApi: ProductsApi;
 
-  categoriesApi: CategoriesApi;
+  // categoriesApi: CategoriesApi;
 
   pagination: Pagination;
 
@@ -38,13 +36,12 @@ export default class ProductsPage extends View {
     this.router = router;
 
     this.productsApi = new ProductsApi(apiInstance);
-    this.categoriesApi = new CategoriesApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
 
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
     this.accordion = new Accordion();
-    this.categories = new CategoriesSelect();
+    this.categories = new CategoriesSelect(this.router);
     this.configureView();
     this.getProductApi(productsDataState.getState().currentPage);
   }
@@ -55,8 +52,7 @@ export default class ProductsPage extends View {
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
 
-    const breadcrumbs = new Breadcrumbs().getElement();
-
+    const breadcrumbs: HTMLElement = new Breadcrumbs(this.router).getElement();
     this.getElement().append(breadcrumbs, this.accordion.getElement(), this.categories.getElement(), content);
   }
 
@@ -66,7 +62,6 @@ export default class ProductsPage extends View {
       .get(page)
       .then((data) => {
         productsDataState.getState().setData(data);
-        this.getCategoriesApi();
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -78,16 +73,9 @@ export default class ProductsPage extends View {
       });
   }
 
-  private async getCategoriesApi(): Promise<void> {
-    await this.categoriesApi.get().then((data) => {
-      this.categories.renderFree(categoriesCreator(data));
-    });
-  }
-
   private renderCards(): void {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
-    console.log('[71] 🎯: ', data);
 
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);
