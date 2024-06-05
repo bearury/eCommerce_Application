@@ -186,6 +186,7 @@ class CustomerApi {
       loaderState.getState().loader.close();
     }
   }
+
   public async setAsDefaultAddress(addressId: string, customerID: string, type: string) {
     const actionType = type === 'shipping' ? 'setDefaultShippingAddress' : 'setDefaultBillingAddress';
     const requestBody = {

@@ -65,6 +65,7 @@ export default class AddressBlock extends View {
   deleteButton: ElementCreator;
 
   setDefaultAddressButton: ElementCreator;
+
   constructor({
     street,
     city,

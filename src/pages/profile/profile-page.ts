@@ -172,23 +172,6 @@ export default class ProfilePage extends View {
     if (addressType === 'billing') this.billingAddresses.getElement().appendChild(address);
   }
 
-  private addAddress(addressType: string) {
-    const addressParams = {
-      street: '',
-      city: '',
-      postalCode: '',
-      country: 'US',
-      isDefaultShipping: 'no',
-      isDefaultBilling: 'no',
-      addressId: '',
-      isNewAddress: 'yes',
-      addressType: addressType,
-    };
-    const address = new AddressBlock(addressParams).getElement();
-    if (addressType === 'shipping') this.shippingAddresses.getElement().appendChild(address);
-    if (addressType === 'billing') this.billingAddresses.getElement().appendChild(address);
-  }
-
   private async setCustomerAddresses(
     addressesInfo: Pick<
       Customer,

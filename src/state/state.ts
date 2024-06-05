@@ -105,7 +105,21 @@ const filterState = createStore(
     setWattage: (wattage: number | null) => set(() => ({ wattage })),
   }))
 );
+interface CategoryState {
+  categories: ModifyCategory[] | [];
+  category: string | null;
+  setCategory: (category: string) => void;
+  setCategories: (categories: ModifyCategory[]) => void;
+}
 
+const categoryState = createStore(
+  devtools<CategoryState>((set) => ({
+    categories: [],
+    category: null,
+    setCategory: (category: string) => set(() => ({ category })),
+    setCategories: (categories: ModifyCategory[]) => set(() => ({ categories })),
+  }))
+);
 export {
   routerState,
   toastState,
@@ -115,4 +129,5 @@ export {
   productsDataState,
   DefaultAddressShippingState,
   DefaultAddressBillingState,
+  categoryState,
 };
