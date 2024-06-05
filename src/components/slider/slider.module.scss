@@ -6,7 +6,7 @@
   @apply flex;
 
   .img {
-    @apply h-96 w-96 cursor-pointer bg-contain bg-center bg-no-repeat object-contain;
+    @apply h-96 w-96 cursor-zoom-in bg-contain bg-center bg-no-repeat object-contain;
   }
 }
 
