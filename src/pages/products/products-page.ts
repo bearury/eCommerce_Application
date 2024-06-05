@@ -11,9 +11,15 @@ import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse
 import Accordion from '@pages/products/accordion/accordion';
 import CategoriesSelect from '@pages/products/categories-select/categories-select';
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
+import SortingBlock from './sorting/sorting';
+import SearchingField from './searching/searching';
 
 export default class ProductsPage extends View {
   router: Router;
+
+  sortingBlock: HTMLElement;
+
+  searchingBlock: HTMLElement;
 
   accordion: Accordion;
 
@@ -38,6 +44,8 @@ export default class ProductsPage extends View {
     this.productsApi = new ProductsApi(apiInstance);
     productsDataState.subscribe(this.renderCards.bind(this));
 
+    this.searchingBlock = new SearchingField().getElement();
+    this.sortingBlock = new SortingBlock().getElement();
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
     this.accordion = new Accordion();
@@ -53,7 +61,8 @@ export default class ProductsPage extends View {
     }).getElement();
 
     const breadcrumbs: HTMLElement = new Breadcrumbs(this.router).getElement();
-    this.getElement().append(breadcrumbs, this.accordion.getElement(), this.categories.getElement(), content);
+    this.getElement().append(breadcrumbs, this.searchingBlock, this.sortingBlock, this.accordion.getElement(), content);
+
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
