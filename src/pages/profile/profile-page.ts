@@ -56,13 +56,13 @@ export default class ProfilePage extends View {
       tag: 'span',
       textContent: 'Add address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'shipping') }],
-      classNames: [`${styles.header}`],
+      classNames: [`${styles.Button}`, `${styles.addAddress}`],
     });
     this.addBillingAddress = new ElementCreator({
       tag: 'span',
       textContent: 'Add address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'billing') }],
-      classNames: [`${styles.header}`],
+      classNames: [`${styles.Button}`, `${styles.addAddress}`],
     });
     this.shippingTitle = new ElementCreator({
       tag: 'div',
@@ -74,7 +74,7 @@ export default class ProfilePage extends View {
       textContent: 'Billing addresses 💶',
       classNames: [`${styles.header}`],
     });
-    this.shippingTitle.getElement().appendChild(this.addShippingAddress.getElement());
+    this.shippingTitle.getElement().append(this.addShippingAddress.getElement());
     this.billingTitle.getElement().appendChild(this.addBillingAddress.getElement());
     this.userAddresses = new ElementCreator({
       tag: 'div',

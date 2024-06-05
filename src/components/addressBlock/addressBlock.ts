@@ -91,26 +91,26 @@ export default class AddressBlock extends View {
       tag: 'span',
       textContent: 'edit ✏️',
       callback: [{ event: 'click', callback: this.editAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.editButton}`],
     });
     this.deleteButton = new ElementCreator({
       tag: 'span',
       textContent: 'Delete 🗑️',
       callback: [{ event: 'click', callback: this.deleteAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.deleteButton}`],
     });
     this.addressId = addressId;
     this.setDefaultAddressButton = new ElementCreator({
-      tag: 'span',
+      tag: 'div',
       textContent: 'Set as Default 🚩',
       callback: [{ event: 'click', callback: this.setAsDefault.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.setDefaultButton}`],
     });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
       callback: [{ event: 'click', callback: this.cancelEditAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.cancelButton}`],
     });
     this.addressType = addressType;
     this.postalAndCountryBlock = new ElementCreator({

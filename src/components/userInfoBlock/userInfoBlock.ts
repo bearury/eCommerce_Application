@@ -55,13 +55,13 @@ export default class UserInfoBlock extends View {
       tag: 'span',
       textContent: 'edit ✏️',
       callback: [{ event: 'click', callback: this.editUserInfo.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.editButton}`],
     });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
       callback: [{ event: 'click', callback: this.cancelEditUserInfo.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.cancelButton}`],
     });
     this.firstNameInput = new InputTextField({
       name: 'first name',

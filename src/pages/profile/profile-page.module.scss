@@ -34,11 +34,20 @@
 }
 
 .header {
-  @apply my-4 text-center text-lg;
+  @apply relative my-4 flex text-center text-lg;
 }
 .userInfo {
-  @apply flex w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
+  @apply flex w-full max-w-full flex-row flex-wrap justify-start gap-2 border-y-2 border-borderLight py-1;
 }
 .button {
   @apply flex;
+}
+.addAddress {
+  @apply absolute right-4 top-0;
+}
+.Button {
+  @apply mb-1 flex rounded-lg bg-borderLight p-1 text-textDark;
+  &:hover {
+    @apply cursor-pointer;
+  }
 }
