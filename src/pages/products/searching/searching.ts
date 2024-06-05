@@ -37,7 +37,6 @@ export default class SearchingField extends View {
   private searchProduct() {
     const inputValue = this.input as HTMLInputElement;
     const search = new Search(apiInstance);
-    console.log(inputValue.value);
 
     search
       .search({

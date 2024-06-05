@@ -29,7 +29,7 @@ export default class AddressBlock extends View {
   customerId: string | null = localStorage.getItem('customerID');
 
   customerApi: CustomerApi = new CustomerApi(apiInstance);
-  
+
   streetNameInput: InputTextField;
 
   cityInput: InputTextField;

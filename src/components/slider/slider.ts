@@ -1,7 +1,6 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './slider.module.scss';
-import { ModalSlider } from './modal-slider/modal-slider';
 
 export class Slider extends View {
   navigation: HTMLElement;
@@ -131,18 +130,6 @@ export class Slider extends View {
       }
     });
 
-    this.slides.map((slideItem) => {
-      slideItem.addEventListener('click', this.renderModal.bind(this, images));
-    });
-
     slider.append(this.navigation, this.slidesBlock, this.pagination);
-  }
-
-  private renderModal(images: string[]): void {
-    const subModalSlider = new Slider(images);
-    subModalSlider.getElement().classList.add(styles.subSlider);
-    subModalSlider.updateSlider();
-    const modal = new ModalSlider(subModalSlider).getElement();
-    document.body.append(modal);
   }
 }

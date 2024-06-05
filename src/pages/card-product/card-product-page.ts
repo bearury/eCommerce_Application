@@ -9,6 +9,8 @@ import { RouterPages } from '@app/app';
 import { Slider } from '@components/slider/slider';
 import { Price } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price';
+import sliderStyles from '@components/slider/slider.module.scss';
+import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -120,6 +122,12 @@ export default class CardProductPage extends View {
           }
           const slider = new Slider(imgUrlArray);
           slider.updateSlider();
+          slider.getElement().addEventListener('click', (e: Event) => {
+            const target = e.target as HTMLElement;
+            if (target.classList.contains(sliderStyles.img)) {
+              this.renderModal(imgUrlArray);
+            }
+          });
 
           this.imgBlock.append(slider.getElement());
         })
@@ -134,5 +142,14 @@ export default class CardProductPage extends View {
     }
 
     cardProduct.append(this.imgBlock, this.infoBlock);
+  }
+
+  private renderModal(images: string[]): void {
+    console.log('render');
+    const subModalSlider = new Slider(images);
+    subModalSlider.getElement().classList.add(sliderStyles.subSlider);
+    subModalSlider.updateSlider();
+    const modal = new ModalSlider(subModalSlider).getElement();
+    document.body.append(modal);
   }
 }
