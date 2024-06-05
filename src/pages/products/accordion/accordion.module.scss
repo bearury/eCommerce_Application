@@ -1,5 +1,5 @@
 .accordion {
-  @apply mx-4 mt-2 rounded bg-bgContainer p-2;
+  @apply mx-4 mt-2 flex-grow rounded bg-bgContainer p-2;
 
   .content {
     @apply relative max-h-0 overflow-hidden opacity-0 transition-all;

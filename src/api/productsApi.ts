@@ -6,6 +6,7 @@ import {
 } from '@commercetools/platform-sdk';
 import { countProductsOnOnePage, SelectBrand, SelectColor } from '@utils/variables.ts';
 import { RangeComponentValue } from '@components/range/range';
+import { categoryState } from '@state/state.ts';
 
 export interface GetFilterParams {
   color: SelectColor | SelectBrand | '';
@@ -29,11 +30,16 @@ class ProductsApi {
   }
 
   async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
+    const keyCategory = categoryState.getState().category;
     return this.customerBuilder
       .productProjections()
       .search()
       .get({
-        queryArgs: { limit: countProductsOnOnePage, offset: page === 1 ? page - 1 : page * countProductsOnOnePage },
+        queryArgs: {
+          limit: countProductsOnOnePage,
+          offset: page === 1 ? page - 1 : page * countProductsOnOnePage,
+          'filter.query': `categories.id:subtree("${keyCategory}")`,
+        },
       })
       .execute();
   }
