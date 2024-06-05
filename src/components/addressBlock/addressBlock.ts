@@ -113,7 +113,6 @@ export default class AddressBlock extends View {
       classNames: [`${styles.editButton}`],
     });
     this.addressType = addressType;
-    console.log(this.addressType);
     this.postalAndCountryBlock = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.postalCodeBlock}`],
@@ -158,6 +157,7 @@ export default class AddressBlock extends View {
       value: 'Add',
       disabled: true,
     });
+    this.isNewAddress = isNewAddress || 'no';
     if (isDefaultBilling === 'yes' || isDefaultShipping === 'yes') {
       if (isDefaultBilling === 'yes') {
         DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
@@ -168,13 +168,15 @@ export default class AddressBlock extends View {
       }
       this.getElement().appendChild(this.defaultLabel.getElement());
     } else {
-      this.getElement().appendChild(this.setDefaultAddressButton.getElement());
+      if (this.isNewAddress !== 'yes') this.getElement().appendChild(this.setDefaultAddressButton.getElement());
     }
-    this.isNewAddress = isNewAddress || 'no';
     if (this.isNewAddress !== 'yes') {
       this.getElement().appendChild(this.editButton.getElement());
       this.getElement().appendChild(this.deleteButton.getElement());
       this.setDisabledAll(true);
+    }
+    if (this.isNewAddress === 'yes') {
+      localStorage.setItem(`new${this.addressType}Counter`, '1');
     }
     this.getElement().appendChild(this.streetNameInput.getElement());
     this.getElement().appendChild(this.cityInput.getElement());
@@ -254,11 +256,6 @@ export default class AddressBlock extends View {
     addressBlock.setAttribute('data-id', id);
   }
 
-  private getAddressId(): string {
-    const addressBlock = this.getElement() as HTMLDivElement;
-    return addressBlock.getAttribute('data-id') || '';
-  }
-
   private isAllFieldsValid(): void {
     const saveButton = this.saveButton.getElement() as HTMLButtonElement;
     const addAddressButton = this.addAddressButton.getElement() as HTMLButtonElement;
@@ -327,9 +324,11 @@ export default class AddressBlock extends View {
         this.setAddressId(addressId);
         this.addressId = addressId;
         this.setDisabledAll(true);
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.streetNameInput.getElement());
         this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
         this.getElement().insertBefore(this.deleteButton.getElement(), this.streetNameInput.getElement());
         this.getElement().removeChild(this.addAddressButton.getElement());
+        localStorage.setItem(`new${this.addressType}Counter`, '0');
         toastState.getState().toast.showSuccess('Address added!');
       }
     }

@@ -8,6 +8,7 @@ import { Address, ClientResponse, Customer } from '@commercetools/platform-sdk';
 import AddressBlock from '@components/addressBlock/addressBlock';
 import UserInfoBlock from '@components/userInfoBlock/userInfoBlock';
 import ChangePasswordBlock from '@components/changePasswordBlock/changePasswordBlock';
+import { toastState } from '@state/state';
 
 export default class ProfilePage extends View {
   container: HTMLElement;
@@ -88,7 +89,8 @@ export default class ProfilePage extends View {
     this.getElement().append(this.container);
     this.configureView();
     this.setСustomerInfo();
-    this.getAllAddresses();
+    localStorage.setItem('newshippingCounter', '0');
+    localStorage.setItem('newbillingCounter', '0');
   }
 
   private configureView(): void {
@@ -144,6 +146,16 @@ export default class ProfilePage extends View {
   }
 
   private addAddress(addressType: string) {
+    const shippingAddressCounter = localStorage.getItem('newshippingCounter');
+    const billingAddressCounter = localStorage.getItem('newbillingCounter');
+    if (addressType === 'shipping' && shippingAddressCounter === '1') {
+      toastState.getState().toast.showError('Please fill current shipping address!');
+      return;
+    }
+    if (addressType === 'billing' && billingAddressCounter === '1') {
+      toastState.getState().toast.showError('Please fill current billing address!');
+      return;
+    }
     const addressParams = {
       street: '',
       city: '',
@@ -213,9 +225,5 @@ export default class ProfilePage extends View {
         }
       });
     }
-  }
-
-  private getAllAddresses() {
-    console.log(this.shippingAddresses.element.childNodes);
   }
 }
