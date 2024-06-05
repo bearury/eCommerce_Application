@@ -46,6 +46,30 @@ const authState = createStore(
   }))
 );
 
+interface DefaultAddressShipping {
+  IsDefaultAddressShipping: boolean;
+  setIsDefaultAddressShipping: (IsDefaultAddressShipping: boolean) => void;
+}
+
+interface DefaultAddressBilling {
+  IsDefaultAddressBilling: boolean;
+  setIsDefaultAddressBilling: (IsDefaultAddressBilling: boolean) => void;
+}
+
+const DefaultAddressShippingState = createStore(
+  devtools<DefaultAddressShipping>((set) => ({
+    IsDefaultAddressShipping: false,
+    setIsDefaultAddressShipping: (IsDefaultAddressShipping: boolean) => set(() => ({ IsDefaultAddressShipping })),
+  }))
+);
+
+const DefaultAddressBillingState = createStore(
+  devtools<DefaultAddressBilling>((set) => ({
+    IsDefaultAddressBilling: false,
+    setIsDefaultAddressBilling: (IsDefaultAddressBilling: boolean) => set(() => ({ IsDefaultAddressBilling })),
+  }))
+);
+
 interface ProductsDataState {
   data: ClientResponse<ProductProjectionPagedSearchResponse> | null;
   setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => void;
@@ -82,20 +106,13 @@ const filterState = createStore(
   }))
 );
 
-interface CategoryState {
-  categories: ModifyCategory[] | [];
-  category: string | null;
-  setCategory: (category: string) => void;
-  setCategories: (categories: ModifyCategory[]) => void;
-}
-
-const categoryState = createStore(
-  devtools<CategoryState>((set) => ({
-    categories: [],
-    category: null,
-    setCategory: (category: string) => set(() => ({ category })),
-    setCategories: (categories: ModifyCategory[]) => set(() => ({ categories })),
-  }))
-);
-
-export { routerState, toastState, loaderState, authState, filterState, productsDataState, categoryState };
+export {
+  routerState,
+  toastState,
+  loaderState,
+  authState,
+  filterState,
+  productsDataState,
+  DefaultAddressShippingState,
+  DefaultAddressBillingState,
+};

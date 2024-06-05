@@ -48,13 +48,13 @@ export default class ChangePasswordBlock extends View {
       tag: 'span',
       textContent: 'Change password 🔑',
       callback: [{ event: 'click', callback: this.changePassword.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.editButton}`],
     });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
       callback: [{ event: 'click', callback: this.cancelEditPassword.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.editButton}`],
     });
     this.oldPasswordInput = new InputPasswordField({
       name: 'oldPassword',

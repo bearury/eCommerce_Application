@@ -1,9 +1,22 @@
 .addressBlock {
-  @apply flex max-w-[33%] flex-grow flex-col items-center justify-center gap-2 rounded-xl bg-bgContainer p-7;
+  @apply relative flex max-w-[100%] flex-col items-center justify-center gap-2 rounded-xl bg-bgContainer p-7;
 }
 .postalCodeBlock {
   @apply flex w-[100%] justify-between gap-2;
 }
 .defaultLabel {
   @apply mb-1 flex rounded-lg bg-borderLight p-1 text-textDark;
+}
+.Button {
+  @apply mb-1 flex rounded-lg bg-borderLight p-1 text-textDark;
+  &:hover {
+    @apply cursor-pointer;
+  }
+}
+.cancelButton,
+.editButton {
+  @apply absolute left-3 top-3;
+}
+.deleteButton {
+  @apply absolute right-3 top-3;
 }

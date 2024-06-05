@@ -8,6 +8,7 @@ import { Address, ClientResponse, Customer } from '@commercetools/platform-sdk';
 import AddressBlock from '@components/addressBlock/addressBlock';
 import UserInfoBlock from '@components/userInfoBlock/userInfoBlock';
 import ChangePasswordBlock from '@components/changePasswordBlock/changePasswordBlock';
+import { toastState } from '@state/state';
 
 export default class ProfilePage extends View {
   container: HTMLElement;
@@ -25,6 +26,12 @@ export default class ProfilePage extends View {
   shippingTitle: ElementCreator;
 
   billingTitle: ElementCreator;
+
+  userInfo: ElementCreator;
+
+  addShippingAddress: ElementCreator;
+
+  addBillingAddress: ElementCreator;
 
   constructor() {
     const params: ParamsElementCreator = {
@@ -49,13 +56,13 @@ export default class ProfilePage extends View {
       tag: 'span',
       textContent: 'Add address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'shipping') }],
-      classNames: [`${styles.header}`],
+      classNames: [`${styles.Button}`, `${styles.addAddress}`],
     });
     this.addBillingAddress = new ElementCreator({
       tag: 'span',
       textContent: 'Add address',
       callback: [{ event: 'click', callback: () => this.addAddress.call(this, 'billing') }],
-      classNames: [`${styles.header}`],
+      classNames: [`${styles.Button}`, `${styles.addAddress}`],
     });
     this.shippingTitle = new ElementCreator({
       tag: 'div',
@@ -67,7 +74,7 @@ export default class ProfilePage extends View {
       textContent: 'Billing addresses 💶',
       classNames: [`${styles.header}`],
     });
-    this.shippingTitle.getElement().appendChild(this.addShippingAddress.getElement());
+    this.shippingTitle.getElement().append(this.addShippingAddress.getElement());
     this.billingTitle.getElement().appendChild(this.addBillingAddress.getElement());
     this.userAddresses = new ElementCreator({
       tag: 'div',
@@ -82,7 +89,8 @@ export default class ProfilePage extends View {
     this.getElement().append(this.container);
     this.configureView();
     this.setСustomerInfo();
-    this.getAllAddresses();
+    localStorage.setItem('newshippingCounter', '0');
+    localStorage.setItem('newbillingCounter', '0');
   }
 
   private configureView(): void {
@@ -133,8 +141,35 @@ export default class ProfilePage extends View {
         defaultBillingAddressId: customerInfo.defaultBillingAddressId,
       });
     } else {
-      console.error('Wrong customer data!');
+      console.error('Wrong customer data! customer info: ', customerInfo);
     }
+  }
+
+  private addAddress(addressType: string) {
+    const shippingAddressCounter = localStorage.getItem('newshippingCounter');
+    const billingAddressCounter = localStorage.getItem('newbillingCounter');
+    if (addressType === 'shipping' && shippingAddressCounter === '1') {
+      toastState.getState().toast.showError('Please fill current shipping address!');
+      return;
+    }
+    if (addressType === 'billing' && billingAddressCounter === '1') {
+      toastState.getState().toast.showError('Please fill current billing address!');
+      return;
+    }
+    const addressParams = {
+      street: '',
+      city: '',
+      postalCode: '',
+      country: 'US',
+      isDefaultShipping: 'no',
+      isDefaultBilling: 'no',
+      addressId: '',
+      isNewAddress: 'yes',
+      addressType: addressType,
+    };
+    const address = new AddressBlock(addressParams).getElement();
+    if (addressType === 'shipping') this.shippingAddresses.getElement().appendChild(address);
+    if (addressType === 'billing') this.billingAddresses.getElement().appendChild(address);
   }
 
   private addAddress(addressType: string) {
@@ -185,7 +220,13 @@ export default class ProfilePage extends View {
             isDefaultShipping: 'no',
             isDefaultBilling: 'no',
             addressId: currentAddress.id,
+            addressType: '',
           };
+          if (shippingIds && shippingIds.includes(currentAddress.id)) {
+            addressParams.addressType = 'shipping';
+          } else {
+            addressParams.addressType = 'billing';
+          }
           if (defaultShippingAddressId && currentAddress.id && defaultShippingAddressId.includes(currentAddress.id)) {
             addressParams.isDefaultShipping = 'yes';
           }
@@ -201,9 +242,5 @@ export default class ProfilePage extends View {
         }
       });
     }
-  }
-
-  private getAllAddresses() {
-    console.log(this.shippingAddresses.element.childNodes);
   }
 }

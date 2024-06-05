@@ -11,7 +11,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator';
 import Input, { InputType } from '@components/input/input';
 import { apiInstance } from '@api/api';
 import CustomerApi from '@api/customerApi';
-import { toastState } from '@state/state';
+import { DefaultAddressBillingState, DefaultAddressShippingState, toastState } from '@state/state';
 
 export type AddressBlockParams = {
   street: string;
@@ -64,6 +64,7 @@ export default class AddressBlock extends View {
 
   deleteButton: ElementCreator;
 
+  setDefaultAddressButton: ElementCreator;
   constructor({
     street,
     city,
@@ -89,19 +90,26 @@ export default class AddressBlock extends View {
       tag: 'span',
       textContent: 'edit ✏️',
       callback: [{ event: 'click', callback: this.editAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.editButton}`],
     });
     this.deleteButton = new ElementCreator({
       tag: 'span',
       textContent: 'Delete 🗑️',
       callback: [{ event: 'click', callback: this.deleteAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.deleteButton}`],
+    });
+    this.addressId = addressId;
+    this.setDefaultAddressButton = new ElementCreator({
+      tag: 'div',
+      textContent: 'Set as Default 🚩',
+      callback: [{ event: 'click', callback: this.setAsDefault.bind(this) }],
+      classNames: [`${styles.Button}`, `${styles.setDefaultButton}`],
     });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
       callback: [{ event: 'click', callback: this.cancelEditAddress.bind(this) }],
-      classNames: [`${styles.editButton}`],
+      classNames: [`${styles.Button}`, `${styles.cancelButton}`],
     });
     this.addressType = addressType;
     this.postalAndCountryBlock = new ElementCreator({
@@ -148,8 +156,26 @@ export default class AddressBlock extends View {
       value: 'Add',
       disabled: true,
     });
+    this.isNewAddress = isNewAddress || 'no';
     if (isDefaultBilling === 'yes' || isDefaultShipping === 'yes') {
+      if (isDefaultBilling === 'yes') {
+        DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
+        localStorage.setItem('defaultBillingAddress', addressId);
+      } else {
+        DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+        localStorage.setItem('defaultShippingAddress', addressId);
+      }
       this.getElement().appendChild(this.defaultLabel.getElement());
+    } else {
+      if (this.isNewAddress !== 'yes') this.getElement().appendChild(this.setDefaultAddressButton.getElement());
+    }
+    if (this.isNewAddress !== 'yes') {
+      this.getElement().appendChild(this.editButton.getElement());
+      this.getElement().appendChild(this.deleteButton.getElement());
+      this.setDisabledAll(true);
+    }
+    if (this.isNewAddress === 'yes') {
+      localStorage.setItem(`new${this.addressType}Counter`, '1');
     }
     this.isNewAddress = isNewAddress || 'no';
     if (this.isNewAddress !== 'yes') {
@@ -178,9 +204,11 @@ export default class AddressBlock extends View {
       inputName: 'save',
       value: 'Save',
     });
-
-    this.addressId = addressId;
     this.setAddressId(this.addressId);
+    if (this.addressType === 'shipping')
+      DefaultAddressShippingState.subscribe(this.handleDefaultShippingChange.bind(this));
+    if (this.addressType === 'billing')
+      DefaultAddressBillingState.subscribe(this.handleDefaultBillingChange.bind(this));
   }
 
   private setDisabledAll(isDisabled: boolean): void {
@@ -301,8 +329,11 @@ export default class AddressBlock extends View {
         this.setAddressId(addressId);
         this.addressId = addressId;
         this.setDisabledAll(true);
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.streetNameInput.getElement());
         this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
+        this.getElement().insertBefore(this.deleteButton.getElement(), this.streetNameInput.getElement());
         this.getElement().removeChild(this.addAddressButton.getElement());
+        localStorage.setItem(`new${this.addressType}Counter`, '0');
         toastState.getState().toast.showSuccess('Address added!');
       }
     }
@@ -311,9 +342,57 @@ export default class AddressBlock extends View {
   private async deleteAddress(): Promise<void> {
     if (this.customerId) {
       const response = await this.customerApi.deleteAddress(this.addressId, this.customerId);
-      console.log('🚀 ~ AddressBlock ~ deleteAddress ~ response:', response);
       if (response.statusCode === 200) {
         this.getElement().remove();
+      }
+    }
+  }
+
+  private handleDefaultShippingChange(): void {
+    const defaultAddressId = localStorage.getItem('defaultShippingAddress');
+    if (defaultAddressId === this.addressId) {
+      if (!this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().insertBefore(this.defaultLabel.getElement(), this.editButton.getElement());
+        this.getElement().removeChild(this.setDefaultAddressButton.getElement());
+      }
+    } else {
+      if (this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().removeChild(this.defaultLabel.getElement());
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.editButton.getElement());
+      }
+    }
+  }
+
+  private handleDefaultBillingChange(): void {
+    const defaultAddressId = localStorage.getItem('defaultBillingAddress');
+    if (defaultAddressId === this.addressId) {
+      if (!this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().insertBefore(this.defaultLabel.getElement(), this.editButton.getElement());
+        this.getElement().removeChild(this.setDefaultAddressButton.getElement());
+      }
+    } else {
+      if (this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().removeChild(this.defaultLabel.getElement());
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.editButton.getElement());
+      }
+    }
+  }
+
+  private async setAsDefault(): Promise<void> {
+    if (!this.customerId) {
+      throw new Error('Missing customerId!');
+    }
+    if (this.addressType === 'shipping') {
+      const response = await this.customerApi.setAsDefaultAddress(this.addressId, this.customerId, 'shipping');
+      if (response.statusCode === 200) {
+        localStorage.setItem('defaultShippingAddress', this.addressId);
+        DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+      }
+    } else {
+      const response = await this.customerApi.setAsDefaultAddress(this.addressId, this.customerId, 'billing');
+      if (response.statusCode === 200) {
+        localStorage.setItem('defaultBillingAddress', this.addressId);
+        DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
       }
     }
   }
