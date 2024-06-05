@@ -376,12 +376,21 @@ export default class AddressBlock extends View {
   }
 
   private async setAsDefault(): Promise<void> {
+    if (!this.customerId) {
+      throw new Error('Missing customerId!');
+    }
     if (this.addressType === 'shipping') {
-      localStorage.setItem('defaultShippingAddress', this.addressId);
-      DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+      const response = await this.customerApi.setAsDefaultAddress(this.addressId, this.customerId, 'shipping');
+      if (response.statusCode === 200) {
+        localStorage.setItem('defaultShippingAddress', this.addressId);
+        DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+      }
     } else {
-      localStorage.setItem('defaultBillingAddress', this.addressId);
-      DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
+      const response = await this.customerApi.setAsDefaultAddress(this.addressId, this.customerId, 'billing');
+      if (response.statusCode === 200) {
+        localStorage.setItem('defaultBillingAddress', this.addressId);
+        DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
+      }
     }
   }
 

@@ -11,6 +11,8 @@ import {
   CustomerChangePassword,
   CustomerRemoveAddressAction,
   CustomerSetDateOfBirthAction,
+  CustomerSetDefaultBillingAddressAction,
+  CustomerSetDefaultShippingAddressAction,
   CustomerSetFirstNameAction,
   CustomerSetLastNameAction,
 } from '@commercetools/platform-sdk';
@@ -172,6 +174,38 @@ class CustomerApi {
         .execute();
       localStorage.setItem('customerVersion', `${response.body.version}`);
       toastState.getState().toast.showSuccess('Address deleted!');
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during the update address process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
+  public async setAsDefaultAddress(addressId: string, customerID: string, type: string) {
+    const actionType = type === 'shipping' ? 'setDefaultShippingAddress' : 'setDefaultBillingAddress';
+    const requestBody = {
+      version: Number(localStorage.getItem('customerVersion')),
+      actions: [
+        {
+          action: actionType,
+          addressId: addressId,
+        } as CustomerSetDefaultBillingAddressAction | CustomerSetDefaultShippingAddressAction,
+      ],
+    };
+    try {
+      const response = await this.customerBuilder
+        .customers()
+        .withId({ ID: customerID })
+        .post({ body: requestBody })
+        .execute();
+      localStorage.setItem('customerVersion', `${response.body.version}`);
+      toastState.getState().toast.showSuccess(`Default ${type} address settled!`);
       return response;
     } catch (error) {
       if (error instanceof Error) {
