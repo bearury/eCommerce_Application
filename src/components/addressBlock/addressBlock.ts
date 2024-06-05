@@ -65,7 +65,6 @@ export default class AddressBlock extends View {
   deleteButton: ElementCreator;
 
   setDefaultAddressButton: ElementCreator;
-
   constructor({
     street,
     city,
@@ -177,6 +176,12 @@ export default class AddressBlock extends View {
     }
     if (this.isNewAddress === 'yes') {
       localStorage.setItem(`new${this.addressType}Counter`, '1');
+    }
+    this.isNewAddress = isNewAddress || 'no';
+    if (this.isNewAddress !== 'yes') {
+      this.getElement().appendChild(this.editButton.getElement());
+      this.getElement().appendChild(this.deleteButton.getElement());
+      this.setDisabledAll(true);
     }
     this.getElement().appendChild(this.streetNameInput.getElement());
     this.getElement().appendChild(this.cityInput.getElement());
@@ -337,7 +342,6 @@ export default class AddressBlock extends View {
   private async deleteAddress(): Promise<void> {
     if (this.customerId) {
       const response = await this.customerApi.deleteAddress(this.addressId, this.customerId);
-
       if (response.statusCode === 200) {
         this.getElement().remove();
       }

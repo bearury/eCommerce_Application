@@ -9,6 +9,8 @@ import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
+import CategoriesSelect from '@pages/products/categories-select/categories-select';
+import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 import SortingBlock from './sorting/sorting';
 import SearchingField from './searching/searching';
 
@@ -23,9 +25,13 @@ export default class ProductsPage extends View {
 
   productsApi: ProductsApi;
 
+  // categoriesApi: CategoriesApi;
+
   pagination: Pagination;
 
   cardsContainer: HTMLElement;
+
+  categories: CategoriesSelect;
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
@@ -43,6 +49,7 @@ export default class ProductsPage extends View {
     this.pagination = new Pagination((page: string) => this.handleChangePage.call(this, page));
     this.cardsContainer = new ElementCreator({ tag: 'div', classNames: [styles.cardContainer] }).getElement();
     this.accordion = new Accordion();
+    this.categories = new CategoriesSelect(this.router);
     this.configureView();
     this.getProductApi(productsDataState.getState().currentPage);
   }
@@ -52,12 +59,14 @@ export default class ProductsPage extends View {
       tag: 'div',
       children: [this.cardsContainer, this.pagination.getElement()],
     }).getElement();
-    this.getElement().append(this.searchingBlock, this.sortingBlock, this.accordion.getElement(), content);
+
+    const breadcrumbs: HTMLElement = new Breadcrumbs(this.router).getElement();
+    this.getElement().append(breadcrumbs, this.searchingBlock, this.sortingBlock, this.accordion.getElement(), content);
+
   }
 
   private async getProductApi(page: number = 1): Promise<void> {
     loaderState.getState().loader.show();
-
     await this.productsApi
       .get(page)
       .then((data) => {
@@ -76,7 +85,6 @@ export default class ProductsPage extends View {
   private renderCards(): void {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
     this.cardsContainer.replaceChildren();
-    console.log('[71] 🎯: ', data);
 
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);

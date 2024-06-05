@@ -1,0 +1,11 @@
+.breadcrumbs {
+  @apply mx-4 py-2 font-bold leading-tight text-textAccent;
+
+  .crumb {
+    @apply cursor-pointer px-1 hover:text-textDark;
+  }
+
+  .separator {
+    @apply px-1;
+  }
+}

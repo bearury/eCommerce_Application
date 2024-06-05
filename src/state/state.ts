@@ -4,6 +4,7 @@ import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
 import Loader from '@components/loader/loader';
 import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { ModifyCategory } from '@utils/categories-creator.ts';
 
 interface RouterState {
   page: RouterPages | null;

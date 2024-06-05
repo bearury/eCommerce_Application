@@ -1,0 +1,35 @@
+.categories {
+  @apply mx-4 mt-2 max-w-80 rounded border border-bgHeader;
+
+  .list {
+    @apply p-2;
+
+    .item {
+      @apply px-1;
+
+      .wrapperContent {
+        @apply flex w-full flex-nowrap items-center justify-between border border-b-bgHeader px-2;
+
+        .title {
+          @apply cursor-pointer pr-4 font-bold text-textDark transition-all hover:text-textAccent;
+        }
+
+        .icon {
+          @apply flex cursor-pointer items-center justify-center px-2 pl-4 text-right transition-all;
+        }
+      }
+    }
+
+    .rotate {
+      @apply rotate-90 transition-all;
+    }
+  }
+
+  .children {
+    @apply bg-bgContainer;
+  }
+
+  .hide {
+    @apply hidden;
+  }
+}

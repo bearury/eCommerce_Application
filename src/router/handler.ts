@@ -1,6 +1,8 @@
 import { RouterPages } from '../app/app';
-import { authState, routerState } from '@state/state.ts';
+import { authState, categoryState, routerState } from '@state/state.ts';
 import getPath from '@utils/get-path.ts';
+import { ModifyCategory } from '@utils/categories-creator.ts';
+import { getAncestorCategories, getCategoryByKey, validatePath } from '@utils/categories-formatter.ts';
 
 const enum NavigationDirection {
   forward = 'forward',
@@ -24,11 +26,13 @@ export default class HandlerRouter {
       routerState.getState().setPage(RouterPages.main);
       return;
     }
-
     const historyUrl = resource ? `${event}/${resource}` : event;
-
     this.callback({ path: event, resource });
     this.setHistory(historyUrl, NavigationDirection.forward);
+  }
+
+  public navigateForCategories(path: string): void {
+    this.setHistory(path, NavigationDirection.forward);
   }
 
   private handleRoutePopState(e: PopStateEvent): void {
@@ -74,12 +78,46 @@ export default class HandlerRouter {
     const foundPath: RouterPages | undefined = getPath(path[0]);
     const resource = path[1];
 
+    const categoriesState: ModifyCategory[] | [] = categoryState.getState().categories;
+    const checkResource: ModifyCategory | undefined = getCategoryByKey(categoriesState, resource);
+
     if (
       (authState.getState().isAuthorized && (foundPath === RouterPages.signin || foundPath === RouterPages.signup)) ||
       (!authState.getState().isAuthorized && foundPath === RouterPages.profile)
     ) {
       this.navigate(RouterPages.main);
       routerState.getState().setPage(RouterPages.main);
+      return;
+    }
+
+    if (foundPath === RouterPages.products && checkResource !== undefined) {
+      const lastElementPath = path[path.length - 1];
+      const checkLastElementPath: ModifyCategory | undefined = getCategoryByKey(categoriesState, lastElementPath);
+      const checkEveryElementPath: boolean = validatePath(path);
+
+      if (checkLastElementPath !== undefined && checkEveryElementPath) {
+        categoryState.getState().setCategory(checkLastElementPath.id);
+        const currentCategory = categoryState.getState().category;
+
+        const path = getAncestorCategories(categoriesState, currentCategory as string)
+          .map((cat) => cat.key)
+          .join('/');
+
+        const fullPath: string = `${RouterPages.products}/${path}`;
+
+        this.setHistory(fullPath, NavigationDirection.forward);
+        this.callback({ path: foundPath, resource });
+        routerState.getState().setPage(RouterPages.products);
+      } else {
+        this.navigate(RouterPages.not_found);
+        routerState.getState().setPage(RouterPages.not_found);
+        return;
+      }
+      return;
+    } else if (foundPath === RouterPages.products && categoriesState[0] && checkResource === undefined && resource) {
+      categoryState.getState().setCategory(categoriesState[0].id);
+      this.navigate(RouterPages.not_found);
+      routerState.getState().setPage(RouterPages.not_found);
       return;
     }
 
