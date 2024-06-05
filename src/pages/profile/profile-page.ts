@@ -191,7 +191,13 @@ export default class ProfilePage extends View {
             isDefaultShipping: 'no',
             isDefaultBilling: 'no',
             addressId: currentAddress.id,
+            addressType: '',
           };
+          if (shippingIds && shippingIds.includes(currentAddress.id)) {
+            addressParams.addressType = 'shipping';
+          } else {
+            addressParams.addressType = 'billing';
+          }
           if (defaultShippingAddressId && currentAddress.id && defaultShippingAddressId.includes(currentAddress.id)) {
             addressParams.isDefaultShipping = 'yes';
           }

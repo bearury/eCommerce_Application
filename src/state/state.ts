@@ -45,6 +45,30 @@ const authState = createStore(
   }))
 );
 
+interface DefaultAddressShipping {
+  IsDefaultAddressShipping: boolean;
+  setIsDefaultAddressShipping: (IsDefaultAddressShipping: boolean) => void;
+}
+
+interface DefaultAddressBilling {
+  IsDefaultAddressBilling: boolean;
+  setIsDefaultAddressBilling: (IsDefaultAddressBilling: boolean) => void;
+}
+
+const DefaultAddressShippingState = createStore(
+  devtools<DefaultAddressShipping>((set) => ({
+    IsDefaultAddressShipping: false,
+    setIsDefaultAddressShipping: (IsDefaultAddressShipping: boolean) => set(() => ({ IsDefaultAddressShipping })),
+  }))
+);
+
+const DefaultAddressBillingState = createStore(
+  devtools<DefaultAddressBilling>((set) => ({
+    IsDefaultAddressBilling: false,
+    setIsDefaultAddressBilling: (IsDefaultAddressBilling: boolean) => set(() => ({ IsDefaultAddressBilling })),
+  }))
+);
+
 interface ProductsDataState {
   data: ClientResponse<ProductProjectionPagedSearchResponse> | null;
   setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => void;
@@ -81,4 +105,13 @@ const filterState = createStore(
   }))
 );
 
-export { routerState, toastState, loaderState, authState, filterState, productsDataState };
+export {
+  routerState,
+  toastState,
+  loaderState,
+  authState,
+  filterState,
+  productsDataState,
+  DefaultAddressShippingState,
+  DefaultAddressBillingState,
+};

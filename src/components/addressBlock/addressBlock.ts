@@ -11,7 +11,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator';
 import Input, { InputType } from '@components/input/input';
 import { apiInstance } from '@api/api';
 import CustomerApi from '@api/customerApi';
-import { toastState } from '@state/state';
+import { DefaultAddressBillingState, DefaultAddressShippingState, toastState } from '@state/state';
 
 export type AddressBlockParams = {
   street: string;
@@ -64,6 +64,8 @@ export default class AddressBlock extends View {
 
   deleteButton: ElementCreator;
 
+  setDefaultAddressButton: ElementCreator;
+
   constructor({
     street,
     city,
@@ -97,6 +99,13 @@ export default class AddressBlock extends View {
       callback: [{ event: 'click', callback: this.deleteAddress.bind(this) }],
       classNames: [`${styles.editButton}`],
     });
+    this.addressId = addressId;
+    this.setDefaultAddressButton = new ElementCreator({
+      tag: 'span',
+      textContent: 'Set as Default 🚩',
+      callback: [{ event: 'click', callback: this.setAsDefault.bind(this) }],
+      classNames: [`${styles.editButton}`],
+    });
     this.cancelButton = new ElementCreator({
       tag: 'span',
       textContent: 'Cancel ❌',
@@ -104,6 +113,7 @@ export default class AddressBlock extends View {
       classNames: [`${styles.editButton}`],
     });
     this.addressType = addressType;
+    console.log(this.addressType);
     this.postalAndCountryBlock = new ElementCreator({
       tag: 'div',
       classNames: [`${styles.postalCodeBlock}`],
@@ -149,7 +159,16 @@ export default class AddressBlock extends View {
       disabled: true,
     });
     if (isDefaultBilling === 'yes' || isDefaultShipping === 'yes') {
+      if (isDefaultBilling === 'yes') {
+        DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
+        localStorage.setItem('defaultBillingAddress', addressId);
+      } else {
+        DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+        localStorage.setItem('defaultShippingAddress', addressId);
+      }
       this.getElement().appendChild(this.defaultLabel.getElement());
+    } else {
+      this.getElement().appendChild(this.setDefaultAddressButton.getElement());
     }
     this.isNewAddress = isNewAddress || 'no';
     if (this.isNewAddress !== 'yes') {
@@ -178,9 +197,11 @@ export default class AddressBlock extends View {
       inputName: 'save',
       value: 'Save',
     });
-
-    this.addressId = addressId;
     this.setAddressId(this.addressId);
+    if (this.addressType === 'shipping')
+      DefaultAddressShippingState.subscribe(this.handleDefaultShippingChange.bind(this));
+    if (this.addressType === 'billing')
+      DefaultAddressBillingState.subscribe(this.handleDefaultBillingChange.bind(this));
   }
 
   private setDisabledAll(isDisabled: boolean): void {
@@ -231,6 +252,11 @@ export default class AddressBlock extends View {
   private setAddressId(id: string): void {
     const addressBlock = this.getElement() as HTMLDivElement;
     addressBlock.setAttribute('data-id', id);
+  }
+
+  private getAddressId(): string {
+    const addressBlock = this.getElement() as HTMLDivElement;
+    return addressBlock.getAttribute('data-id') || '';
   }
 
   private isAllFieldsValid(): void {
@@ -302,6 +328,7 @@ export default class AddressBlock extends View {
         this.addressId = addressId;
         this.setDisabledAll(true);
         this.getElement().insertBefore(this.editButton.getElement(), this.streetNameInput.getElement());
+        this.getElement().insertBefore(this.deleteButton.getElement(), this.streetNameInput.getElement());
         this.getElement().removeChild(this.addAddressButton.getElement());
         toastState.getState().toast.showSuccess('Address added!');
       }
@@ -311,10 +338,50 @@ export default class AddressBlock extends View {
   private async deleteAddress(): Promise<void> {
     if (this.customerId) {
       const response = await this.customerApi.deleteAddress(this.addressId, this.customerId);
-      console.log('🚀 ~ AddressBlock ~ deleteAddress ~ response:', response);
+
       if (response.statusCode === 200) {
         this.getElement().remove();
       }
+    }
+  }
+
+  private handleDefaultShippingChange(): void {
+    const defaultAddressId = localStorage.getItem('defaultShippingAddress');
+    if (defaultAddressId === this.addressId) {
+      if (!this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().insertBefore(this.defaultLabel.getElement(), this.editButton.getElement());
+        this.getElement().removeChild(this.setDefaultAddressButton.getElement());
+      }
+    } else {
+      if (this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().removeChild(this.defaultLabel.getElement());
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.editButton.getElement());
+      }
+    }
+  }
+
+  private handleDefaultBillingChange(): void {
+    const defaultAddressId = localStorage.getItem('defaultBillingAddress');
+    if (defaultAddressId === this.addressId) {
+      if (!this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().insertBefore(this.defaultLabel.getElement(), this.editButton.getElement());
+        this.getElement().removeChild(this.setDefaultAddressButton.getElement());
+      }
+    } else {
+      if (this.getElement().contains(this.defaultLabel.getElement())) {
+        this.getElement().removeChild(this.defaultLabel.getElement());
+        this.getElement().insertBefore(this.setDefaultAddressButton.getElement(), this.editButton.getElement());
+      }
+    }
+  }
+
+  private async setAsDefault(): Promise<void> {
+    if (this.addressType === 'shipping') {
+      localStorage.setItem('defaultShippingAddress', this.addressId);
+      DefaultAddressShippingState.getState().setIsDefaultAddressShipping(true);
+    } else {
+      localStorage.setItem('defaultBillingAddress', this.addressId);
+      DefaultAddressBillingState.getState().setIsDefaultAddressBilling(true);
     }
   }
 
