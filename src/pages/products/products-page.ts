@@ -61,8 +61,14 @@ export default class ProductsPage extends View {
     }).getElement();
 
     const breadcrumbs: HTMLElement = new Breadcrumbs(this.router).getElement();
-    this.getElement().append(breadcrumbs, this.searchingBlock, this.sortingBlock, this.accordion.getElement(), content);
-
+    this.getElement().append(
+      breadcrumbs,
+      this.searchingBlock,
+      this.sortingBlock,
+      this.accordion.getElement(),
+      this.categories.getElement(),
+      content
+    );
   }
 
   private async getProductApi(page: number = 1): Promise<void> {

@@ -1,6 +1,5 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
-// import inputStyles from '@components/input/input-field/input-field.module.scss';
 import styles from './profile-page.module.scss';
 import Container from '@components/container/container';
 import CustomerApi from '@api/customerApi';
