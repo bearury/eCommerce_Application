@@ -1,0 +1,14 @@
+.products {
+  @apply flex flex-col;
+  .cardContainer {
+    @apply grid grid-cols-4 justify-between gap-3 p-4 md:grid-cols-3 tablet:grid-cols-2 sm:grid-cols-1;
+
+    .notFound {
+      @apply text-center text-2xl font-bold text-textAccent;
+    }
+  }
+
+  .navigationBlock {
+    @apply flex gap-2;
+  }
+}

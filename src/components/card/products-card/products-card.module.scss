@@ -1,0 +1,38 @@
+.card {
+  @apply relative flex cursor-pointer flex-col rounded border border-bgHeader p-3 transition-all hover:shadow-button;
+
+  .image {
+    @apply h-[200px] w-auto;
+  }
+
+  .pricesWrapper {
+    @apply flex gap-3;
+  }
+
+  .name {
+    @apply mt-4 font-bold;
+  }
+
+  .price {
+    @apply relative font-black text-textPriceEUR;
+    &:first-child {
+      @apply text-textPriceUSD;
+    }
+  }
+
+  .priceDiscount:before {
+    @apply absolute left-[-10%] top-[10px] h-[2px] w-[120%] rotate-[7deg] bg-textPriceDiscount content-empty;
+  }
+
+  .description {
+    @apply line-clamp-3 text-sm font-light text-textDark;
+  }
+
+  .discount {
+    @apply absolute left-1 top-1/3 -rotate-45 text-2xl font-bold text-textPriceDiscount;
+
+    &.usd {
+      @apply left-1/2;
+    }
+  }
+}

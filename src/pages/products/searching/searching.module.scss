@@ -1,0 +1,11 @@
+.searchField {
+  @apply mx-4 mt-2 flex items-center justify-between rounded bg-bgContainer p-2 text-xl text-textLight;
+
+  .inputField {
+    @apply ml-2 mr-2 w-4/5 rounded border-solid bg-bgBody py-1 pl-4 text-xl text-textDark;
+  }
+
+  .searchBtn {
+    @apply mr-2 rounded bg-bgBody px-2 py-1 text-textDark hover:shadow-button;
+  }
+}

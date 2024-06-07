@@ -1,0 +1,15 @@
+.header {
+  @apply fixed z-20 w-full bg-bgHeader px-3;
+
+  .container {
+    @apply m-auto flex max-w-screen-lg items-center justify-between gap-2 p-3;
+  }
+
+  .blockButton {
+    @apply flex justify-between tablet:hidden;
+  }
+}
+
+.image {
+  @apply h-14 w-14;
+}

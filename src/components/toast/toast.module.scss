@@ -1,0 +1,78 @@
+.toast {
+  @apply fixed right-8 top-7 z-[99]
+  min-w-[250px] max-w-[350px] translate-x-[calc(100%_+_40px)] transform overflow-hidden rounded-xl
+  bg-bgBody p-3 shadow-card transition-all
+  duration-500 ease-openToast;
+
+  &.active {
+    @apply translate-x-0;
+  }
+}
+
+.content {
+  @apply flex items-center;
+
+  .message {
+    @apply mx-4 flex w-fit flex-col;
+
+    .text {
+      @apply text-[16px] text-textDark;
+
+      &:first-letter {
+        @apply uppercase;
+      }
+    }
+
+    .text.text1 {
+      @apply font-bold;
+    }
+
+    .text.text2 {
+      @apply mt-3;
+    }
+  }
+}
+
+.point {
+  @apply flex h-6 min-w-6 items-center justify-center rounded-full
+  text-xl font-bold text-white;
+}
+
+.point.error {
+  @apply bg-red-700;
+}
+
+.point.info {
+  @apply bg-green-500;
+}
+
+.progress {
+  @apply absolute bottom-0 left-0 h-1 w-full;
+
+  &:before {
+    @apply absolute bottom-0 right-0 h-full w-full content-empty;
+
+    &.info {
+      @apply bg-green-500;
+    }
+
+    &.error {
+      @apply bg-red-700;
+    }
+  }
+
+  &.active {
+    &:before {
+      @apply animate-progress;
+    }
+  }
+}
+
+.closeBtn {
+  @apply absolute right-5 top-3 flex h-5 w-5
+  items-center justify-center text-sm text-bgBackdrop transition-all;
+
+  &:hover {
+    @apply text-textDark transition-all;
+  }
+}

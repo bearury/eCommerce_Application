@@ -1,0 +1,23 @@
+.button {
+  @apply min-w-[130px] border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out;
+
+  &:hover {
+    @apply cursor-pointer font-bold;
+  }
+
+  &:first-letter {
+    @apply uppercase;
+  }
+}
+
+.active {
+  @apply font-bold text-textAccent underline underline-offset-8;
+
+  &:hover {
+    @apply cursor-default;
+  }
+}
+
+.hid {
+  @apply hidden;
+}

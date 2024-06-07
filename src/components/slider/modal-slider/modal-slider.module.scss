@@ -1,0 +1,19 @@
+.modalWrapper {
+  @apply fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-bgModal transition-all;
+}
+
+.modal {
+  @apply relative m-auto h-5/6 w-11/12 rounded-2xl bg-bgBody transition-all;
+
+  .modalHeader {
+    @apply -m-px flex h-14 items-center justify-end rounded-2xl bg-bgContainer px-6;
+
+    .closeBtn {
+      @apply cursor-pointer rounded-lg bg-bgBody px-3 py-1 text-lg font-medium transition-colors hover:bg-red-600 active:bg-red-600;
+    }
+  }
+
+  .sliderBlock {
+    @apply flex items-center overflow-y-scroll py-6;
+  }
+}

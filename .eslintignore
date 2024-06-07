@@ -1,0 +1,7 @@
+node_modules
+dist
+build
+vitest.config.ts
+tailwind.config.ts
+postcss.config.js
+vite.config.ts
