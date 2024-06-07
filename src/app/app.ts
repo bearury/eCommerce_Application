@@ -11,6 +11,7 @@ export enum RouterPages {
   profile = 'profile',
   signup = 'signup',
   signin = 'signin',
+  about = 'about',
   not_found = 'not_found',
 }
 
@@ -89,6 +90,13 @@ export default class App {
         callback: async (): Promise<void> => {
           const { ProfilePage } = await import('@pages/index');
           this.setContent(RouterPages.profile, new ProfilePage());
+        },
+      },
+      {
+        path: `${RouterPages.about}`,
+        callback: async (): Promise<void> => {
+          const { AboutPage } = await import('@pages/index');
+          this.setContent(RouterPages.about, new AboutPage(this.router));
         },
       },
       {
