@@ -45,7 +45,11 @@ export default class SignInPage extends View {
       name: 'email',
       callback: this.validateEmail.bind(this),
     });
-    this.passwordInput = new InputPasswordField({ name: 'password', callback: this.validatePassword.bind(this) });
+    this.passwordInput = new InputPasswordField({
+      name: 'password',
+      callback: this.validatePassword.bind(this),
+      attributes: [{ type: 'type', value: 'password' }],
+    });
 
     this.loginInput = new Input({
       inputType: InputType.submit,

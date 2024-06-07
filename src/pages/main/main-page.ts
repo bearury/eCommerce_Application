@@ -3,9 +3,13 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './main-page.module.scss';
 import Router from '@router/router.ts';
 import { RouterPages } from '@app/app.ts';
+import ProductsApi from '@api/productsApi.ts';
+import { apiInstance } from '@api/api.ts';
 
 export default class MainPage extends View {
   router: Router;
+
+  api: ProductsApi;
 
   constructor(router: Router) {
     const params: ParamsElementCreator = {
@@ -14,6 +18,7 @@ export default class MainPage extends View {
     };
     super(params);
     this.router = router;
+    this.api = new ProductsApi(apiInstance);
     this.configureView();
   }
 
@@ -40,10 +45,17 @@ export default class MainPage extends View {
       callback: [{ event: 'click', callback: this.handlerClickGoRegistration.bind(this) }],
     }).getElement();
 
+    const testButton3: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.button],
+      textContent: 'Go Profile Page',
+      callback: [{ event: 'click', callback: this.handlerClickGoProfilePage.bind(this) }],
+    }).getElement();
+
     const container: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.container],
-      children: [title, testButton, testButton2],
+      children: [title, testButton, testButton2, testButton3],
     }).getElement();
     mainPage.append(container);
   }
@@ -54,5 +66,9 @@ export default class MainPage extends View {
 
   private handlerClickGoRegistration(): void {
     this.router.navigate(RouterPages.signup);
+  }
+
+  private handlerClickGoProfilePage(): void {
+    this.router.navigate(RouterPages.profile);
   }
 }

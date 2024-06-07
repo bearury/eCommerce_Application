@@ -1,0 +1,38 @@
+.cardProduct {
+  @apply my-24 flex items-center justify-center gap-12 p-4 md:flex-col;
+
+  .infoBlock {
+    @apply flex w-4/5 flex-col gap-5;
+
+    .name {
+      @apply text-center text-5xl font-bold;
+    }
+
+    .priceBlock {
+      @apply flex gap-5 text-2xl font-semibold;
+
+      .price {
+        @apply relative text-textPriceEUR;
+        &:first-child {
+          @apply text-textPriceUSD;
+        }
+      }
+    }
+
+    .priceDiscount:before {
+      @apply absolute left-[-10%] top-[10px] h-[2px] w-[120%] rotate-[7deg] bg-textPriceDiscount content-empty;
+    }
+
+    .discountBlock {
+      @apply text-textPriceDiscount;
+    }
+
+    .description {
+      @apply indent-2 font-extralight;
+    }
+  }
+
+  .imgBlock {
+    @apply max-w-xl;
+  }
+}

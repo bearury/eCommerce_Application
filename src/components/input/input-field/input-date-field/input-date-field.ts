@@ -1,9 +1,9 @@
-import InputField, { InputFieldType, InputFiledProps } from '@components/input/input-field/input-field';
+import InputField, { InputFiledProps } from '@components/input/input-field/input-field';
 
-type InputDateFieldProps = Omit<InputFiledProps, 'type'>;
+type InputDateFieldProps = InputFiledProps;
 
 export default class InputDateField extends InputField {
-  constructor({ name, callback }: InputDateFieldProps) {
-    super({ name, type: InputFieldType.date, callback });
+  constructor({ name, callback, attributes, additionalClassNames }: InputDateFieldProps) {
+    super({ name, callback, attributes, additionalClassNames });
   }
 }

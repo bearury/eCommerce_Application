@@ -1,0 +1,16 @@
+.spinner {
+  @apply relative h-20 w-20;
+
+  span {
+    @apply absolute h-full w-full animate-spinnerOne rounded-full
+    border-[10px] border-transparent border-t-bgDisabled;
+  }
+
+  span:nth-of-type(2) {
+    @apply animate-spinnerTwo border-[10px] border-b-textAccent;
+  }
+
+  &.hide {
+    @apply hidden;
+  }
+}

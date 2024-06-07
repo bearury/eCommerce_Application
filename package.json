@@ -40,6 +40,7 @@
     "@commercetools/sdk-client-v2": "^2.5.0",
     "isomorphic-fetch": "^3.0.0",
     "node-fetch": "^3.3.2",
+    "nouislider": "^15.7.2",
     "zustand": "^4.5.2"
   }
 }

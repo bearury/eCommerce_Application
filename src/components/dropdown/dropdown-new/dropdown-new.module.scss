@@ -1,0 +1,37 @@
+.dropdown {
+  @apply relative h-9 w-full;
+
+  .inner {
+    @apply relative h-full border border-bgHeader;
+  }
+
+  .toggle {
+    @apply flex w-full items-center justify-between gap-1 px-2 py-1;
+  }
+
+  .input {
+    @apply pointer-events-none w-full select-none border-none bg-inherit p-0 text-textLight outline-none;
+  }
+
+  .icon {
+    @apply transition-all;
+
+    path {
+      @apply fill-bgBody;
+    }
+  }
+}
+
+.active {
+  .inner {
+    @apply rounded-bl-[0] rounded-br-[0];
+  }
+
+  .icon {
+    @apply rotate-180;
+  }
+}
+
+.inner.error {
+  @apply border-red-500;
+}

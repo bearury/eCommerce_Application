@@ -26,12 +26,16 @@ export default class Dropdown extends View {
 
   inner: HTMLElement;
 
+  toggle: ElementCreator;
+
+  icon: HTMLElement;
+
   callback: () => void;
 
-  constructor(callback: () => void) {
+  constructor(callback: () => void, additionalClassNames: string[] = []) {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [styles.dropdown],
+      classNames: [styles.dropdown, ...additionalClassNames],
     };
     super(params);
 
@@ -57,25 +61,21 @@ export default class Dropdown extends View {
         { type: 'readonly', value: '' },
       ],
     });
+    this.icon = new ElementCreator({ tag: 'div', classNames: [styles.icon] }).getElement();
+    this.icon.innerHTML = svgHtmlArrow;
+    this.toggle = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.toggle],
+      attribute: [{ type: 'type', value: 'button' }],
+      callback: [{ event: 'click', callback: this.handleClickToggle.bind(this) }],
+      children: [this.input.getElement(), this.icon],
+    });
     this.configureView();
   }
 
   private configureView(): void {
     const dropdown: HTMLElement = this.getElement();
-
-    const icon: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.icon] }).getElement();
-    icon.innerHTML = svgHtmlArrow;
-
-    const toggle: ElementCreator = new ElementCreator({
-      tag: 'button',
-      classNames: [styles.toggle],
-      attribute: [{ type: 'type', value: 'button' }],
-      callback: [{ event: 'click', callback: this.handleClickToggle.bind(this) }],
-      children: [this.input.getElement(), icon],
-    });
-
-    this.inner.append(toggle.getElement());
-
+    this.inner.append(this.toggle.getElement());
     dropdown.append(this.inner, this.popup.getElement());
   }
 
@@ -99,11 +99,23 @@ export default class Dropdown extends View {
     return input.value as ItemDropdownTitle | '';
   }
 
+  public setValue(value: string): void {
+    const input = this.input.getElement() as HTMLInputElement;
+    input.value = value;
+  }
+
   public setError(): void {
     this.inner.classList.add(styles.error);
   }
 
   public clearError() {
     this.inner.classList.remove(styles.error);
+  }
+
+  public toggleDisabled(isDisabled: boolean): void {
+    const input = this.input.getElement() as HTMLInputElement;
+    input.disabled = isDisabled;
+    const toggle = this.toggle.getElement() as HTMLButtonElement;
+    toggle.disabled = isDisabled;
   }
 }

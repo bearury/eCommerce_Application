@@ -1,0 +1,18 @@
+.accordion {
+  @apply mx-4 mt-2 flex-grow rounded bg-bgContainer p-2;
+
+  .content {
+    @apply relative max-h-0 overflow-hidden opacity-0 transition-all;
+
+    &.active {
+      @apply mt-2 max-h-fit rounded border border-borderLight p-2 opacity-100;
+      transition:
+        opacity 200ms linear,
+        max-height 500ms linear;
+    }
+  }
+
+  .rangeWrapper {
+    @apply mt-3 flex w-full flex-col gap-4 rounded border border-borderLight p-4;
+  }
+}

@@ -1,0 +1,50 @@
+.slider {
+  @apply relative m-auto flex flex-col items-center justify-center;
+}
+
+.slidesBlock {
+  @apply flex;
+
+  .img {
+    @apply h-96 w-96 cursor-zoom-in bg-contain bg-center bg-no-repeat object-contain;
+  }
+}
+
+.navigation {
+  width: 600px;
+  @apply flex items-center justify-center text-black tablet:w-1;
+
+  .nextBtn,
+  .prevBtn {
+    top: 37%;
+    @apply absolute flex h-8 w-8 translate-y-2/4 cursor-pointer items-center justify-center rounded-full text-2xl font-bold hover:bg-bgBackdrop sm:top-full;
+  }
+
+  .nextBtn {
+    @apply right-2.5 sm:right-40;
+  }
+
+  .prevBtn {
+    @apply left-2.5 sm:left-40;
+  }
+}
+
+.pagination {
+  @apply mt-5 flex gap-1;
+
+  .dot {
+    @apply h-1.5 w-6 rounded-xl border border-bgContainer bg-bgBody;
+
+    &.active {
+      @apply bg-bgContainer;
+    }
+  }
+}
+
+.subSlider {
+  .img {
+    @apply cursor-default;
+    width: 30rem;
+    height: 30rem;
+  }
+}
