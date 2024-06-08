@@ -8,6 +8,7 @@ export enum RouterPages {
   main = 'main',
   products = 'products',
   product = 'product',
+  basket = 'basket',
   profile = 'profile',
   signup = 'signup',
   signin = 'signin',
@@ -76,6 +77,13 @@ export default class App {
         callback: async (): Promise<void> => {
           const { ProductsPage } = await import('@pages/index');
           this.setContent(RouterPages.products, new ProductsPage(this.router));
+        },
+      },
+      {
+        path: `${RouterPages.basket}`,
+        callback: async (): Promise<void> => {
+          const { BasketPage } = await import('@pages/index');
+          this.setContent(RouterPages.basket, new BasketPage(this.router));
         },
       },
       {
