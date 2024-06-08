@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import Router from '@router/router.ts';
-import AboutPage from '@pages/about/about-page';
+import BasketPage from '@pages/basket/basket-page';
 
 describe('About page component', (): void => {
   const router = new Router([
@@ -9,12 +9,12 @@ describe('About page component', (): void => {
       callback: async (): Promise<void> => {},
     },
   ]);
-  const aboutPage = new AboutPage(router);
-  it('aboutPage instance of BasketPage class', (): void => {
-    expect(aboutPage).toBeInstanceOf(AboutPage);
+  const basketPage = new BasketPage(router);
+  it('basketPage instance of BasketPage class', (): void => {
+    expect(basketPage).toBeInstanceOf(BasketPage);
   });
 
   it('check that the class instance is not empty', (): void => {
-    expect(aboutPage).toBeTruthy();
+    expect(basketPage).toBeTruthy();
   });
 });
