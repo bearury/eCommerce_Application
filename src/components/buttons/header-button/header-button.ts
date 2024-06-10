@@ -21,12 +21,14 @@ export default class HeaderButton extends View {
           : buttonType === RouterPages.profile
             ? `👤 Profile`
             : buttonType === RouterPages.main
-              ? `🛒 Main`
+              ? `💡 Main`
               : buttonType === RouterPages.products
                 ? `🧰 Products`
-                : buttonType === RouterPages.about
-                  ? `🥭 About Us`
-                  : buttonType;
+                : buttonType === RouterPages.basket
+                  ? `🛒 Basket`
+                  : buttonType === RouterPages.about
+                    ? `🥭 About Us`
+                    : buttonType;
 
     const params: ParamsElementCreator = {
       tag: 'button',
