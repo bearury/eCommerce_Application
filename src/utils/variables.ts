@@ -25,4 +25,4 @@ export const selectBrand: ItemDropdownProps<SelectBrand>[] = [
   { id: '2', title: SelectBrand.saffit },
 ];
 
-export const countProductsOnOnePage = 12;
+export const countProductsOnOnePage = 2;

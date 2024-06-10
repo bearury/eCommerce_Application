@@ -31,13 +31,17 @@ class ProductsApi {
 
   async get(page: number): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const keyCategory = categoryState.getState().category;
+
+    const offset = (page - 1) * countProductsOnOnePage;
+
+    console.log('[75] 🐬: ', offset);
     return this.customerBuilder
       .productProjections()
       .search()
       .get({
         queryArgs: {
           limit: countProductsOnOnePage,
-          offset: page === 1 ? page - 1 : page * countProductsOnOnePage,
+          offset,
           'filter.query': `categories.id:subtree("${keyCategory}")`,
         },
       })
@@ -70,6 +74,8 @@ class ProductsApi {
       );
     }
 
+    const offset = page === 1 ? page - 1 : page * countProductsOnOnePage;
+
     return this.customerBuilder
       .productProjections()
       .search()
@@ -77,7 +83,7 @@ class ProductsApi {
         queryArgs: {
           'filter.query': filterStr,
           limit: countProductsOnOnePage,
-          offset: page === 1 ? page - 1 : page * countProductsOnOnePage,
+          offset,
         },
       })
       .execute();

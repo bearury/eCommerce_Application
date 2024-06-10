@@ -73,15 +73,23 @@ const DefaultAddressBillingState = createStore(
 interface ProductsDataState {
   data: ClientResponse<ProductProjectionPagedSearchResponse> | null;
   setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => void;
+}
+
+const productsState = createStore(
+  devtools<ProductsDataState>((set) => ({
+    data: null,
+    setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => set(() => ({ data })),
+  }))
+);
+
+interface PageState {
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
 }
 
-const productsDataState = createStore(
-  devtools<ProductsDataState>((set) => ({
-    data: null,
+const pageState = createStore(
+  devtools<PageState>((set) => ({
     currentPage: 1,
-    setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => set(() => ({ data })),
     setCurrentPage: (currentPage: number) => set(() => ({ currentPage })),
   }))
 );
@@ -105,6 +113,7 @@ const filterState = createStore(
     setWattage: (wattage: number | null) => set(() => ({ wattage })),
   }))
 );
+
 interface CategoryState {
   categories: ModifyCategory[] | [];
   category: string | null;
@@ -126,7 +135,8 @@ export {
   loaderState,
   authState,
   filterState,
-  productsDataState,
+  productsState,
+  pageState,
   DefaultAddressShippingState,
   DefaultAddressBillingState,
   categoryState,

@@ -1,7 +1,7 @@
 import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './breadcrumbs.module.scss';
-import { categoryState, loaderState, productsDataState, toastState } from '@state/state.ts';
+import { categoryState, loaderState, productsState, toastState } from '@state/state.ts';
 import { getAncestorCategories } from '@utils/categories-formatter.ts';
 import { ModifyCategory } from '@utils/categories-creator.ts';
 import ProductsApi from '@api/productsApi.ts';
@@ -66,7 +66,7 @@ export class Breadcrumbs extends View {
     await this.productsApi
       .get(defaultPage)
       .then((data) => {
-        productsDataState.getState().setData(data);
+        productsState.getState().setData(data);
       })
       .catch((error) => {
         if (error instanceof Error) {

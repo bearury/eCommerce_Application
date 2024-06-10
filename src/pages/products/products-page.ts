@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
-import { loaderState, productsDataState, toastState } from '@state/state.ts';
+import { loaderState, pageState, productsState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
@@ -25,8 +25,6 @@ export default class ProductsPage extends View {
 
   productsApi: ProductsApi;
 
-  // categoriesApi: CategoriesApi;
-
   pagination: Pagination;
 
   cardsContainer: HTMLElement;
@@ -42,7 +40,7 @@ export default class ProductsPage extends View {
     this.router = router;
 
     this.productsApi = new ProductsApi(apiInstance);
-    productsDataState.subscribe(this.renderCards.bind(this));
+    productsState.subscribe(this.renderCards.bind(this));
 
     this.searchingBlock = new SearchingField().getElement();
     this.sortingBlock = new SortingBlock().getElement();
@@ -51,7 +49,7 @@ export default class ProductsPage extends View {
     this.accordion = new Accordion();
     this.categories = new CategoriesSelect(this.router);
     this.configureView();
-    this.getProductApi(productsDataState.getState().currentPage);
+    this.getProductApi();
   }
 
   private configureView(): void {
@@ -71,12 +69,13 @@ export default class ProductsPage extends View {
     );
   }
 
-  private async getProductApi(page: number = 1): Promise<void> {
+  private async getProductApi(): Promise<void> {
     loaderState.getState().loader.show();
+    const page = pageState.getState().currentPage;
     await this.productsApi
       .get(page)
       .then((data) => {
-        productsDataState.getState().setData(data);
+        productsState.getState().setData(data);
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -89,8 +88,10 @@ export default class ProductsPage extends View {
   }
 
   private renderCards(): void {
-    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
+    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsState.getState().data;
     this.cardsContainer.replaceChildren();
+
+    console.log('🆘: RENDER CARDS', data);
 
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);
@@ -116,16 +117,15 @@ export default class ProductsPage extends View {
   }
 
   private handleChangePage(page: string): void {
-    const currentPage: number = productsDataState.getState().currentPage;
+    const currentPage: number = pageState.getState().currentPage;
+
     if (page === CellIconType.right) {
-      this.getProductApi(Number(currentPage + 1));
-      productsDataState.getState().setCurrentPage(currentPage + 1);
+      pageState.getState().setCurrentPage(currentPage + 1);
     } else if (page === CellIconType.left) {
-      this.getProductApi(Number(currentPage - 1));
-      productsDataState.getState().setCurrentPage(currentPage - 1);
+      pageState.getState().setCurrentPage(currentPage - 1);
     } else {
-      this.getProductApi(Number(page));
-      productsDataState.getState().setCurrentPage(Number(page));
+      pageState.getState().setCurrentPage(Number(page));
     }
+    this.getProductApi();
   }
 }
