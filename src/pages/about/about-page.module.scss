@@ -1,0 +1,11 @@
+.page {
+  @apply flex flex-auto flex-col items-center justify-center gap-8 py-14 font-inter;
+
+  .title {
+    @apply text-3xl font-bold text-textDark;
+  }
+
+  .teamMembersBlock {
+    @apply flex flex-auto flex-wrap items-center justify-center gap-10;
+  }
+}
