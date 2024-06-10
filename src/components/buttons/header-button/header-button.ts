@@ -26,7 +26,9 @@ export default class HeaderButton extends View {
                 ? `🧰 Products`
                 : buttonType === RouterPages.basket
                   ? `🛒 Basket`
-                  : buttonType;
+                  : buttonType === RouterPages.about
+                    ? `🥭 About Us`
+                    : buttonType;
 
     const params: ParamsElementCreator = {
       tag: 'button',
