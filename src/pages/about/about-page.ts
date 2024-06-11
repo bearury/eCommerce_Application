@@ -64,7 +64,7 @@ export default class AboutPage extends View {
       name: 'Igor Samgin',
       linkGitHub: 'https://github.com/Frost-704',
       role: 'Frontend Developer',
-      bio: 'Freelancer)',
+      bio: 'Freelancer',
       contributions: 'Working with API, Implemented login, registration and User Page.',
     }).getElement();
 
