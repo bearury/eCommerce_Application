@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './categories-select.module.scss';
 import { ModifyCategory } from '@utils/categories-creator.ts';
-import { categoryState, loaderState, productsDataState, toastState } from '@state/state.ts';
+import { categoryState, loaderState, productsState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import Router from '@router/router.ts';
@@ -117,7 +117,7 @@ export default class CategoriesSelect extends View {
     await this.productsApi
       .get(defaultPage)
       .then((data) => {
-        productsDataState.getState().setData(data);
+        productsState.getState().setData(data);
       })
       .catch((error) => {
         if (error instanceof Error) {

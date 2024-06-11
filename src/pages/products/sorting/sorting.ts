@@ -3,7 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './sorting.module.scss';
 import Search from '@api/search';
 import { apiInstance } from '@api/api';
-import { productsDataState } from '@state/state';
+import { productsState } from '@state/state';
 
 export default class SortingBlock extends View {
   buttons: HTMLElement;
@@ -66,19 +66,19 @@ export default class SortingBlock extends View {
 
       if (btn.dataset.type === 'priceAscBtn') {
         sort.search({ sort: 'price asc' }).then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         });
       } else if (btn.dataset.type === 'priceDescBtn') {
         sort.search({ sort: 'price desc' }).then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         });
       } else if (btn.dataset.type === 'nameAtoZBtn') {
         sort.search({ sort: 'name.en-US asc' }).then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         });
       } else if (btn.dataset.type === 'nameZtoABtn') {
         sort.search({ sort: 'name.en-US desc' }).then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         });
       }
     });
