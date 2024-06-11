@@ -11,5 +11,9 @@
     .emptyCartMsgLink {
       @apply px-4 text-center text-2xl text-textAccent;
     }
+
+    .emptyCartBtn {
+      @apply mt-3 w-52 rounded border border-bgHeader py-1 transition-all hover:bg-bgBackdrop active:bg-bgModal;
+    }
   }
 }

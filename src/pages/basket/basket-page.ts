@@ -4,6 +4,7 @@ import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
 import Image from '@components/image/image';
 import emptyCart from '/empty-cart.png';
+import { RouterPages } from '@app/app';
 
 export default class BasketPage extends View {
   emptyCartBlock: HTMLElement;
@@ -28,6 +29,7 @@ export default class BasketPage extends View {
 
   private configureView(): void {
     const about = this.getElement();
+
     const cartImage = new Image({ classNames: [styles.image], img: emptyCart }).getElement();
     const emptyCartMsg = new ElementCreator({
       tag: 'div',
@@ -39,8 +41,18 @@ export default class BasketPage extends View {
       classNames: [styles.emptyCartMsgLink],
       textContent: 'Looks like you have not added anything to your cart...',
     }).getElement();
+    const emptyCartBtn = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.emptyCartBtn],
+      textContent: 'Go Shopping!',
+      callback: [{ event: 'click', callback: this.handlerClickGoProductsCatalog.bind(this) }],
+    }).getElement();
 
-    this.emptyCartBlock.append(cartImage, emptyCartMsg, emptyCartMsgLink);
+    this.emptyCartBlock.append(cartImage, emptyCartMsg, emptyCartMsgLink, emptyCartBtn);
     about.append(this.emptyCartBlock);
+  }
+
+  private handlerClickGoProductsCatalog(): void {
+    this.router.navigate(RouterPages.products);
   }
 }
