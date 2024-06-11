@@ -5,20 +5,36 @@ import { Price, ProductProjection } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price.ts';
 import Image from '@components/image/image';
 import noImage from '/noImage.png';
+import Input, { InputType } from '@components/input/input';
 
 export class ProductsCard extends View {
+  callback: Function;
+
+  addToCartButton: Input;
+
   constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
-      callback: [{ event: 'click', callback: () => callback(data.id) }],
     };
     super(params);
+    this.callback = callback;
+    this.addToCartButton = new Input({
+      inputType: InputType.button,
+      callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
+      classNames: ['button'],
+      value: 'Add to cart 🛒',
+      disabled: false,
+    });
     this.configureView(data);
   }
 
   private configureView(data: ProductProjection): void {
     const card: HTMLElement = this.getElement();
+    const activeWrapper: HTMLElement = new ElementCreator({
+      tag: 'div',
+      callback: [{ event: 'click', callback: () => this.callback(data.id) }],
+    }).getElement();
     const textName = data.name['en-US'];
     const images = data.masterVariant.images;
     const pricesValue: Price[] | undefined = data.masterVariant.prices?.filter(
@@ -78,10 +94,13 @@ export class ProductsCard extends View {
           discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
         }
       }
-
       pricesWrapper.append(priceElement);
     });
+    activeWrapper.append(image, name, pricesWrapper, description, discountUsd, discountEur);
+    card.append(activeWrapper, this.addToCartButton.getElement());
+  }
 
-    card.append(image, name, pricesWrapper, description, discountUsd, discountEur);
+  private addToCart() {
+    console.log(this.addToCartButton);
   }
 }

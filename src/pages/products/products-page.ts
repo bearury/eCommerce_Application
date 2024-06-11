@@ -113,6 +113,7 @@ export default class ProductsPage extends View {
   }
 
   private handleClickCard(id: string): void {
+    console.log();
     this.router.resourceNavigation(id);
   }
 
