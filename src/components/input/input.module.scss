@@ -47,7 +47,7 @@ input[type='submit'] {
 }
 
 .button {
-  @apply mt-3 bg-bgHeader p-3 text-white;
+  @apply mt-3 w-max self-end bg-bgHeader p-3 text-white;
 
   &:hover {
     @apply cursor-pointer opacity-75;
