@@ -1,14 +1,10 @@
 import View from '@utils/view.ts';
-import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
+import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
-import Image from '@components/image/image';
-import emptyCart from '/empty-cart.png';
-import { RouterPages } from '@app/app';
+import { EmptyCart } from '@components/empty-cart/empty-cart';
 
 export default class BasketPage extends View {
-  emptyCartBlock: HTMLElement;
-
   router: Router;
 
   constructor(router: Router) {
@@ -19,40 +15,13 @@ export default class BasketPage extends View {
     super(params);
     this.router = router;
 
-    this.emptyCartBlock = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.emptyCartBlock],
-    }).getElement();
-
     this.configureView();
   }
 
   private configureView(): void {
     const about = this.getElement();
+    const emptyCart = new EmptyCart(this.router);
 
-    const cartImage = new Image({ classNames: [styles.image], img: emptyCart }).getElement();
-    const emptyCartMsg = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.emptyCartMsg],
-      textContent: 'Your cart is empty!',
-    }).getElement();
-    const emptyCartMsgLink = new ElementCreator({
-      tag: 'div',
-      classNames: [styles.emptyCartMsgLink],
-      textContent: 'Looks like you have not added anything to your cart...',
-    }).getElement();
-    const emptyCartBtn = new ElementCreator({
-      tag: 'button',
-      classNames: [styles.emptyCartBtn],
-      textContent: 'Go Shopping!',
-      callback: [{ event: 'click', callback: this.handlerClickGoProductsCatalog.bind(this) }],
-    }).getElement();
-
-    this.emptyCartBlock.append(cartImage, emptyCartMsg, emptyCartMsgLink, emptyCartBtn);
-    about.append(this.emptyCartBlock);
-  }
-
-  private handlerClickGoProductsCatalog(): void {
-    this.router.navigate(RouterPages.products);
+    about.append(emptyCart.getElement());
   }
 }
