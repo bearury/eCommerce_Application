@@ -2,6 +2,7 @@ import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
+import { EmptyCart } from '@components/empty-cart/empty-cart';
 
 export default class BasketPage extends View {
   router: Router;
@@ -19,7 +20,8 @@ export default class BasketPage extends View {
 
   private configureView(): void {
     const about = this.getElement();
+    const emptyCart = new EmptyCart(this.router);
 
-    about.textContent = 'This is basket page';
+    about.append(emptyCart.getElement());
   }
 }
