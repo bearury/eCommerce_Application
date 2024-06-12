@@ -3,6 +3,8 @@ import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 import { loaderState } from '@state/state.ts';
 import Loader from '@components/loader/loader';
+import Cart from '@api/cart';
+import { apiInstance } from '@api/api';
 
 export enum RouterPages {
   main = 'main',
@@ -30,6 +32,7 @@ export default class App {
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
     this.loader = loaderState.getState().loader;
+    new Cart(apiInstance).createAnonymousCart();
   }
 
   public start(): void {
