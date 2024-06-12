@@ -11,6 +11,7 @@ import { Price } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price';
 import sliderStyles from '@components/slider/slider.module.scss';
 import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
+import Input, { InputType } from '@components/input/input';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -27,6 +28,8 @@ export default class CardProductPage extends View {
   imgBlock: HTMLElement;
 
   router: Router;
+
+  addToCartButton: Input;
 
   constructor(resource: string, router: Router) {
     const params: ParamsElementCreator = {
@@ -66,6 +69,14 @@ export default class CardProductPage extends View {
       tag: 'div',
       classNames: [styles.imgBlock],
     }).getElement();
+
+    this.addToCartButton = new Input({
+      inputType: InputType.button,
+      callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
+      classNames: ['button'],
+      value: 'Add to cart 🛒',
+      disabled: false,
+    });
 
     this.configureView(resource);
   }
@@ -140,7 +151,7 @@ export default class CardProductPage extends View {
     } finally {
       loaderState.getState().loader.close();
     }
-
+    this.infoBlock.append(this.addToCartButton.getElement());
     cardProduct.append(this.imgBlock, this.infoBlock);
   }
 
@@ -151,5 +162,9 @@ export default class CardProductPage extends View {
     subModalSlider.updateSlider();
     const modal = new ModalSlider(subModalSlider).getElement();
     document.body.append(modal);
+  }
+
+  private addToCart() {
+    console.log(this);
   }
 }

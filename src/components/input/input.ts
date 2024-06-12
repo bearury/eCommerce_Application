@@ -15,6 +15,7 @@ export enum InputType {
   text = 'text',
   submit = 'submit',
   date = 'date',
+  button = 'button',
 }
 
 export type Callback = { event: Event; callback: Function };
