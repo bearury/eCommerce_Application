@@ -18,10 +18,20 @@ class Auth {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async login(user: CustomerSignin) {
+  async login(user: CustomerSignin, anonymousCartSignInMode = 'MergeWithExistingCustomerCart') {
     try {
       loaderState.getState().loader.show();
-      const data = await this.customerBuilder.me().login().post({ body: user }).execute();
+      const data = await this.customerBuilder
+        .me()
+        .login()
+        .post({
+          body: {
+            email: user.email,
+            password: user.password,
+            anonymousCartSignInMode,
+          } as CustomerSignin,
+        })
+        .execute();
       if (data.statusCode === 200) {
         localStorage.setItem('isAuthorized', 'true');
         localStorage.setItem('customerID', data.body.customer.id);

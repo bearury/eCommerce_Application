@@ -32,7 +32,7 @@ export default class App {
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
     this.loader = loaderState.getState().loader;
-    new Cart(apiInstance).createAnonymousCart();
+    if (!localStorage.getItem('isAuthorized')) new Cart(apiInstance).createAnonymousCart();
   }
 
   public start(): void {
