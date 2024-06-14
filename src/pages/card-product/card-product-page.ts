@@ -12,6 +12,7 @@ import converterPrice from '@utils/converter-price';
 import sliderStyles from '@components/slider/slider.module.scss';
 import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
 import Input, { InputType } from '@components/input/input';
+import Cart from '@api/cart';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -31,12 +32,15 @@ export default class CardProductPage extends View {
 
   addToCartButton: Input;
 
+  productId: string;
+
   constructor(resource: string, router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.cardProduct],
     };
     super(params);
+    this.productId = resource;
     this.router = router;
 
     this.name = new ElementCreator({
@@ -164,7 +168,16 @@ export default class CardProductPage extends View {
     document.body.append(modal);
   }
 
-  private addToCart() {
-    console.log(this);
+  private async addToCart() {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new Cart(apiInstance).addToCart(cartId, this.productId);
+    if (response && response.statusCode === 200) {
+      const button = this.addToCartButton.getElement() as HTMLButtonElement;
+      button.value = 'In cart ✅';
+      button.disabled = true;
+    }
   }
 }

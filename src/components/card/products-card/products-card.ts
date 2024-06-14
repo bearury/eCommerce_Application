@@ -6,11 +6,15 @@ import converterPrice from '@utils/converter-price.ts';
 import Image from '@components/image/image';
 import noImage from '/noImage.png';
 import Input, { InputType } from '@components/input/input';
+import Cart from '@api/cart';
+import { apiInstance } from '@api/api';
 
 export class ProductsCard extends View {
   callback: Function;
 
   addToCartButton: Input;
+
+  productId: string;
 
   constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
     const params: ParamsElementCreator = {
@@ -18,6 +22,7 @@ export class ProductsCard extends View {
       classNames: [styles.card],
     };
     super(params);
+    this.productId = data.id;
     this.callback = callback;
     this.addToCartButton = new Input({
       inputType: InputType.button,
@@ -100,7 +105,16 @@ export class ProductsCard extends View {
     card.append(activeWrapper, this.addToCartButton.getElement());
   }
 
-  private addToCart() {
-    console.log(this.addToCartButton);
+  private async addToCart() {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new Cart(apiInstance).addToCart(cartId, this.productId);
+    if (response && response.statusCode === 200) {
+      const button = this.addToCartButton.getElement() as HTMLButtonElement;
+      button.value = 'In cart ✅';
+      button.disabled = true;
+    }
   }
 }

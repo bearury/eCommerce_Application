@@ -18,9 +18,13 @@ class Auth {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async login(user: CustomerSignin, anonymousCartSignInMode = 'MergeWithExistingCustomerCart') {
+  async login(user: CustomerSignin) {
     try {
       loaderState.getState().loader.show();
+      const anonymousCartId = localStorage.getItem('cartId');
+      if (!anonymousCartId) {
+        throw new Error('no anon cart id!');
+      }
       const data = await this.customerBuilder
         .me()
         .login()
@@ -28,7 +32,8 @@ class Auth {
           body: {
             email: user.email,
             password: user.password,
-            anonymousCartSignInMode,
+            anonymousCartId,
+            anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
           } as CustomerSignin,
         })
         .execute();
@@ -44,7 +49,9 @@ class Auth {
         });
         this.apiInstance.setClient(newSession);
         this.customerBuilder = newSession.withProjectKey({ projectKey });
-        this.customerBuilder.me().get().execute();
+        const response = await this.customerBuilder.me().activeCart().get().execute();
+        localStorage.setItem('cartId', response.body.id);
+        localStorage.setItem('cartVersion', `${response.body.version}`);
         authState.getState().setIsAuthorized(true);
         toastState.getState().toast.showSuccess('Welcome');
         return data;

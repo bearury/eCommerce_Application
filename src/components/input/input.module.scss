@@ -52,4 +52,10 @@ input[type='submit'] {
   &:hover {
     @apply cursor-pointer opacity-75;
   }
+  &:disabled {
+    @apply pointer-events-none;
+  }
+  &:disabled:hover {
+    @apply pointer-events-none;
+  }
 }
