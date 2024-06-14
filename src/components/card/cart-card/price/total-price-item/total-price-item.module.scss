@@ -1,0 +1,7 @@
+.item {
+  @apply leading-tight text-textAccent;
+
+  .count {
+    @apply font-bold text-lime-700;
+  }
+}

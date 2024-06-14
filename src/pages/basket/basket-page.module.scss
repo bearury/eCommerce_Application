@@ -1,19 +1,7 @@
 .page {
-  @apply py-14;
+  @apply py-4;
 
-  .emptyCartBlock {
-    @apply flex flex-col items-center justify-center gap-3;
-
-    .emptyCartMsg {
-      @apply text-4xl font-semibold text-textDark;
-    }
-
-    .emptyCartMsgLink {
-      @apply px-4 text-center text-2xl text-textAccent;
-    }
-
-    .emptyCartBtn {
-      @apply mt-3 w-52 rounded border border-bgHeader py-1 transition-all hover:bg-bgBackdrop active:bg-bgModal;
-    }
+  .items {
+    @apply flex flex-col gap-3 px-3;
   }
 }

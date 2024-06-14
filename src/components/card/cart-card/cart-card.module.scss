@@ -1,0 +1,47 @@
+.card {
+  @apply flex items-center justify-between rounded border border-bgHeader px-4 py-2;
+
+  .image {
+    @apply h-12 w-12 rounded-full;
+  }
+
+  .productData {
+    @apply flex items-center justify-between gap-3;
+
+    .name {
+      @apply font-bold;
+    }
+  }
+
+  .controls {
+    @apply flex flex-[35%] flex-grow-0 items-center justify-between;
+
+    .buttonDelete {
+      @apply relative flex h-10 w-10 items-center justify-center rounded border border-bgHeader
+      p-2 transition-all;
+
+      svg {
+        @apply scale-90;
+      }
+
+      &:after {
+        @apply absolute left-1/2 top-1/2 h-[2px] w-full
+        -translate-x-1/2 rotate-45 scale-0 bg-red-400 transition-all content-empty;
+      }
+
+      &:hover {
+        svg {
+          @apply scale-100;
+        }
+
+        &:after {
+          @apply scale-100 transition-all;
+        }
+      }
+
+      path {
+        @apply fill-red-400;
+      }
+    }
+  }
+}

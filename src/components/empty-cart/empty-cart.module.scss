@@ -1,5 +1,5 @@
 .emptyCartBlock {
-  @apply flex flex-col items-center justify-center gap-3;
+  @apply mt-12 flex flex-col items-center justify-center gap-3;
 
   .emptyCartMsg {
     @apply text-4xl font-semibold text-textDark;
