@@ -124,13 +124,13 @@ export default class HeaderPages extends View {
     }
   }
 
-  private logOut() {
+  private async logOut() {
     localStorage.clear();
     authState.getState().setIsAuthorized(false);
     const newSession = apiInstance.createAnonymousSession();
     apiInstance.setClient(newSession);
     apiInstance.getClient().withProjectKey({ projectKey }).get().execute();
-    new Cart(apiInstance).createAnonymousCart();
+    await new Cart(apiInstance).createAnonymousCart();
     this.handlerClickButton(RouterPages.main);
   }
 
