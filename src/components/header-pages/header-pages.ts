@@ -11,6 +11,7 @@ import { authState } from '@state/state';
 import BurgerButton from '@components/buttons/burger-button/burger-button';
 import burgerStyles from '@components/buttons/burger-button/burger-button.module.scss';
 import { apiInstance, isAuthorized, projectKey } from '@api/api';
+import Cart from '@api/cart';
 
 export default class HeaderPages extends View {
   router: Router;
@@ -129,6 +130,7 @@ export default class HeaderPages extends View {
     const newSession = apiInstance.createAnonymousSession();
     apiInstance.setClient(newSession);
     apiInstance.getClient().withProjectKey({ projectKey }).get().execute();
+    new Cart(apiInstance).createAnonymousCart();
     this.handlerClickButton(RouterPages.main);
   }
 
