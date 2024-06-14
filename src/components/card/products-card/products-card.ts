@@ -38,6 +38,7 @@ export class ProductsCard extends View {
     const card: HTMLElement = this.getElement();
     const activeWrapper: HTMLElement = new ElementCreator({
       tag: 'div',
+      classNames: [styles.activeWrapper],
       callback: [{ event: 'click', callback: () => this.callback(data.id) }],
     }).getElement();
     const textName = data.name['en-US'];
