@@ -47,15 +47,15 @@ input[type='submit'] {
 }
 
 .button {
-  @apply mt-3 w-max self-end bg-bgHeader p-3 text-white;
+  @apply mt-3 w-full self-end bg-bgHeader p-3 text-white;
 
   &:hover {
     @apply cursor-pointer opacity-75;
   }
   &:disabled {
-    @apply pointer-events-none;
+    @apply pointer-events-none opacity-70;
   }
   &:disabled:hover {
-    @apply pointer-events-none;
+    @apply pointer-events-none cursor-default;
   }
 }

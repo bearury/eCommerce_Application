@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
-import { apiInstance } from '@api/api';
+import { apiInstance, projectKey } from '@api/api';
 import { loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
@@ -73,7 +73,6 @@ export default class CardProductPage extends View {
       tag: 'div',
       classNames: [styles.imgBlock],
     }).getElement();
-
     this.addToCartButton = new Input({
       inputType: InputType.button,
       callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
@@ -85,7 +84,7 @@ export default class CardProductPage extends View {
     this.configureView(resource);
   }
 
-  private configureView(resource: string): void {
+  private async configureView(resource: string): Promise<void> {
     const cardProduct: HTMLElement = this.getElement();
     const product = new ProductCard(apiInstance);
     try {
@@ -155,6 +154,18 @@ export default class CardProductPage extends View {
     } finally {
       loaderState.getState().loader.close();
     }
+    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
+    const productInCart = response.body.lineItems;
+    if (productInCart) {
+      productInCart.forEach((product) => {
+        if (product.productId === this.productId) {
+          const button = this.addToCartButton.getElement() as HTMLButtonElement;
+          button.value = 'In cart ✅';
+          button.disabled = true;
+        }
+      });
+    }
+
     this.infoBlock.append(this.addToCartButton.getElement());
     cardProduct.append(this.imgBlock, this.infoBlock);
   }

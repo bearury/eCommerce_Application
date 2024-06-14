@@ -7,7 +7,7 @@ import Image from '@components/image/image';
 import noImage from '/noImage.png';
 import Input, { InputType } from '@components/input/input';
 import Cart from '@api/cart';
-import { apiInstance } from '@api/api';
+import { apiInstance, projectKey } from '@api/api';
 
 export class ProductsCard extends View {
   callback: Function;
@@ -34,7 +34,7 @@ export class ProductsCard extends View {
     this.configureView(data);
   }
 
-  private configureView(data: ProductProjection): void {
+  private async configureView(data: ProductProjection): Promise<void> {
     const card: HTMLElement = this.getElement();
     const activeWrapper: HTMLElement = new ElementCreator({
       tag: 'div',
@@ -101,6 +101,17 @@ export class ProductsCard extends View {
       }
       pricesWrapper.append(priceElement);
     });
+    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
+    const productInCart = response.body.lineItems;
+    if (productInCart) {
+      productInCart.forEach((product) => {
+        if (product.productId === this.productId) {
+          const button = this.addToCartButton.getElement() as HTMLButtonElement;
+          button.value = 'In cart ✅';
+          button.disabled = true;
+        }
+      });
+    }
     activeWrapper.append(image, name, pricesWrapper, description, discountUsd, discountEur);
     card.append(activeWrapper, this.addToCartButton.getElement());
   }
