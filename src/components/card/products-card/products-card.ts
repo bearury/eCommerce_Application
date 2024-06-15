@@ -6,8 +6,6 @@ import converterPrice from '@utils/converter-price.ts';
 import Image from '@components/image/image';
 import noImage from '/noImage.png';
 import Input, { InputType } from '@components/input/input';
-import Cart from '@api/cart';
-import { apiInstance, projectKey } from '@api/api';
 
 export class ProductsCard extends View {
   callback: Function;
@@ -16,7 +14,21 @@ export class ProductsCard extends View {
 
   productId: string;
 
-  constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
+  addToCartCallback: Function;
+
+  constructor({
+    data,
+    callback,
+    addToCartCallback,
+    buttonValue,
+    isDisabledButton,
+  }: {
+    data: ProductProjection;
+    callback: (id: string) => void;
+    addToCartCallback: (productId: string, button: HTMLButtonElement) => void;
+    buttonValue: string;
+    isDisabledButton: boolean;
+  }) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
@@ -24,12 +36,19 @@ export class ProductsCard extends View {
     super(params);
     this.productId = data.id;
     this.callback = callback;
+    this.addToCartCallback = addToCartCallback;
     this.addToCartButton = new Input({
       inputType: InputType.button,
-      callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
+      callbacks: [
+        {
+          event: 'click',
+          callback: () =>
+            this.addToCartCallback(this.productId, this.addToCartButton.getElement() as HTMLButtonElement),
+        },
+      ],
       classNames: ['button'],
-      value: 'Add to cart 🛒',
-      disabled: false,
+      value: buttonValue,
+      disabled: isDisabledButton,
     });
     this.configureView(data);
   }
@@ -102,31 +121,7 @@ export class ProductsCard extends View {
       }
       pricesWrapper.append(priceElement);
     });
-    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
-    const productInCart = response.body.lineItems;
-    if (productInCart) {
-      productInCart.forEach((product) => {
-        if (product.productId === this.productId) {
-          const button = this.addToCartButton.getElement() as HTMLButtonElement;
-          button.value = 'In cart ✅';
-          button.disabled = true;
-        }
-      });
-    }
     activeWrapper.append(image, name, pricesWrapper, description, discountUsd, discountEur);
     card.append(activeWrapper, this.addToCartButton.getElement());
-  }
-
-  private async addToCart() {
-    const cartId = localStorage.getItem('cartId');
-    if (!cartId) {
-      throw new Error('No cart id!');
-    }
-    const response = await new Cart(apiInstance).addToCart(cartId, this.productId);
-    if (response && response.statusCode === 200) {
-      const button = this.addToCartButton.getElement() as HTMLButtonElement;
-      button.value = 'In cart ✅';
-      button.disabled = true;
-    }
   }
 }
