@@ -4,7 +4,7 @@ import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
 import { loaderState, pageState, productsState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
-import { apiInstance } from '@api/api.ts';
+import { apiInstance, projectKey } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
 import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
@@ -13,6 +13,7 @@ import CategoriesSelect from '@pages/products/categories-select/categories-selec
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 import SortingBlock from './sorting/sorting';
 import SearchingField from './searching/searching';
+import Cart from '@api/cart';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -87,8 +88,9 @@ export default class ProductsPage extends View {
       });
   }
 
-  private renderCards(): void {
+  private async renderCards(): Promise<void> {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsState.getState().data;
+    const productInCart = await this.getProductsInCart();
     this.cardsContainer.replaceChildren();
 
     console.log('🆘: RENDER CARDS', data);
@@ -99,6 +101,9 @@ export default class ProductsPage extends View {
         const cardProduct: HTMLElement = new ProductsCard({
           data: product,
           callback: this.handleClickCard.bind(this),
+          addToCartCallback: this.addToCartCallback,
+          buttonValue: productInCart.includes(product.id) ? 'In cart ✅' : 'Add to cart 🛒',
+          isDisabledButton: productInCart.includes(product.id) ? true : false,
         }).getElement();
         this.cardsContainer.append(cardProduct);
       });
@@ -128,5 +133,23 @@ export default class ProductsPage extends View {
       pageState.getState().setCurrentPage(Number(page));
     }
     this.getProductApi();
+  }
+
+  private async addToCartCallback(productId: string, button: HTMLButtonElement): Promise<void> {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new Cart(apiInstance).addToCart(cartId, productId);
+    if (response && response.statusCode === 200) {
+      button.value = 'In cart ✅';
+      button.disabled = true;
+    }
+  }
+
+  private async getProductsInCart(): Promise<string[]> {
+    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
+    const productsInCartIds: string[] = response.body.lineItems.map((product) => product.productId);
+    return productsInCartIds;
   }
 }

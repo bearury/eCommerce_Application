@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
-import { apiInstance } from '@api/api';
+import { apiInstance, projectKey } from '@api/api';
 import { loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
@@ -12,6 +12,7 @@ import converterPrice from '@utils/converter-price';
 import sliderStyles from '@components/slider/slider.module.scss';
 import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
 import Input, { InputType } from '@components/input/input';
+import Cart from '@api/cart';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -31,12 +32,15 @@ export default class CardProductPage extends View {
 
   addToCartButton: Input;
 
+  productId: string;
+
   constructor(resource: string, router: Router) {
     const params: ParamsElementCreator = {
       tag: 'section',
       classNames: [styles.cardProduct],
     };
     super(params);
+    this.productId = resource;
     this.router = router;
 
     this.name = new ElementCreator({
@@ -69,7 +73,6 @@ export default class CardProductPage extends View {
       tag: 'div',
       classNames: [styles.imgBlock],
     }).getElement();
-
     this.addToCartButton = new Input({
       inputType: InputType.button,
       callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
@@ -81,7 +84,7 @@ export default class CardProductPage extends View {
     this.configureView(resource);
   }
 
-  private configureView(resource: string): void {
+  private async configureView(resource: string): Promise<void> {
     const cardProduct: HTMLElement = this.getElement();
     const product = new ProductCard(apiInstance);
     try {
@@ -151,6 +154,18 @@ export default class CardProductPage extends View {
     } finally {
       loaderState.getState().loader.close();
     }
+    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
+    const productInCart = response.body.lineItems;
+    if (productInCart) {
+      productInCart.forEach((product) => {
+        if (product.productId === this.productId) {
+          const button = this.addToCartButton.getElement() as HTMLButtonElement;
+          button.value = 'In cart ✅';
+          button.disabled = true;
+        }
+      });
+    }
+
     this.infoBlock.append(this.addToCartButton.getElement());
     cardProduct.append(this.imgBlock, this.infoBlock);
   }
@@ -164,7 +179,16 @@ export default class CardProductPage extends View {
     document.body.append(modal);
   }
 
-  private addToCart() {
-    console.log(this);
+  private async addToCart() {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new Cart(apiInstance).addToCart(cartId, this.productId);
+    if (response && response.statusCode === 200) {
+      const button = this.addToCartButton.getElement() as HTMLButtonElement;
+      button.value = 'In cart ✅';
+      button.disabled = true;
+    }
   }
 }

@@ -1,0 +1,80 @@
+import Api, { projectKey } from '@api/api';
+import { ByProjectKeyRequestBuilder, CartAddLineItemAction, MyCartUpdate } from '@commercetools/platform-sdk';
+import { loaderState, toastState } from '@state/state';
+
+export class Cart {
+  private apiInstance: Api;
+
+  private customerBuilder: ByProjectKeyRequestBuilder;
+
+  constructor(apiInstance: Api) {
+    this.apiInstance = apiInstance;
+    const client = this.apiInstance.getClient();
+    if (!client) {
+      throw new Error('API client not initialized');
+    }
+    this.customerBuilder = client.withProjectKey({ projectKey });
+  }
+
+  async createAnonymousCart() {
+    try {
+      const response = await this.customerBuilder
+        .me()
+        .carts()
+        .post({
+          body: {
+            currency: 'EUR',
+            country: 'DE',
+          },
+        })
+        .execute();
+      console.log('anon card created', response);
+      localStorage.setItem('cartId', response.body.id);
+      localStorage.setItem('cartVersion', `${response.body.version}`);
+      return response.body.id;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async addToCart(cartId: string, productId: string) {
+    try {
+      const currentVersion = localStorage.getItem('cartVersion');
+      if (!currentVersion) {
+        throw new Error('No cart version');
+      }
+      const requestBody: MyCartUpdate = {
+        version: +currentVersion,
+        actions: [
+          {
+            action: 'addLineItem',
+            productId: productId,
+          } as CartAddLineItemAction,
+        ],
+      };
+
+      const response = await this.customerBuilder
+        .me()
+        .carts()
+        .withId({ ID: cartId })
+        .post({ body: requestBody })
+        .execute();
+      if (response.statusCode === 200) {
+        toastState.getState().toast.showSuccess('Added to cart');
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during add to cart process, please try again.';
+        toastState.getState().toast.showError(message);
+        console.error('Error details:', error);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+}
+
+export default Cart;
