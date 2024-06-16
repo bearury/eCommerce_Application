@@ -28,12 +28,11 @@ export class Cart {
           },
         })
         .execute();
-      console.log('anon card created', response);
       localStorage.setItem('cartId', response.body.id);
       localStorage.setItem('cartVersion', `${response.body.version}`);
       return response.body.id;
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) throw new Error(error.message);
     }
   }
 
@@ -68,7 +67,6 @@ export class Cart {
       if (error instanceof Error) {
         const message = 'Something went wrong during add to cart process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error('Error details:', error);
       }
       throw error;
     } finally {

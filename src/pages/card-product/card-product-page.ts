@@ -149,8 +149,6 @@ export default class CardProductPage extends View {
           toastState.getState().toast.showError('This product was not found');
           this.router.navigate(RouterPages.not_found);
         });
-    } catch (error) {
-      console.log('err here');
     } finally {
       loaderState.getState().loader.close();
     }
@@ -171,7 +169,6 @@ export default class CardProductPage extends View {
   }
 
   private renderModal(images: string[]): void {
-    console.log('render');
     const subModalSlider = new Slider(images);
     subModalSlider.getElement().classList.add(sliderStyles.subSlider);
     subModalSlider.updateSlider();

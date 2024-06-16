@@ -34,7 +34,6 @@ class ProductsApi {
 
     const offset = (page - 1) * countProductsOnOnePage;
 
-    console.log('[75] 🐬: ', offset);
     return this.customerBuilder
       .productProjections()
       .search()

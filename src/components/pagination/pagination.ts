@@ -44,8 +44,6 @@ export default class Pagination extends View {
     const arrPage: number[] = Array.from({ length: countPages }, (_, i) => i + 1);
     const step = 2;
 
-    console.warn(body);
-
     const paginationElement: HTMLElement = this.getElement();
 
     this.cells = [];
@@ -69,7 +67,6 @@ export default class Pagination extends View {
     arrPage.forEach((numberPage) => {
       const cell: Cell = new Cell({ numberPage: numberPage.toString(), callback: this.handleClickCell.bind(this) });
       if (numberPage === activePage) {
-        console.log('[71] 🚧: ', activePage);
         cell.setActive();
       } else {
         cell.removeActive();
@@ -120,8 +117,6 @@ export default class Pagination extends View {
   }
 
   private handleClickCell(page: string): void {
-    console.log('⚡: CLICK CELL', page);
-
     this.callback(page);
 
     // this.cells.forEach((cell: Cell): void => {

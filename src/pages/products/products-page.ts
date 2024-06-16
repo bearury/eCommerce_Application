@@ -93,8 +93,6 @@ export default class ProductsPage extends View {
     const productInCart = await this.getProductsInCart();
     this.cardsContainer.replaceChildren();
 
-    console.log('🆘: RENDER CARDS', data);
-
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);
       data.body.results.forEach((product: ProductProjection): void => {
@@ -118,7 +116,6 @@ export default class ProductsPage extends View {
   }
 
   private handleClickCard(id: string): void {
-    console.log();
     this.router.resourceNavigation(id);
   }
 
