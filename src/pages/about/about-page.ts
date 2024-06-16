@@ -65,7 +65,8 @@ export default class AboutPage extends View {
       linkGitHub: 'https://github.com/Frost-704',
       role: 'Frontend Developer',
       bio: 'Freelancer',
-      contributions: 'Working with API, Implemented login, registration and User Page.',
+      contributions:
+        'Working with API, Implemented Login, Registration and User Page, added a feature to add/remove product to cart.',
     }).getElement();
 
     const cardNastya: HTMLElement = new TeamMemberCard({
@@ -73,7 +74,7 @@ export default class AboutPage extends View {
       name: 'Anastasia Shakura',
       linkGitHub: 'https://github.com/anastshak',
       role: 'Frontend Developer',
-      bio: 'I like to write code, drink coffee and go for a walk.',
+      bio: 'I like to write code, drink coffee and go for a walk',
       contributions: 'Implemented most of layout, Detailed product page and some features.',
     }).getElement();
 

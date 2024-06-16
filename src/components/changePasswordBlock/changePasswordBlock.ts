@@ -169,15 +169,15 @@ export default class ChangePasswordBlock extends View {
             this.getElement().removeChild(this.saveButton.getElement());
             toastState.getState().toast.showSuccess('Password changed!');
           } else {
-            console.error(response?.body);
+            throw new Error(`${response?.body}`);
           }
         } catch (error) {
-          console.error(error);
+          if (error instanceof Error) throw new Error(error.message);
         } finally {
           loaderState.getState().loader.close();
         }
       } else {
-        console.error(response?.body);
+        throw new Error(`${response?.body}`);
       }
     }
   }

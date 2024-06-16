@@ -1,5 +1,5 @@
 .card {
-  @apply /*h-[380px]*/ relative flex flex-col rounded border border-bgHeader p-3 transition-all hover:shadow-button;
+  @apply /*h-[380px]*/ relative flex flex-col justify-between rounded border border-bgHeader p-3 transition-all hover:shadow-button;
 
   .image {
     @apply h-[200px] w-auto;

@@ -88,7 +88,7 @@ export default class ProfilePage extends View {
     });
     this.getElement().append(this.container);
     this.configureView();
-    this.setСustomerInfo();
+    this.setCustomerInfo();
     localStorage.setItem('newshippingCounter', '0');
     localStorage.setItem('newbillingCounter', '0');
   }
@@ -108,11 +108,11 @@ export default class ProfilePage extends View {
       const customer: ClientResponse<Customer> = await this.customerApi.getCustomer(this.customerId);
       return customer.body;
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) throw new Error(error.message);
     }
   }
 
-  private async setСustomerInfo(): Promise<void> {
+  private async setCustomerInfo(): Promise<void> {
     const customerInfo = await this.getcustomerInfo();
     if (customerInfo) {
       if (
@@ -141,7 +141,7 @@ export default class ProfilePage extends View {
         defaultBillingAddressId: customerInfo.defaultBillingAddressId,
       });
     } else {
-      console.error('Wrong customer data! customer info: ', customerInfo);
+      throw new Error(`Wrong customer data! customer info: ${customerInfo}`);
     }
   }
 

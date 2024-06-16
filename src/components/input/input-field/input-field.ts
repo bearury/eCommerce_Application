@@ -27,7 +27,6 @@ export default class InputField extends View {
       tag: 'div',
       classNames: [styles.inputItem, ...additionalClassNames],
     };
-    console.log(additionalClassNames);
     super(params);
     this.input = new ElementCreator({
       tag: 'input',

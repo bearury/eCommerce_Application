@@ -426,7 +426,7 @@ export default class SignUpPage extends View {
         this.router.navigate(RouterPages.main);
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) throw new Error(error.message);
     } finally {
       loaderState.getState().loader.close();
     }

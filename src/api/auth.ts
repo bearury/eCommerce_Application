@@ -64,7 +64,6 @@ class Auth {
         }
         authState.getState().setIsAuthorized(false);
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
     } finally {
       loaderState.getState().loader.close();
@@ -90,7 +89,6 @@ class Auth {
             'An account with the provided email address already exists, please log in or use another email address.';
         }
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
     } finally {
       loaderState.getState().loader.close();
