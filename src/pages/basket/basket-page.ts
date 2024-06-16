@@ -4,7 +4,7 @@ import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
 import { cartState } from '@state/state.ts';
 import { TotalPriceItem } from '@components/card/cart-card/price/total-price-item/total-price-item';
-import { LineItem } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
 
@@ -20,15 +20,19 @@ export default class BasketPage extends View {
     this.router = router;
 
     this.configureView();
+
+    cartState.subscribe(this.configureView.bind(this));
   }
 
   private configureView(): void {
-    const cart = cartState.getState().cart;
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
 
     if (!cart) return;
     const lineItem: LineItem[] = cart.body.lineItems;
 
-    const about: HTMLElement = this.getElement();
+    const basket: HTMLElement = this.getElement();
+
+    basket.replaceChildren();
 
     const items: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.items] }).getElement();
 
@@ -39,10 +43,10 @@ export default class BasketPage extends View {
         const itemCart: HTMLElement = new CartCard(item).getElement();
         items.append(itemCart);
       });
-      about.append(items, total.getElement());
+      basket.append(items, total.getElement());
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
-      about.append(emptyCart.getElement());
+      basket.append(emptyCart.getElement());
     }
   }
 }

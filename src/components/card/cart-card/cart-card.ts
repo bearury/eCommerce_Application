@@ -2,15 +2,22 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './cart-card.module.scss';
 import Image from '@components/image/image';
-import { LineItem } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { svgHtmlWasteBasket } from '@components/svg/waste-basket';
 import { CounterControl } from '@components/card/cart-card/counter-control/counter-control';
 import converterPrice from '@utils/converter-price.ts';
 import { TypedMoney } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/common';
 import { TotalPriceItem } from '@components/card/cart-card/price/total-price-item/total-price-item';
+import CartApi from '@api/cartApi.ts';
+import { apiInstance } from '@api/api.ts';
+import { cartState, toastState } from '@state/state.ts';
 
 export class CartCard extends View {
   totalPrice: TotalPriceItem;
+
+  cartApi: CartApi;
+
+  counterControl: CounterControl;
 
   constructor(lineItem: LineItem) {
     const params: ParamsElementCreator = {
@@ -19,6 +26,8 @@ export class CartCard extends View {
     };
     super(params);
     this.totalPrice = new TotalPriceItem();
+    this.counterControl = new CounterControl((count: number) => this.handleChangeCount.apply(this, [count, lineItem]));
+    this.cartApi = new CartApi(apiInstance);
     this.configureView(lineItem);
   }
 
@@ -63,19 +72,20 @@ export class CartCard extends View {
         textContent: `Price: ${converterPrice(price)} USD`,
       }).getElement();
 
-      this.totalPrice.setPrice(converterPrice(price));
+      const total: number = price.centAmount * lineItem.quantity;
+      const totalPrice: TypedMoney = { ...price, centAmount: total };
+
+      this.totalPrice.setPrice(converterPrice(totalPrice));
 
       productData.append(priceElement);
     }
 
-    const counterControl: CounterControl = new CounterControl((count: number) =>
-      this.handleChangeCount.apply(this, [count, price!])
-    );
+    this.counterControl.setValueCount(lineItem.quantity);
 
     const wrapperCounterPrice: HTMLElement = new ElementCreator({
       tag: 'div',
       classNames: [styles.wrapperCounterPrice],
-      children: [counterControl.getElement(), this.totalPrice.getElement()],
+      children: [this.counterControl.getElement(), this.totalPrice.getElement()],
     }).getElement();
 
     controls.append(wrapperCounterPrice, buttonDelete);
@@ -83,9 +93,19 @@ export class CartCard extends View {
     card.append(productData, controls);
   }
 
-  private handleChangeCount(count: number, price: TypedMoney): void {
-    const total: number = price.centAmount * count;
-    const newPrice: TypedMoney = { ...price, centAmount: total };
-    this.totalPrice.setPrice(String(converterPrice(newPrice)));
+  private handleChangeCount(count: number, lineItem: LineItem): void {
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+
+    if (!cart) return;
+    this.counterControl.disable();
+
+    this.cartApi
+      .changeLineItemQuantity(cart.body.id, lineItem.id, count)
+      .catch(() => {
+        toastState.getState().toast.showError('Error');
+      })
+      .finally(() => {
+        this.counterControl.undisable();
+      });
   }
 }
