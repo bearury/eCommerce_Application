@@ -3,7 +3,7 @@ import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 import { loaderState } from '@state/state.ts';
 import Loader from '@components/loader/loader';
-import Cart from '@api/cart';
+import CartApi from '@api/cartApi.ts';
 import { apiInstance } from '@api/api';
 
 export enum RouterPages {
@@ -32,7 +32,7 @@ export default class App {
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
     this.loader = loaderState.getState().loader;
-    if (!localStorage.getItem('isAuthorized')) new Cart(apiInstance).createAnonymousCart();
+    if (!localStorage.getItem('isAuthorized')) new CartApi(apiInstance).createAnonymousCart();
   }
 
   public start(): void {

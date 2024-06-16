@@ -36,7 +36,7 @@ export default {
         openToast: 'cubic-bezier(0.68, -0.55, 0.265, 1.35)',
       },
       content: {
-        empty: "''",
+        empty: '\'\'',
       },
       animation: {
         progress: 'progress 5s linear forwards',
@@ -86,6 +86,7 @@ export default {
     },
     screens: {
       lg: '1280px',
+      laptops: { max: '1025px' },
       md: { max: '768px' },
       tablet: { max: '640px' },
       sm: { max: '440px' },

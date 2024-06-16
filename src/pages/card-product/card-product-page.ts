@@ -12,7 +12,7 @@ import converterPrice from '@utils/converter-price';
 import sliderStyles from '@components/slider/slider.module.scss';
 import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
 import Input, { InputType } from '@components/input/input';
-import Cart from '@api/cart';
+import CartApi from '@api/cartApi.ts';
 
 const locale: string = 'en-US';
 export default class CardProductPage extends View {
@@ -181,7 +181,7 @@ export default class CardProductPage extends View {
     if (!cartId) {
       throw new Error('No cart id!');
     }
-    const response = await new Cart(apiInstance).addToCart(cartId, this.productId);
+    const response = await new CartApi(apiInstance).addToCart(cartId, this.productId);
     if (response && response.statusCode === 200) {
       const button = this.addToCartButton.getElement() as HTMLButtonElement;
       button.value = 'In cart ✅';
