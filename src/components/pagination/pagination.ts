@@ -38,13 +38,10 @@ export default class Pagination extends View {
     if (!total || total < countProductsOnOnePage) return;
 
     const countPages: number = Math.ceil(total / limit);
-    // const activePage: number = offset === 0 ? 1 : offset / limit;
     const activePage: number = offset / limit + 1;
 
     const arrPage: number[] = Array.from({ length: countPages }, (_, i) => i + 1);
     const step = 2;
-
-    console.warn(body);
 
     const paginationElement: HTMLElement = this.getElement();
 
@@ -69,7 +66,6 @@ export default class Pagination extends View {
     arrPage.forEach((numberPage) => {
       const cell: Cell = new Cell({ numberPage: numberPage.toString(), callback: this.handleClickCell.bind(this) });
       if (numberPage === activePage) {
-        console.log('[71] 🚧: ', activePage);
         cell.setActive();
       } else {
         cell.removeActive();
@@ -120,17 +116,6 @@ export default class Pagination extends View {
   }
 
   private handleClickCell(page: string): void {
-    console.log('⚡: CLICK CELL', page);
-
     this.callback(page);
-
-    // this.cells.forEach((cell: Cell): void => {
-    //   if (cell.getValue() === page) {
-    //     console.log('[127] 🌻: ', page, cell.getValue() === page);
-    //     cell.setActive();
-    //   } else {
-    //     cell.removeActive();
-    //   }
-    // });
   }
 }

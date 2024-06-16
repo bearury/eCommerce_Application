@@ -1,8 +1,14 @@
 import Api, { projectKey } from '@api/api';
-import { ByProjectKeyRequestBuilder, CartAddLineItemAction, MyCartUpdate } from '@commercetools/platform-sdk';
+import {
+  ByProjectKeyRequestBuilder,
+  Cart,
+  CartAddLineItemAction,
+  ClientResponse,
+  MyCartUpdate,
+} from '@commercetools/platform-sdk';
 import { loaderState, toastState } from '@state/state';
 
-export class Cart {
+export class CartApi {
   private apiInstance: Api;
 
   private customerBuilder: ByProjectKeyRequestBuilder;
@@ -75,6 +81,10 @@ export class Cart {
       loaderState.getState().loader.close();
     }
   }
+
+  public async getCart(): Promise<ClientResponse<Cart>> {
+    return this.customerBuilder.me().activeCart().get().execute();
+  }
 }
 
-export default Cart;
+export default CartApi;
