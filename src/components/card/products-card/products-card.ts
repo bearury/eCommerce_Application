@@ -12,27 +12,52 @@ export class ProductsCard extends View {
 
   addToCartButton: Input;
 
-  constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
+  productId: string;
+
+  addToCartCallback: Function;
+
+  constructor({
+    data,
+    callback,
+    addToCartCallback,
+    buttonValue,
+    isDisabledButton,
+  }: {
+    data: ProductProjection;
+    callback: (id: string) => void;
+    addToCartCallback: (productId: string, button: HTMLButtonElement) => void;
+    buttonValue: string;
+    isDisabledButton: boolean;
+  }) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
     };
     super(params);
+    this.productId = data.id;
     this.callback = callback;
+    this.addToCartCallback = addToCartCallback;
     this.addToCartButton = new Input({
       inputType: InputType.button,
-      callbacks: [{ event: 'click', callback: this.addToCart.bind(this) }],
+      callbacks: [
+        {
+          event: 'click',
+          callback: () =>
+            this.addToCartCallback(this.productId, this.addToCartButton.getElement() as HTMLButtonElement),
+        },
+      ],
       classNames: ['button'],
-      value: 'Add to cart 🛒',
-      disabled: false,
+      value: buttonValue,
+      disabled: isDisabledButton,
     });
     this.configureView(data);
   }
 
-  private configureView(data: ProductProjection): void {
+  private async configureView(data: ProductProjection): Promise<void> {
     const card: HTMLElement = this.getElement();
     const activeWrapper: HTMLElement = new ElementCreator({
       tag: 'div',
+      classNames: [styles.activeWrapper],
       callback: [{ event: 'click', callback: () => this.callback(data.id) }],
     }).getElement();
     const textName = data.name['en-US'];
@@ -98,9 +123,5 @@ export class ProductsCard extends View {
     });
     activeWrapper.append(image, name, pricesWrapper, description, discountUsd, discountEur);
     card.append(activeWrapper, this.addToCartButton.getElement());
-  }
-
-  private addToCart() {
-    console.log(this.addToCartButton);
   }
 }
