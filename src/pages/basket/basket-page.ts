@@ -2,11 +2,11 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
-import { EmptyCart } from '@components/empty-cart/empty-cart';
-import { productsState } from '@state/state.ts';
-import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
-import { CartCard } from '@components/card/cart-card/cart-card';
+import { cartState } from '@state/state.ts';
 import { TotalPriceItem } from '@components/card/cart-card/price/total-price-item/total-price-item';
+import { LineItem } from '@commercetools/platform-sdk';
+import { CartCard } from '@components/card/cart-card/cart-card';
+import { EmptyCart } from '@components/empty-cart/empty-cart';
 
 export default class BasketPage extends View {
   router: Router;
@@ -23,7 +23,10 @@ export default class BasketPage extends View {
   }
 
   private configureView(): void {
-    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsState.getState().data;
+    const cart = cartState.getState().cart;
+
+    if (!cart) return;
+    const lineItem: LineItem[] = cart.body.lineItems;
 
     const about: HTMLElement = this.getElement();
 
@@ -31,8 +34,8 @@ export default class BasketPage extends View {
 
     const total = new TotalPriceItem();
 
-    if (data && data.body.results.length) {
-      data.body.results.forEach((item: ProductProjection) => {
+    if (lineItem.length) {
+      lineItem.forEach((item: LineItem) => {
         const itemCart: HTMLElement = new CartCard(item).getElement();
         items.append(itemCart);
       });

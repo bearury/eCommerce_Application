@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import Router from '@router/router.ts';
 import BasketPage from '@pages/basket/basket-page';
 
-describe('About page component', (): void => {
+describe('Basket page component', (): void => {
   const router = new Router([
     {
       path: '',

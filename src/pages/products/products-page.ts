@@ -13,7 +13,7 @@ import CategoriesSelect from '@pages/products/categories-select/categories-selec
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 import SortingBlock from './sorting/sorting';
 import SearchingField from './searching/searching';
-import Cart from '@api/cart';
+import CartApi from '@api/cartApi.ts';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -140,7 +140,7 @@ export default class ProductsPage extends View {
     if (!cartId) {
       throw new Error('No cart id!');
     }
-    const response = await new Cart(apiInstance).addToCart(cartId, productId);
+    const response = await new CartApi(apiInstance).addToCart(cartId, productId);
     if (response && response.statusCode === 200) {
       button.value = 'In cart ✅';
       button.disabled = true;

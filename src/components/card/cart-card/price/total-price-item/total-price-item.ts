@@ -10,7 +10,7 @@ export class TotalPriceItem extends View {
   constructor() {
     const params: ParamsElementCreator = {
       tag: 'div',
-      classNames: [styles.item],
+      classNames: [styles.totalPrice],
     };
     super(params);
 

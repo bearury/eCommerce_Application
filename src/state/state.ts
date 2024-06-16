@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
 import Loader from '@components/loader/loader';
-import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import { ModifyCategory } from '@utils/categories-creator.ts';
 
 interface RouterState {
@@ -129,6 +129,19 @@ const categoryState = createStore(
     setCategories: (categories: ModifyCategory[]) => set(() => ({ categories })),
   }))
 );
+
+interface CartState {
+  cart: ClientResponse<Cart> | null;
+  setCart: (cart: ClientResponse<Cart>) => void;
+}
+
+const cartState = createStore(
+  devtools<CartState>((set) => ({
+    cart: null,
+    setCart: (cart: ClientResponse<Cart>) => set(() => ({ cart })),
+  }))
+);
+
 export {
   routerState,
   toastState,
@@ -139,5 +152,6 @@ export {
   pageState,
   DefaultAddressShippingState,
   DefaultAddressBillingState,
+  cartState,
   categoryState,
 };

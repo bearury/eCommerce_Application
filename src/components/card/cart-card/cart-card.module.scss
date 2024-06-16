@@ -1,24 +1,46 @@
 .card {
-  @apply flex items-center justify-between rounded border border-bgHeader px-4 py-2;
+  @apply flex items-center justify-between gap-3 rounded border border-bgHeader px-4
+  py-2 tablet:flex-col;
 
   .image {
     @apply h-12 w-12 rounded-full;
   }
 
   .productData {
-    @apply flex items-center justify-between gap-3;
+    @apply flex w-full flex-grow items-center justify-between gap-3;
 
-    .name {
-      @apply font-bold;
+    .titleProduct {
+      @apply flex flex-shrink items-center justify-start gap-3;
+
+      .image {
+        @apply flex-[48px] flex-shrink-0 flex-grow-0;
+      }
+
+      .name {
+        @apply font-bold tablet:text-sm;
+      }
+    }
+
+    .price {
+      @apply flex-[110px] flex-shrink-0 flex-grow-0 text-sm text-textDark tablet:flex-[95px]
+      tablet:flex-shrink-0 tablet:flex-grow-0 tablet:text-[12px];
     }
   }
 
   .controls {
-    @apply flex flex-[35%] flex-grow-0 items-center justify-between;
+    @apply flex flex-[30%] flex-shrink-0 flex-grow-0 items-center justify-between gap-1;
+
+    @media (max-width: 640px) {
+      @apply flex-[40%] flex-shrink-0 flex-grow-0;
+    }
+
+    .wrapperCounterPrice {
+      @apply flex items-center justify-between gap-1 laptops:flex-col tablet:flex-row;
+    }
 
     .buttonDelete {
       @apply relative flex h-10 w-10 items-center justify-center rounded border border-bgHeader
-      p-2 transition-all;
+      p-2 transition-all tablet:h-6 tablet:w-6 tablet:p-[2px];
 
       svg {
         @apply scale-90;

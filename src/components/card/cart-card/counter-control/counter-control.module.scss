@@ -1,9 +1,9 @@
 .control {
-  @apply flex w-24 max-w-24 items-center justify-between;
+  @apply flex w-24 max-w-24 items-center justify-between tablet:max-w-20;
 
   .button {
-    @apply flex h-8 w-8 items-center justify-center rounded border border-textAccent bg-bgContainer text-xl
-    text-bgBody transition-all hover:bg-textAccent hover:text-textDark active:scale-90;
+    @apply flex h-8 w-8 items-center justify-center rounded border border-textAccent bg-bgContainer text-xl text-bgBody transition-all
+    hover:bg-textAccent hover:text-textDark active:scale-90 tablet:h-6 tablet:w-6;
   }
 
   .counter {
