@@ -8,6 +8,8 @@ import { Cart, CentPrecisionMoney, ClientResponse, LineItem } from '@commercetoo
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
 import converterPrice from '@utils/converter-price.ts';
+import CartApi from '@api/cartApi';
+import { apiInstance } from '@api/api';
 
 export default class BasketPage extends View {
   router: Router;
@@ -52,13 +54,24 @@ export default class BasketPage extends View {
 
     if (lineItem.length) {
       lineItem.forEach((item: LineItem) => {
-        const itemCart: HTMLElement = new CartCard(item).getElement();
+        const itemCart: HTMLElement = new CartCard(item, this.deleteFromCart.bind(this)).getElement();
         items.append(itemCart);
       });
       basket.append(items, wrapperTotalPriceElement);
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());
+    }
+  }
+
+  private async deleteFromCart(item: LineItem, card: HTMLElement) {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new CartApi(apiInstance).deleteFromCart(cartId, item.id);
+    if (response && response.statusCode === 200) {
+      card.remove();
     }
   }
 }

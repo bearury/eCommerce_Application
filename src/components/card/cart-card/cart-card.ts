@@ -15,11 +15,15 @@ import { cartState, toastState } from '@state/state.ts';
 export class CartCard extends View {
   totalPrice: TotalPriceItem;
 
+  deleteButtonCallback: Function;
+
+  lineItem: LineItem;
+
   cartApi: CartApi;
 
   counterControl: CounterControl;
 
-  constructor(lineItem: LineItem) {
+  constructor(lineItem: LineItem, deleteButtonCallback: Function) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
@@ -29,6 +33,8 @@ export class CartCard extends View {
     this.counterControl = new CounterControl((count: number) => this.handleChangeCount.apply(this, [count, lineItem]));
     this.cartApi = new CartApi(apiInstance);
     this.configureView(lineItem);
+    this.deleteButtonCallback = deleteButtonCallback;
+    this.lineItem = lineItem;
   }
 
   private configureView(lineItem: LineItem): void {
@@ -59,6 +65,7 @@ export class CartCard extends View {
     const buttonDelete: HTMLElement = new ElementCreator({
       tag: 'button',
       classNames: [styles.buttonDelete],
+      callback: [{ event: 'click', callback: () => this.deleteButtonCallback(this.lineItem, card) }],
     }).getElement();
 
     buttonDelete.innerHTML = svgHtmlWasteBasket;
