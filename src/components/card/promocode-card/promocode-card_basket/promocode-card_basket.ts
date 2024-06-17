@@ -2,6 +2,8 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './promocode-card_basket.module.scss';
 import promocodeImg from '/promocode-cart.png';
+import CartApi from '@api/cartApi';
+import { apiInstance } from '@api/api';
 
 const promo = 'light20';
 
@@ -46,10 +48,21 @@ export class PromocodeBlockBasket extends View {
     }
   }
 
-  private copyPromocode() {
+  private async copyPromocode() {
     const inputPromo = this.input as HTMLInputElement;
     if (inputPromo.value === promo) {
       console.log('right promo code');
+    }
+
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new CartApi(apiInstance).addDiscount(cartId, inputPromo.value);
+    if (response && response.statusCode === 200) {
+      console.log(response);
+      this.input.setAttribute('disabled', 'true');
+      this.applyBtn.setAttribute('disabled', 'true');
     }
   }
 
