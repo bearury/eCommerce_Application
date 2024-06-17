@@ -22,8 +22,12 @@
     }
 
     .price {
-      @apply flex-[110px] flex-shrink-0 flex-grow-0 text-sm text-textDark tablet:flex-[95px]
-      tablet:flex-shrink-0 tablet:flex-grow-0 tablet:text-[12px];
+      @apply relative flex-[110px] flex-shrink-0 flex-grow-0 text-sm text-textDark
+      tablet:flex-[95px] tablet:flex-shrink-0 tablet:flex-grow-0 tablet:text-[12px];
+    }
+
+    .discountValue {
+      @apply font-bold text-green-800;
     }
   }
 

@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './cart-card.module.scss';
 import Image from '@components/image/image';
-import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, DiscountedPrice, LineItem } from '@commercetools/platform-sdk';
 import { svgHtmlWasteBasket } from '@components/svg/waste-basket';
 import { CounterControl } from '@components/card/cart-card/counter-control/counter-control';
 import converterPrice from '@utils/converter-price.ts';
@@ -15,11 +15,15 @@ import { cartState, toastState } from '@state/state.ts';
 export class CartCard extends View {
   totalPrice: TotalPriceItem;
 
+  deleteButtonCallback: Function;
+
+  lineItem: LineItem;
+
   cartApi: CartApi;
 
   counterControl: CounterControl;
 
-  constructor(lineItem: LineItem) {
+  constructor(lineItem: LineItem, deleteButtonCallback: Function) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
@@ -29,6 +33,8 @@ export class CartCard extends View {
     this.counterControl = new CounterControl((count: number) => this.handleChangeCount.apply(this, [count, lineItem]));
     this.cartApi = new CartApi(apiInstance);
     this.configureView(lineItem);
+    this.deleteButtonCallback = deleteButtonCallback;
+    this.lineItem = lineItem;
   }
 
   private configureView(lineItem: LineItem): void {
@@ -59,6 +65,7 @@ export class CartCard extends View {
     const buttonDelete: HTMLElement = new ElementCreator({
       tag: 'button',
       classNames: [styles.buttonDelete],
+      callback: [{ event: 'click', callback: () => this.deleteButtonCallback(this.lineItem, card) }],
     }).getElement();
 
     buttonDelete.innerHTML = svgHtmlWasteBasket;
@@ -66,14 +73,33 @@ export class CartCard extends View {
     productData.append(titleProduct);
 
     if (price) {
+      const priceValueElement = new ElementCreator({
+        tag: 'span',
+        classNames: [styles.discountValue],
+      }).getElement();
+
       const priceElement: HTMLElement = new ElementCreator({
         tag: 'span',
         classNames: [styles.price],
-        textContent: `Price: ${converterPrice(price)} USD`,
+        textContent: `Price: `,
       }).getElement();
 
-      const total: number = price.centAmount * lineItem.quantity;
-      const totalPrice: TypedMoney = { ...price, centAmount: total };
+      priceElement.append(priceValueElement);
+
+      priceElement.append(` EUR`);
+
+      const discounted: DiscountedPrice | undefined = lineItem.price.discounted;
+
+      if (discounted) {
+        priceValueElement.textContent = converterPrice(discounted.value);
+        priceElement.append(` (discounted)`);
+      } else {
+        priceValueElement.textContent = converterPrice(price);
+      }
+
+      const valuePrice: number = (discounted ? discounted.value.centAmount : price.centAmount) * lineItem.quantity;
+
+      const totalPrice: TypedMoney = { ...price, centAmount: valuePrice };
 
       this.totalPrice.setPrice(converterPrice(totalPrice));
 

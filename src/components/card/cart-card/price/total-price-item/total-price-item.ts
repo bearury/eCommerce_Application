@@ -37,6 +37,6 @@ export class TotalPriceItem extends View {
 
     item.appendChild(this.totalPrice);
 
-    item.append(` USD`);
+    item.append(` EUR`);
   }
 }
