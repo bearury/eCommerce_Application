@@ -108,6 +108,7 @@ export class CartApi {
       if (response.statusCode === 200) {
         toastState.getState().toast.showSuccess('Product deleted');
         localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
         return response;
       }
     } catch (error) {
