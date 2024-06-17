@@ -3,10 +3,11 @@ import {
   ByProjectKeyRequestBuilder,
   Cart,
   CartAddLineItemAction,
+  CartChangeLineItemQuantityAction,
   ClientResponse,
   MyCartUpdate,
 } from '@commercetools/platform-sdk';
-import { loaderState, toastState } from '@state/state';
+import { cartState, loaderState, toastState } from '@state/state';
 
 export class CartApi {
   private apiInstance: Api;
@@ -67,6 +68,7 @@ export class CartApi {
       if (response.statusCode === 200) {
         toastState.getState().toast.showSuccess('Added to cart');
         localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
         return response;
       }
     } catch (error) {
@@ -82,6 +84,40 @@ export class CartApi {
 
   public async getCart(): Promise<ClientResponse<Cart>> {
     return this.customerBuilder.me().activeCart().get().execute();
+  }
+
+  public async changeLineItemQuantity(
+    cartId: string,
+    lineItemId: string,
+    quantity: number
+  ): Promise<ClientResponse<Cart>> {
+    const currentVersion = localStorage.getItem('cartVersion');
+    if (!currentVersion) {
+      throw new Error('No cart version');
+    }
+
+    const requestBody: MyCartUpdate = {
+      version: +currentVersion,
+      actions: [
+        {
+          action: 'changeLineItemQuantity',
+          lineItemId,
+          quantity,
+        } as CartChangeLineItemQuantityAction,
+      ],
+    };
+
+    return this.customerBuilder
+      .me()
+      .carts()
+      .withId({ ID: cartId })
+      .post({ body: requestBody })
+      .execute()
+      .then((response) => {
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
+        return response;
+      });
   }
 }
 

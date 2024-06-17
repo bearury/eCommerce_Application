@@ -80,9 +80,8 @@ export default class WrapperPages extends View {
       .then(() => {
         currentElement.append(this.headerPages.getElement(), this.container, this.toast.getElement());
       })
-      .catch((err) => {
+      .catch(() => {
         this.toast.showError('Error while configuring view');
-        console.error(err);
       })
       .finally(() => {
         this.loader.close();
