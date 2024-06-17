@@ -5,8 +5,6 @@ import promocodeImg from '/promocode-cart.png';
 import CartApi from '@api/cartApi';
 import { apiInstance } from '@api/api';
 
-const promo = 'light20';
-
 export class PromocodeBlockBasket extends View {
   input: HTMLElement;
 
@@ -50,9 +48,6 @@ export class PromocodeBlockBasket extends View {
 
   private async copyPromocode() {
     const inputPromo = this.input as HTMLInputElement;
-    if (inputPromo.value === promo) {
-      console.log('right promo code');
-    }
 
     const cartId = localStorage.getItem('cartId');
     if (!cartId) {
@@ -60,7 +55,6 @@ export class PromocodeBlockBasket extends View {
     }
     const response = await new CartApi(apiInstance).addDiscount(cartId, inputPromo.value);
     if (response && response.statusCode === 200) {
-      console.log(response);
       this.input.setAttribute('disabled', 'true');
       this.applyBtn.setAttribute('disabled', 'true');
     }

@@ -55,13 +55,29 @@ export default class BasketPage extends View {
       total.setPrice(converterPrice(totalPrice));
     }
 
+    const totalDiscountedPrice = cart?.body.discountOnTotalPrice?.discountedAmount;
+    const totalDiscounted: TotalPriceItem = new TotalPriceItem();
+    const wrapperTotalDiscountedPriceElement: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.wrapperTotalDiscountedPrice, styles.hidden],
+      children: [totalDiscounted.getElement()],
+    }).getElement();
+
+    if (totalPrice && totalDiscountedPrice) {
+      if (+converterPrice(totalDiscountedPrice) !== 0) {
+        const fullPrice = (+converterPrice(totalDiscountedPrice) + +converterPrice(totalPrice)).toString();
+        totalDiscounted.setPrice(fullPrice);
+        wrapperTotalDiscountedPriceElement.classList.remove(styles.hidden);
+      }
+    }
+
     if (lineItem.length) {
       lineItem.forEach((item: LineItem) => {
         const itemCart: HTMLElement = new CartCard(item, this.deleteFromCart.bind(this)).getElement();
         items.append(itemCart);
       });
 
-      basket.append(items, promocode.getElement(), wrapperTotalPriceElement);
+      basket.append(items, promocode.getElement(), wrapperTotalDiscountedPriceElement, wrapperTotalPriceElement);
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());
