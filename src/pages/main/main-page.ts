@@ -5,6 +5,7 @@ import Router from '@router/router.ts';
 import { RouterPages } from '@app/app.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
+import { PromocodeBlock } from '@components/card/promocode-card/promocode-card_menu/promocode-card_menu';
 
 export default class MainPage extends View {
   router: Router;
@@ -26,7 +27,7 @@ export default class MainPage extends View {
     const mainPage: HTMLElement = this.getElement();
 
     const title: HTMLElement = new ElementCreator({
-      tag: 'span',
+      tag: 'div',
       classNames: [styles.title],
       textContent: 'Main Page',
     }).getElement();
@@ -52,12 +53,21 @@ export default class MainPage extends View {
       callback: [{ event: 'click', callback: this.handlerClickGoProfilePage.bind(this) }],
     }).getElement();
 
-    const container: HTMLElement = new ElementCreator({
+    const buttonsContainer: HTMLElement = new ElementCreator({
       tag: 'div',
-      classNames: [styles.container],
-      children: [title, testButton, testButton2, testButton3],
+      classNames: [styles.buttonsContainer],
+      children: [testButton, testButton2, testButton3],
     }).getElement();
-    mainPage.append(container);
+
+    const promocodeContainer: HTMLElement = new PromocodeBlock().getElement();
+
+    const wrapperContainer: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.wrapperContainer],
+      children: [promocodeContainer, buttonsContainer],
+    }).getElement();
+
+    mainPage.append(title, wrapperContainer);
   }
 
   private handlerClickGoLogin(): void {
