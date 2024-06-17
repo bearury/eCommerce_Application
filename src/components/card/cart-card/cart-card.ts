@@ -12,7 +12,11 @@ import { TotalPriceItem } from '@components/card/cart-card/price/total-price-ite
 export class CartCard extends View {
   totalPrice: TotalPriceItem;
 
-  constructor(lineItem: LineItem) {
+  deleteButtonCallback: Function;
+
+  lineItem: LineItem;
+
+  constructor(lineItem: LineItem, deleteButtonCallback: Function) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
@@ -20,6 +24,8 @@ export class CartCard extends View {
     super(params);
     this.totalPrice = new TotalPriceItem();
     this.configureView(lineItem);
+    this.deleteButtonCallback = deleteButtonCallback;
+    this.lineItem = lineItem;
   }
 
   private configureView(lineItem: LineItem): void {
@@ -50,6 +56,7 @@ export class CartCard extends View {
     const buttonDelete: HTMLElement = new ElementCreator({
       tag: 'button',
       classNames: [styles.buttonDelete],
+      callback: [{ event: 'click', callback: () => this.deleteButtonCallback(this.lineItem, card) }],
     }).getElement();
 
     buttonDelete.innerHTML = svgHtmlWasteBasket;

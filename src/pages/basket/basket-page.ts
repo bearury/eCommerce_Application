@@ -7,6 +7,8 @@ import { TotalPriceItem } from '@components/card/cart-card/price/total-price-ite
 import { LineItem } from '@commercetools/platform-sdk';
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
+import CartApi from '@api/cartApi';
+import { apiInstance } from '@api/api';
 
 export default class BasketPage extends View {
   router: Router;
@@ -36,13 +38,24 @@ export default class BasketPage extends View {
 
     if (lineItem.length) {
       lineItem.forEach((item: LineItem) => {
-        const itemCart: HTMLElement = new CartCard(item).getElement();
+        const itemCart: HTMLElement = new CartCard(item, this.deleteFromCart.bind(this)).getElement();
         items.append(itemCart);
       });
       about.append(items, total.getElement());
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       about.append(emptyCart.getElement());
+    }
+  }
+
+  private async deleteFromCart(item: LineItem, card: HTMLElement) {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new CartApi(apiInstance).deleteFromCart(cartId, item.id);
+    if (response && response.statusCode === 200) {
+      card.remove();
     }
   }
 }

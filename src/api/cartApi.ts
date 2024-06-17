@@ -3,6 +3,7 @@ import {
   ByProjectKeyRequestBuilder,
   Cart,
   CartAddLineItemAction,
+  CartRemoveLineItemAction,
   ClientResponse,
   MyCartUpdate,
 } from '@commercetools/platform-sdk';
@@ -22,7 +23,7 @@ export class CartApi {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async createAnonymousCart() {
+  async createAnonymousCart(): Promise<string | undefined> {
     try {
       const response = await this.customerBuilder
         .me()
@@ -42,7 +43,7 @@ export class CartApi {
     }
   }
 
-  async addToCart(cartId: string, productId: string) {
+  async addToCart(cartId: string, productId: string): Promise<ClientResponse<Cart> | undefined> {
     try {
       const currentVersion = localStorage.getItem('cartVersion');
       if (!currentVersion) {
@@ -72,6 +73,44 @@ export class CartApi {
     } catch (error) {
       if (error instanceof Error) {
         const message = 'Something went wrong during add to cart process, please try again.';
+        toastState.getState().toast.showError(message);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
+  async deleteFromCart(cartId: string, productId: string): Promise<ClientResponse<Cart> | undefined> {
+    try {
+      const currentVersion = localStorage.getItem('cartVersion');
+      if (!currentVersion) {
+        throw new Error('No cart version');
+      }
+      const requestBody: MyCartUpdate = {
+        version: +currentVersion,
+        actions: [
+          {
+            action: 'removeLineItem',
+            lineItemId: productId,
+          } as CartRemoveLineItemAction,
+        ],
+      };
+
+      const response = await this.customerBuilder
+        .me()
+        .carts()
+        .withId({ ID: cartId })
+        .post({ body: requestBody })
+        .execute();
+      if (response.statusCode === 200) {
+        toastState.getState().toast.showSuccess('Product deleted');
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during delete from cart process, please try again.';
         toastState.getState().toast.showError(message);
       }
       throw error;
