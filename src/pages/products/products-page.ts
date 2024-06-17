@@ -2,12 +2,18 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
-import { loaderState, pageState, productsState, toastState } from '@state/state.ts';
+import { cartState, loaderState, pageState, productsState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
-import { apiInstance, projectKey } from '@api/api.ts';
+import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
-import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import {
+  Cart,
+  ClientResponse,
+  LineItem,
+  ProductProjection,
+  ProductProjectionPagedSearchResponse,
+} from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
 import CategoriesSelect from '@pages/products/categories-select/categories-select';
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
@@ -90,18 +96,24 @@ export default class ProductsPage extends View {
 
   private async renderCards(): Promise<void> {
     const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsState.getState().data;
-    const productInCart = await this.getProductsInCart();
+
     this.cardsContainer.replaceChildren();
+
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+    if (!cart) return;
+    const productInCart: string[] = cart.body.lineItems.map((product: LineItem) => product.productId);
 
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);
       data.body.results.forEach((product: ProductProjection): void => {
+        const buttonValue: string = productInCart.includes(product.id) ? 'In cart ✅' : 'Add to cart 🛒';
+        const isDisabledButton: boolean = productInCart.includes(product.id);
         const cardProduct: HTMLElement = new ProductsCard({
           data: product,
           callback: this.handleClickCard.bind(this),
           addToCartCallback: this.addToCartCallback,
-          buttonValue: productInCart.includes(product.id) ? 'In cart ✅' : 'Add to cart 🛒',
-          isDisabledButton: productInCart.includes(product.id) ? true : false,
+          buttonValue,
+          isDisabledButton,
         }).getElement();
         this.cardsContainer.append(cardProduct);
       });
@@ -142,11 +154,5 @@ export default class ProductsPage extends View {
       button.value = 'In cart ✅';
       button.disabled = true;
     }
-  }
-
-  private async getProductsInCart(): Promise<string[]> {
-    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
-    const productsInCartIds: string[] = response.body.lineItems.map((product) => product.productId);
-    return productsInCartIds;
   }
 }
