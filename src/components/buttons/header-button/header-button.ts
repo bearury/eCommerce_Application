@@ -66,6 +66,8 @@ export default class HeaderButton extends View {
     const cartLength: number | undefined = cartState.getState().cart?.body.lineItems.length;
     if (this.type === RouterPages.basket && cartLength) {
       this.getElement().textContent = `🛒 Basket(${cartLength})`;
+    } else if (this.type === RouterPages.basket) {
+      this.getElement().textContent = `🛒 Basket`;
     }
   }
 }

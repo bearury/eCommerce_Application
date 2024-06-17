@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './cart-card.module.scss';
 import Image from '@components/image/image';
-import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, DiscountedPrice, LineItem } from '@commercetools/platform-sdk';
 import { svgHtmlWasteBasket } from '@components/svg/waste-basket';
 import { CounterControl } from '@components/card/cart-card/counter-control/counter-control';
 import converterPrice from '@utils/converter-price.ts';
@@ -73,14 +73,33 @@ export class CartCard extends View {
     productData.append(titleProduct);
 
     if (price) {
+      const priceValueElement = new ElementCreator({
+        tag: 'span',
+        classNames: [styles.discountValue],
+      }).getElement();
+
       const priceElement: HTMLElement = new ElementCreator({
         tag: 'span',
         classNames: [styles.price],
-        textContent: `Price: ${converterPrice(price)} USD`,
+        textContent: `Price: `,
       }).getElement();
 
-      const total: number = price.centAmount * lineItem.quantity;
-      const totalPrice: TypedMoney = { ...price, centAmount: total };
+      priceElement.append(priceValueElement);
+
+      priceElement.append(` EUR`);
+
+      const discounted: DiscountedPrice | undefined = lineItem.price.discounted;
+
+      if (discounted) {
+        priceValueElement.textContent = converterPrice(discounted.value);
+        priceElement.append(` (discounted)`);
+      } else {
+        priceValueElement.textContent = converterPrice(price);
+      }
+
+      const valuePrice: number = (discounted ? discounted.value.centAmount : price.centAmount) * lineItem.quantity;
+
+      const totalPrice: TypedMoney = { ...price, centAmount: valuePrice };
 
       this.totalPrice.setPrice(converterPrice(totalPrice));
 

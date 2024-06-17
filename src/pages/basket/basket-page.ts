@@ -4,9 +4,10 @@ import styles from './basket-page.module.scss';
 import Router from '@router/router.ts';
 import { cartState } from '@state/state.ts';
 import { TotalPriceItem } from '@components/card/cart-card/price/total-price-item/total-price-item';
-import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import { Cart, CentPrecisionMoney, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
+import converterPrice from '@utils/converter-price.ts';
 import CartApi from '@api/cartApi';
 import { apiInstance } from '@api/api';
 
@@ -28,6 +29,7 @@ export default class BasketPage extends View {
 
   private configureView(): void {
     const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+    const totalPrice: CentPrecisionMoney | undefined = cart?.body.totalPrice;
 
     if (!cart) return;
     const lineItem: LineItem[] = cart.body.lineItems;
@@ -38,14 +40,24 @@ export default class BasketPage extends View {
 
     const items: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.items] }).getElement();
 
-    const total = new TotalPriceItem();
+    const total: TotalPriceItem = new TotalPriceItem();
+
+    const wrapperTotalPriceElement: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.wrapperTotalPrice],
+      children: [total.getElement()],
+    }).getElement();
+
+    if (totalPrice) {
+      total.setPrice(converterPrice(totalPrice));
+    }
 
     if (lineItem.length) {
       lineItem.forEach((item: LineItem) => {
         const itemCart: HTMLElement = new CartCard(item, this.deleteFromCart.bind(this)).getElement();
         items.append(itemCart);
       });
-      basket.append(items, total.getElement());
+      basket.append(items, wrapperTotalPriceElement);
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());
