@@ -63,7 +63,7 @@ export class ProductsCard extends View {
     const textName = data.name['en-US'];
     const images = data.masterVariant.images;
     const pricesValue: Price[] | undefined = data.masterVariant.prices?.filter(
-      (price: Price) => price.value.currencyCode === 'EUR' || price.value.currencyCode === 'USD'
+      (price: Price) => price.value.currencyCode === 'EUR'
     );
     const descriptionValue: string | undefined = data.description?.['en-US'];
 
@@ -113,11 +113,7 @@ export class ProductsCard extends View {
       if (price.discounted) {
         priceElement.classList.add(styles.priceDiscount);
 
-        if (price.country === 'US') {
-          discountUsd.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
-        } else if (price.country === 'DE') {
-          discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
-        }
+        discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
       }
       pricesWrapper.append(priceElement);
     });
