@@ -7,6 +7,7 @@ import { TotalPriceItem } from '@components/card/cart-card/price/total-price-ite
 import { Cart, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
+import { PromocodeBlockBasket } from '@components/card/promocode-card/promocode-card_basket/promocode-card_basket';
 
 export default class BasketPage extends View {
   router: Router;
@@ -36,6 +37,8 @@ export default class BasketPage extends View {
 
     const items: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.items] }).getElement();
 
+    const promocode = new PromocodeBlockBasket();
+
     const total = new TotalPriceItem();
 
     if (lineItem.length) {
@@ -43,7 +46,7 @@ export default class BasketPage extends View {
         const itemCart: HTMLElement = new CartCard(item).getElement();
         items.append(itemCart);
       });
-      basket.append(items, total.getElement());
+      basket.append(items, promocode.getElement(), total.getElement());
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());
