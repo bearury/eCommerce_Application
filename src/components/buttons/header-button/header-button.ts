@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
-import { authState, routerState } from '@state/state.ts';
+import { authState, cartState, routerState } from '@state/state.ts';
 
 interface HeaderButtonProps {
   buttonType: RouterPages;
@@ -40,6 +40,8 @@ export default class HeaderButton extends View {
     super(params);
     this.type = buttonType;
 
+    cartState.subscribe(this.addCountItemBasket.bind(this));
+
     routerState.subscribe(this.handlerChangePage.bind(this));
   }
 
@@ -57,6 +59,13 @@ export default class HeaderButton extends View {
       element.classList.add(styles.hid);
     } else {
       element.classList.remove(styles.hid);
+    }
+  }
+
+  private addCountItemBasket(): void {
+    const cartLength: number | undefined = cartState.getState().cart?.body.lineItems.length;
+    if (this.type === RouterPages.basket && cartLength) {
+      this.getElement().textContent = `🛒 Basket(${cartLength})`;
     }
   }
 }
