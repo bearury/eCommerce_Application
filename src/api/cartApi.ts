@@ -122,6 +122,42 @@ export class CartApi {
     }
   }
 
+  async removeDiscounts(
+    cartId: string,
+    discountCodes: { action: 'removeDiscountCode'; discountCode: { typeId: 'discount-code'; id: string } }[]
+  ) {
+    try {
+      const currentVersion = localStorage.getItem('cartVersion');
+      if (!currentVersion) {
+        throw new Error('No cart version');
+      }
+      const requestBody: MyCartUpdate = {
+        version: +currentVersion,
+        actions: discountCodes,
+      };
+
+      const response = await this.customerBuilder
+        .me()
+        .carts()
+        .withId({ ID: cartId })
+        .post({ body: requestBody })
+        .execute();
+      if (response.statusCode === 200) {
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong during delete promocode, please try again.';
+        toastState.getState().toast.showError(message);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
   async deleteFromCart(cartId: string, productId: string): Promise<ClientResponse<Cart> | undefined> {
     try {
       const currentVersion = localStorage.getItem('cartVersion');
@@ -199,21 +235,25 @@ export class CartApi {
       });
   }
 
-  async deleteCart(cartId: string): Promise<ClientResponse<Cart> | undefined> {
+  async deleteCart(
+    cartId: string,
+    lineItems: { action: 'removeLineItem'; lineItemId: string }[]
+  ): Promise<ClientResponse<Cart> | undefined> {
     try {
       const currentVersion = localStorage.getItem('cartVersion');
       if (!currentVersion) {
         throw new Error('No cart version');
       }
+      const requestBody: MyCartUpdate = {
+        version: +currentVersion,
+        actions: lineItems,
+      };
 
       const response = await this.customerBuilder
+        .me()
         .carts()
         .withId({ ID: cartId })
-        .delete({
-          queryArgs: {
-            version: +currentVersion,
-          },
-        })
+        .post({ body: requestBody })
         .execute();
       if (response.statusCode === 200) {
         toastState.getState().toast.showSuccess('Cart deleted');

@@ -3,6 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './clear-cart-modal.module.scss';
 import CartApi from '@api/cartApi';
 import { apiInstance } from '@api/api';
+import { DiscountCodeInfo, LineItem } from '@commercetools/platform-sdk';
 
 export class ClearCartModal extends View {
   label: HTMLElement;
@@ -51,13 +52,30 @@ export class ClearCartModal extends View {
 
   public async clearCart() {
     const cartId = localStorage.getItem('cartId');
+    const lineItemsActions: { action: 'removeLineItem'; lineItemId: string }[] = [];
+    const discountCodesActions: {
+      action: 'removeDiscountCode';
+      discountCode: { typeId: 'discount-code'; id: string };
+    }[] = [];
 
     if (!cartId) {
       throw new Error('No cart id!');
     }
-    const response = await new CartApi(apiInstance).deleteCart(cartId);
+    const response = await new CartApi(apiInstance).getCart();
     if (response && response.statusCode === 200) {
-      console.log('del', response.body.lineItems);
+      const lineItemsIDs: LineItem[] = response.body.lineItems;
+      const discountCodes: DiscountCodeInfo[] = response.body.discountCodes;
+      lineItemsIDs.forEach((item) => {
+        lineItemsActions.push({ action: 'removeLineItem', lineItemId: item.id });
+      });
+      discountCodes.forEach((discount) => {
+        discountCodesActions.push({
+          action: 'removeDiscountCode',
+          discountCode: { typeId: 'discount-code', id: discount.discountCode.id },
+        });
+      });
+      await new CartApi(apiInstance).deleteCart(cartId, lineItemsActions);
+      await new CartApi(apiInstance).removeDiscounts(cartId, discountCodesActions);
     } else {
       this.closeModal();
     }
