@@ -46,5 +46,6 @@
     @apply cursor-default;
     width: 30rem;
     height: 30rem;
+    @apply tablet:h-96 tablet:w-96 sm:h-80 sm:w-80;
   }
 }

@@ -3,7 +3,7 @@
 }
 
 .modal {
-  @apply relative m-auto flex h-2/6 w-2/5 flex-col justify-center gap-8 rounded-2xl bg-bgBody p-8 transition-all;
+  @apply relative m-auto flex h-2/6 w-2/5 flex-col justify-center gap-8 rounded-2xl bg-bgBody p-8 transition-all md:w-4/5;
 }
 
 .label {
