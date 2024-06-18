@@ -159,6 +159,39 @@ export class CartApi {
         return response;
       });
   }
+
+  async deleteCart(cartId: string): Promise<ClientResponse<Cart> | undefined> {
+    try {
+      const currentVersion = localStorage.getItem('cartVersion');
+      if (!currentVersion) {
+        throw new Error('No cart version');
+      }
+
+      const response = await this.customerBuilder
+        .carts()
+        .withId({ ID: cartId })
+        .delete({
+          queryArgs: {
+            version: +currentVersion,
+          },
+        })
+        .execute();
+      if (response.statusCode === 200) {
+        toastState.getState().toast.showSuccess('Cart deleted');
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Something went wrong, please try again.';
+        toastState.getState().toast.showError(message);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
 }
 
 export default CartApi;

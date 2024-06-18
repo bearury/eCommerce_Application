@@ -1,6 +1,11 @@
 .page {
   @apply py-4;
 
+  .cleatCartBtn {
+    @apply mb-6 ml-auto flex items-center justify-center rounded border border-textAccent bg-bgContainer px-2
+    py-1 text-xl text-bgBody transition-all hover:bg-textAccent hover:text-textDark active:scale-90;
+  }
+
   .items {
     @apply flex flex-col gap-3 px-3;
   }

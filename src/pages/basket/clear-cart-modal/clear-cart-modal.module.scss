@@ -1,0 +1,20 @@
+.modalWrapper {
+  @apply fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-bgModal transition-all;
+}
+
+.modal {
+  @apply relative m-auto flex h-2/6 w-2/5 flex-col justify-center gap-8 rounded-2xl bg-bgBody p-8 transition-all;
+}
+
+.label {
+  @apply m-auto text-center text-2xl font-semibold;
+}
+
+.btnBlock {
+  @apply flex flex-wrap justify-evenly gap-3;
+
+  .btn {
+    @apply flex w-20 items-center justify-center rounded border border-textAccent bg-bgContainer py-1 text-lg text-bgBody 
+    transition-all hover:bg-textAccent hover:text-textDark active:scale-90;
+  }
+}
