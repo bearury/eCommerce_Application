@@ -169,12 +169,17 @@ export default class CardProductPage extends View {
     } finally {
       loaderState.getState().loader.close();
     }
-    const isProductInCart = await this.checkProductInCart();
-    if (isProductInCart) {
-      const button = this.addToCartButton.getElement() as HTMLButtonElement;
-      button.value = 'In cart ✅';
-      button.disabled = true;
-      this.buttonsBlock.append(this.buttonDelete);
+    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
+    const productInCart = response.body.lineItems;
+    if (productInCart) {
+      productInCart.forEach((product) => {
+        if (product.productId === this.productId) {
+          const button = this.addToCartButton.getElement() as HTMLButtonElement;
+          button.value = 'In cart ✅';
+          button.disabled = true;
+          this.buttonsBlock.append(this.buttonDelete);
+        }
+      });
     }
 
     this.infoBlock.append(this.buttonsBlock);
@@ -205,10 +210,10 @@ export default class CardProductPage extends View {
 
   private async deleteProduct(): Promise<void> {
     const cartId = localStorage.getItem('cartId');
-    await this.checkProductInCart();
     if (!cartId) {
       throw new Error('No cart id!');
     }
+    await this.checkProductInCart();
     const response = await new CartApi(apiInstance).deleteFromCart(cartId, this.productInCartId);
     if (response && response.statusCode === 200) {
       const button = this.addToCartButton.getElement() as HTMLButtonElement;
