@@ -1,15 +1,19 @@
 .page {
   @apply flex-auto px-2 pt-3;
 
-  .container {
-    @apply m-auto flex max-w-screen-lg flex-col;
+  .wrapperContainer {
+    @apply mt-20 flex flex-auto items-center justify-evenly tablet:flex-col tablet:gap-28;
+
+    .buttonsContainer {
+      @apply flex max-w-screen-lg flex-col gap-20;
+
+      .button {
+        @apply m-auto w-52 rounded border border-bgHeader py-1;
+      }
+    }
   }
 
   .title {
     @apply mt-10 text-center text-3xl font-bold text-textDark;
-  }
-
-  .button {
-    @apply m-auto mt-20 w-52 rounded border border-bgHeader py-1;
   }
 }

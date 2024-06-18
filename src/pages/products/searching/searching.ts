@@ -56,11 +56,11 @@ export default class SearchingField extends View {
 
   private configureView(): void {
     const searchField: HTMLElement = this.getElement();
-    document.addEventListener('keydown', (event) => {
-      if (event.code == 'Enter') {
-        this.searchProduct();
-      }
-    });
+    // document.addEventListener('keydown', (event) => {
+    //   if (event.code == 'Enter') {
+    //     this.searchProduct();
+    //   }
+    // });
     searchField.append(this.input, this.searchBtn);
   }
 }

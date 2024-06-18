@@ -7,6 +7,7 @@ import { TotalPriceItem } from '@components/card/cart-card/price/total-price-ite
 import { Cart, CentPrecisionMoney, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import { CartCard } from '@components/card/cart-card/cart-card';
 import { EmptyCart } from '@components/empty-cart/empty-cart';
+import { PromocodeBlockBasket } from '@components/card/promocode-card/promocode-card_basket/promocode-card_basket';
 import converterPrice from '@utils/converter-price.ts';
 import CartApi from '@api/cartApi';
 import { apiInstance } from '@api/api';
@@ -40,6 +41,8 @@ export default class BasketPage extends View {
 
     const items: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.items] }).getElement();
 
+    const promocode = new PromocodeBlockBasket();
+
     const total: TotalPriceItem = new TotalPriceItem();
 
     const wrapperTotalPriceElement: HTMLElement = new ElementCreator({
@@ -52,12 +55,29 @@ export default class BasketPage extends View {
       total.setPrice(converterPrice(totalPrice));
     }
 
+    const totalDiscountedPrice = cart?.body.discountOnTotalPrice?.discountedAmount;
+    const totalDiscounted: TotalPriceItem = new TotalPriceItem();
+    const wrapperTotalDiscountedPriceElement: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.wrapperTotalDiscountedPrice, styles.hidden],
+      children: [totalDiscounted.getElement()],
+    }).getElement();
+
+    if (totalPrice && totalDiscountedPrice) {
+      if (+converterPrice(totalDiscountedPrice) !== 0) {
+        const fullPrice = (+converterPrice(totalDiscountedPrice) + +converterPrice(totalPrice)).toString();
+        totalDiscounted.setPrice(fullPrice);
+        wrapperTotalDiscountedPriceElement.classList.remove(styles.hidden);
+      }
+    }
+
     if (lineItem.length) {
       lineItem.forEach((item: LineItem) => {
         const itemCart: HTMLElement = new CartCard(item, this.deleteFromCart.bind(this)).getElement();
         items.append(itemCart);
       });
-      basket.append(items, wrapperTotalPriceElement);
+
+      basket.append(items, promocode.getElement(), wrapperTotalDiscountedPriceElement, wrapperTotalPriceElement);
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());

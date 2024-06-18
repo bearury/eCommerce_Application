@@ -1,0 +1,16 @@
+.promocodeContainer {
+  @apply m-auto my-6 h-20 w-96 bg-contain bg-left bg-no-repeat pl-20 pt-6;
+
+  .input {
+    @apply ml-2 w-52 rounded py-1 pl-2 text-xl text-textDark;
+  }
+
+  .applyBtn {
+    @apply ml-2 rounded border border-textAccent bg-bgContainer p-1 px-3 
+    text-textLight transition-all hover:bg-textAccent hover:text-textDark;
+  }
+
+  .applyBtn[disabled='true'] {
+    @apply bg-bgDisabled text-textDark;
+  }
+}

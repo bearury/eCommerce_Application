@@ -1,0 +1,23 @@
+.promocodeContainer {
+  @apply h-36 min-w-80 bg-contain bg-left bg-no-repeat pl-40 pt-6 text-textDark;
+
+  .title {
+    @apply pl-4 text-2xl font-semibold text-red-500;
+  }
+
+  .desc {
+    @apply text-xl;
+  }
+
+  .promocodeInput {
+    @apply mt-3 text-center;
+
+    .input {
+      @apply w-28 rounded text-center align-super text-2xl outline-none;
+    }
+
+    .copyBtn {
+      @apply ml-2 rounded-full bg-none p-1 align-bottom transition-all hover:bg-bgBackdrop;
+    }
+  }
+}

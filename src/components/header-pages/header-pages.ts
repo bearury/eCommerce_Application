@@ -71,7 +71,7 @@ export default class HeaderPages extends View {
     const currentElement: HTMLElement = this.getElement();
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth >= 624 && this.blockButton.parentNode !== this.container) {
+      if (window.innerWidth >= 900 && this.blockButton.parentNode !== this.container) {
         this.container.append(this.blockButton);
         this.burgerMenuButton.rotateLine();
         this.closePopup();

@@ -5,7 +5,24 @@
     @apply flex flex-col gap-3 px-3;
   }
 
-  .wrapperTotalPrice {
-    @apply absolute right-0 w-fit p-4 text-2xl;
+  .wrapperTotalPrice,
+  .wrapperTotalDiscountedPrice {
+    @apply m-auto w-fit p-4 text-2xl;
+  }
+
+  .wrapperTotalDiscountedPrice {
+    @apply relative;
+
+    div:before {
+      @apply absolute left-[-5%] top-[50%] h-[3px] w-[110%] bg-textPriceDiscount content-empty;
+    }
+
+    span {
+      @apply text-textAccent;
+    }
+  }
+
+  .hidden {
+    display: none;
   }
 }
