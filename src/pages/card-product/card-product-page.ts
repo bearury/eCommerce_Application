@@ -3,11 +3,11 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
 import { apiInstance, projectKey } from '@api/api';
-import { loaderState, toastState } from '@state/state';
+import { cartState, loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
 import { Slider } from '@components/slider/slider';
-import { Price } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, Price } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price';
 import sliderStyles from '@components/slider/slider.module.scss';
 import { ModalSlider } from '@components/slider/modal-slider/modal-slider';
@@ -169,8 +169,11 @@ export default class CardProductPage extends View {
     } finally {
       loaderState.getState().loader.close();
     }
-    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
-    const productInCart = response.body.lineItems;
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+    if (!cart) {
+      throw new Error('No cart!');
+    }
+    const productInCart = cart.body.lineItems;
     if (productInCart) {
       productInCart.forEach((product) => {
         if (product.productId === this.productId) {
@@ -224,8 +227,11 @@ export default class CardProductPage extends View {
   }
 
   private async checkProductInCart(): Promise<boolean> {
-    const response = await apiInstance.getClient().withProjectKey({ projectKey }).me().activeCart().get().execute();
-    const productInCart = response.body.lineItems;
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+    if (!cart) {
+      throw new Error('No cart!');
+    }
+    const productInCart = cart.body.lineItems;
     if (productInCart) {
       productInCart.forEach((product) => {
         if (product.productId === this.productId) {
