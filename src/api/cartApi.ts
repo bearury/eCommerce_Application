@@ -83,6 +83,45 @@ export class CartApi {
     }
   }
 
+  async addDiscount(cartId: string, promoCode: string) {
+    try {
+      const currentVersion = localStorage.getItem('cartVersion');
+      if (!currentVersion) {
+        throw new Error('No cart version');
+      }
+      const requestBody: MyCartUpdate = {
+        version: +currentVersion,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code: promoCode,
+          },
+        ],
+      };
+
+      const response = await this.customerBuilder
+        .me()
+        .carts()
+        .withId({ ID: cartId })
+        .post({ body: requestBody })
+        .execute();
+      if (response.statusCode === 200) {
+        toastState.getState().toast.showSuccess('Applied!');
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = 'Check the entered promocode';
+        toastState.getState().toast.showError(message);
+      }
+      throw error;
+    } finally {
+      loaderState.getState().loader.close();
+    }
+  }
+
   async deleteFromCart(cartId: string, productId: string): Promise<ClientResponse<Cart> | undefined> {
     try {
       const currentVersion = localStorage.getItem('cartVersion');

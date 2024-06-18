@@ -6,7 +6,7 @@
   }
 
   .blockButton {
-    @apply flex justify-between tablet:hidden;
+    @apply flex justify-between smallLaptops:hidden;
   }
 }
 
