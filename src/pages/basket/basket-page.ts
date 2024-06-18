@@ -11,6 +11,7 @@ import { PromocodeBlockBasket } from '@components/card/promocode-card/promocode-
 import converterPrice from '@utils/converter-price.ts';
 import CartApi from '@api/cartApi';
 import { apiInstance } from '@api/api';
+import { ClearCartModal } from './clear-cart-modal/clear-cart-modal';
 
 export default class BasketPage extends View {
   router: Router;
@@ -40,6 +41,13 @@ export default class BasketPage extends View {
     basket.replaceChildren();
 
     const items: HTMLElement = new ElementCreator({ tag: 'div', classNames: [styles.items] }).getElement();
+
+    const clearCartBtn: HTMLElement = new ElementCreator({
+      tag: 'button',
+      classNames: [styles.cleatCartBtn],
+      textContent: 'Clear cart 🗑️',
+      callback: [{ event: 'click', callback: this.clearCart.bind(this) }],
+    }).getElement();
 
     const promocode = new PromocodeBlockBasket();
 
@@ -77,11 +85,22 @@ export default class BasketPage extends View {
         items.append(itemCart);
       });
 
-      basket.append(items, promocode.getElement(), wrapperTotalDiscountedPriceElement, wrapperTotalPriceElement);
+      basket.append(
+        clearCartBtn,
+        items,
+        promocode.getElement(),
+        wrapperTotalDiscountedPriceElement,
+        wrapperTotalPriceElement
+      );
     } else {
       const emptyCart: EmptyCart = new EmptyCart(this.router);
       basket.append(emptyCart.getElement());
     }
+  }
+
+  private clearCart() {
+    const modal = new ClearCartModal();
+    document.body.append(modal.getElement());
   }
 
   private async deleteFromCart(item: LineItem, card: HTMLElement) {
