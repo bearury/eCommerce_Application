@@ -2,7 +2,7 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './card-product-page.module.scss';
 import ProductCard from '@api/product';
-import { apiInstance, projectKey } from '@api/api';
+import { apiInstance } from '@api/api';
 import { cartState, loaderState, toastState } from '@state/state';
 import Router from '@router/router';
 import { RouterPages } from '@app/app';
