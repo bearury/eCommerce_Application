@@ -7,11 +7,12 @@ import { RouterPages } from '@app/app.ts';
 import Router from '@router/router.ts';
 import Image from '@components/image/image';
 import img from '/shopping-cart.png';
-import { authState } from '@state/state';
+import { authState, cartState } from '@state/state';
 import BurgerButton from '@components/buttons/burger-button/burger-button';
 import burgerStyles from '@components/buttons/burger-button/burger-button.module.scss';
 import { apiInstance, isAuthorized, projectKey } from '@api/api';
 import CartApi from '@api/cartApi.ts';
+import { LineItem } from '@commercetools/platform-sdk';
 
 export default class HeaderPages extends View {
   router: Router;
@@ -130,7 +131,13 @@ export default class HeaderPages extends View {
     const newSession = apiInstance.createAnonymousSession();
     apiInstance.setClient(newSession);
     apiInstance.getClient().withProjectKey({ projectKey }).get().execute();
-    await new CartApi(apiInstance).createAnonymousCart();
+
+    const lineItems: LineItem[] =
+      cartState.getState().cart && cartState.getState().cart?.body.lineItems.length
+        ? (cartState.getState().cart?.body.lineItems as LineItem[])
+        : [];
+    await new CartApi(apiInstance).createAnonymousCart(lineItems);
+
     this.handlerClickButton(RouterPages.main);
   }
 
