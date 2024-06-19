@@ -40,32 +40,12 @@ export class CartApi {
         .execute();
       localStorage.setItem('cartId', response.body.id);
       localStorage.setItem('cartVersion', `${response.body.version}`);
+      cartState.getState().setCart(response);
       return response.body.id;
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
     }
   }
-
-  // async createAnonymousCart2(lineItems: LineItem[]): Promise<string | undefined> {
-  //   try {
-  //     const response = await this.customerBuilder
-  //       .me()
-  //       .carts()
-  //       .post({
-  //         body: {
-  //           currency: 'EUR',
-  //           country: 'DE',
-  //           lineItems,
-  //         },
-  //       })
-  //       .execute();
-  //     localStorage.setItem('cartId', response.body.id);
-  //     localStorage.setItem('cartVersion', `${response.body.version}`);
-  //     return response.body.id;
-  //   } catch (error) {
-  //     if (error instanceof Error) throw new Error(error.message);
-  //   }
-  // }
 
   async addToCart(cartId: string, productId: string): Promise<ClientResponse<Cart> | undefined> {
     try {
