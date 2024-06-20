@@ -1,6 +1,6 @@
 import { projectKey } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
-import { authState, loaderState, toastState } from '@state/state';
+import { authState, cartState, loaderState, toastState } from '@state/state';
 import { LocalStorageTokenCache } from './tokenCache';
 import Api from './api';
 
@@ -52,6 +52,7 @@ class Auth {
         const response = await this.customerBuilder.me().activeCart().get().execute();
         localStorage.setItem('cartId', response.body.id);
         localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
         authState.getState().setIsAuthorized(true);
         toastState.getState().toast.showSuccess('Welcome');
         return data;

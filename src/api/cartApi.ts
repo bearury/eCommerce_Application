@@ -3,9 +3,10 @@ import {
   ByProjectKeyRequestBuilder,
   Cart,
   CartAddLineItemAction,
-  CartRemoveLineItemAction,
   CartChangeLineItemQuantityAction,
+  CartRemoveLineItemAction,
   ClientResponse,
+  LineItem,
   MyCartUpdate,
 } from '@commercetools/platform-sdk';
 import { cartState, loaderState, toastState } from '@state/state';
@@ -24,7 +25,7 @@ export class CartApi {
     this.customerBuilder = client.withProjectKey({ projectKey });
   }
 
-  async createAnonymousCart(): Promise<string | undefined> {
+  async createAnonymousCart(lineItems?: LineItem[]): Promise<string | undefined> {
     try {
       const response = await this.customerBuilder
         .me()
@@ -33,11 +34,13 @@ export class CartApi {
           body: {
             currency: 'EUR',
             country: 'DE',
+            lineItems,
           },
         })
         .execute();
       localStorage.setItem('cartId', response.body.id);
       localStorage.setItem('cartVersion', `${response.body.version}`);
+      cartState.getState().setCart(response);
       return response.body.id;
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);

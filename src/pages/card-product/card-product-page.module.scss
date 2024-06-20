@@ -35,4 +35,34 @@
   .imgBlock {
     @apply max-w-xl;
   }
+  .buttonDelete {
+    @apply relative mt-3 flex h-12 w-12 items-center justify-center rounded border
+      border-bgHeader p-2 transition-all tablet:h-6 tablet:w-6 tablet:p-[2px];
+
+    svg {
+      @apply scale-90;
+    }
+
+    &:after {
+      @apply absolute left-1/2 top-1/2 h-[2px] w-full
+        -translate-x-1/2 rotate-45 scale-0 bg-red-400 transition-all content-empty;
+    }
+
+    &:hover {
+      svg {
+        @apply scale-100;
+      }
+
+      &:after {
+        @apply scale-100 transition-all;
+      }
+    }
+
+    path {
+      @apply fill-red-400;
+    }
+  }
+  .buttonsBlock {
+    @apply mt-3 flex flex-row flex-nowrap items-center gap-3;
+  }
 }
