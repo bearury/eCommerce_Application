@@ -47,7 +47,7 @@ class CustomerApi {
       const customer = await this.customerBuilder.customers().withId({ ID: customerID }).get().execute();
       return customer;
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -80,7 +80,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {
@@ -110,7 +109,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {
@@ -150,7 +148,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     }
@@ -179,7 +176,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {
@@ -211,7 +207,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update address process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {
@@ -260,7 +255,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update user info process, please try again.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {
@@ -287,7 +281,6 @@ class CustomerApi {
       if (error instanceof Error) {
         const message = 'Something went wrong during the update password process, please check your inputs.';
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
       throw error;
     } finally {

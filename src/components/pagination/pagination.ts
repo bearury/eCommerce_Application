@@ -4,6 +4,7 @@ import styles from './pagination.module.scss';
 import Cell from '@components/pagination/cell/cell';
 import { ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import MissingCell from '@components/pagination/missing-cell/missing-cell';
+import { countProductsOnOnePage } from '@utils/variables.ts';
 
 export const enum CellIconType {
   left = '\u25C0',
@@ -34,12 +35,13 @@ export default class Pagination extends View {
   private configureView(body: ProductProjectionPagedSearchResponse): void {
     const { offset, total, limit } = body;
 
-    if (!total || total < 12) return;
+    if (!total || total < countProductsOnOnePage) return;
 
     const countPages: number = Math.ceil(total / limit);
-    const activePage: number = offset / limit;
-    const arrPage: number[] = Array.from({ length: countPages - 1 }, (_, i) => i + 1);
-    const step = 3;
+    const activePage: number = offset / limit + 1;
+
+    const arrPage: number[] = Array.from({ length: countPages }, (_, i) => i + 1);
+    const step = 2;
 
     const paginationElement: HTMLElement = this.getElement();
 
@@ -61,15 +63,18 @@ export default class Pagination extends View {
 
     paginationElement.append(cellLeft.getElement());
 
-    arrPage.forEach((numberPage, index) => {
+    arrPage.forEach((numberPage) => {
       const cell: Cell = new Cell({ numberPage: numberPage.toString(), callback: this.handleClickCell.bind(this) });
-      if (index + 1 === activePage) {
+      if (numberPage === activePage) {
         cell.setActive();
       } else {
         cell.removeActive();
       }
 
-      if ((index < activePage - step && index !== 0) || (index > activePage + 1 && index !== arrPage.length - 1)) {
+      if (
+        (numberPage < activePage - step && numberPage !== 1) ||
+        (numberPage > activePage + step && numberPage !== arrPage.length)
+      ) {
         cell.hide();
       } else {
         cell.show();
@@ -79,18 +84,18 @@ export default class Pagination extends View {
 
       paginationElement.append(cell.getElement());
 
-      if (arrPage.length > step && index === 0) paginationElement.append(leftMissingCell.getElement());
-      if (arrPage.length > step && index === arrPage.length - 2)
+      if (arrPage.length > step && numberPage === 1) paginationElement.append(leftMissingCell.getElement());
+      if (arrPage.length > step && numberPage === arrPage.length - 1)
         paginationElement.append(rightMissingCell.getElement());
     });
 
-    if (activePage - 1 > step) {
+    if (activePage - step > step) {
       leftMissingCell.show();
     } else {
       leftMissingCell.hide();
     }
 
-    if (activePage < arrPage.length - step) {
+    if (activePage + 1 < arrPage.length - step) {
       rightMissingCell.show();
     } else {
       rightMissingCell.hide();
@@ -101,7 +106,7 @@ export default class Pagination extends View {
       callback: this.handleClickCell.bind(this),
     });
 
-    if (activePage === countPages - 1) {
+    if (activePage === countPages) {
       cellRight.setActive();
     } else {
       cellRight.removeActive();
@@ -112,13 +117,5 @@ export default class Pagination extends View {
 
   private handleClickCell(page: string): void {
     this.callback(page);
-
-    this.cells.forEach((cell: Cell): void => {
-      if (cell.getValue() === page) {
-        cell.setActive();
-      } else {
-        cell.removeActive();
-      }
-    });
   }
 }

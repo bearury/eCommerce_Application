@@ -45,3 +45,17 @@ input[type='submit'] {
 .invalid {
   @apply border-red-700;
 }
+
+.button {
+  @apply mt-3 w-full self-end bg-bgHeader p-3 text-white;
+
+  &:hover {
+    @apply cursor-pointer opacity-75;
+  }
+  &:disabled {
+    @apply pointer-events-none opacity-70;
+  }
+  &:disabled:hover {
+    @apply pointer-events-none cursor-default;
+  }
+}

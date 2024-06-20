@@ -3,14 +3,18 @@ import Router, { Route } from '../router/router';
 import WrapperPages from '@pages/wrapper-pages/wrapper-pages';
 import { loaderState } from '@state/state.ts';
 import Loader from '@components/loader/loader';
+import CartApi from '@api/cartApi.ts';
+import { apiInstance } from '@api/api';
 
 export enum RouterPages {
   main = 'main',
   products = 'products',
   product = 'product',
+  basket = 'basket',
   profile = 'profile',
   signup = 'signup',
   signin = 'signin',
+  about = 'about',
   not_found = 'not_found',
 }
 
@@ -28,6 +32,7 @@ export default class App {
     this.wrapperPage = new WrapperPages(this.router);
     this.body = document.querySelector('body') as HTMLBodyElement;
     this.loader = loaderState.getState().loader;
+    if (!localStorage.getItem('cartId')) new CartApi(apiInstance).createAnonymousCart();
   }
 
   public start(): void {
@@ -78,6 +83,13 @@ export default class App {
         },
       },
       {
+        path: `${RouterPages.basket}`,
+        callback: async (): Promise<void> => {
+          const { BasketPage } = await import('@pages/index');
+          this.setContent(RouterPages.basket, new BasketPage(this.router));
+        },
+      },
+      {
         path: `${RouterPages.product}/{id}`,
         callback: async (resource: string): Promise<void> => {
           const { CardProductPage } = await import('@pages/index');
@@ -89,6 +101,13 @@ export default class App {
         callback: async (): Promise<void> => {
           const { ProfilePage } = await import('@pages/index');
           this.setContent(RouterPages.profile, new ProfilePage());
+        },
+      },
+      {
+        path: `${RouterPages.about}`,
+        callback: async (): Promise<void> => {
+          const { AboutPage } = await import('@pages/index');
+          this.setContent(RouterPages.about, new AboutPage(this.router));
         },
       },
       {

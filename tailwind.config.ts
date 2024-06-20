@@ -86,6 +86,8 @@ export default {
     },
     screens: {
       lg: '1280px',
+      laptops: { max: '1025px' },
+      smallLaptops: { max: '900px' },
       md: { max: '768px' },
       tablet: { max: '640px' },
       sm: { max: '440px' },

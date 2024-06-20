@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { RouterPages } from '@app/app.ts';
 import Toast from '@components/toast/toast';
 import Loader from '@components/loader/loader';
-import { ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import { ModifyCategory } from '@utils/categories-creator.ts';
 
 interface RouterState {
@@ -73,15 +73,23 @@ const DefaultAddressBillingState = createStore(
 interface ProductsDataState {
   data: ClientResponse<ProductProjectionPagedSearchResponse> | null;
   setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => void;
+}
+
+const productsState = createStore(
+  devtools<ProductsDataState>((set) => ({
+    data: null,
+    setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => set(() => ({ data })),
+  }))
+);
+
+interface PageState {
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
 }
 
-const productsDataState = createStore(
-  devtools<ProductsDataState>((set) => ({
-    data: null,
+const pageState = createStore(
+  devtools<PageState>((set) => ({
     currentPage: 1,
-    setData: (data: ClientResponse<ProductProjectionPagedSearchResponse>) => set(() => ({ data })),
     setCurrentPage: (currentPage: number) => set(() => ({ currentPage })),
   }))
 );
@@ -105,6 +113,7 @@ const filterState = createStore(
     setWattage: (wattage: number | null) => set(() => ({ wattage })),
   }))
 );
+
 interface CategoryState {
   categories: ModifyCategory[] | [];
   category: string | null;
@@ -120,14 +129,29 @@ const categoryState = createStore(
     setCategories: (categories: ModifyCategory[]) => set(() => ({ categories })),
   }))
 );
+
+interface CartState {
+  cart: ClientResponse<Cart> | null;
+  setCart: (cart: ClientResponse<Cart>) => void;
+}
+
+const cartState = createStore(
+  devtools<CartState>((set) => ({
+    cart: null,
+    setCart: (cart: ClientResponse<Cart>) => set(() => ({ cart })),
+  }))
+);
+
 export {
   routerState,
   toastState,
   loaderState,
   authState,
   filterState,
-  productsDataState,
+  productsState,
+  pageState,
   DefaultAddressShippingState,
   DefaultAddressBillingState,
+  cartState,
   categoryState,
 };

@@ -8,7 +8,7 @@ import { DropdownGroup } from '@pages/products/accordion/dropdown-group/dropdown
 import { RangeValue } from '@components/range/range-element/range-element';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
-import { loaderState, productsDataState, toastState } from '@state/state.ts';
+import { loaderState, pageState, productsState, toastState } from '@state/state.ts';
 
 export default class Accordion extends View {
   content: HTMLElement | null;
@@ -87,6 +87,9 @@ export default class Accordion extends View {
   }
 
   private async handleClickButton(type: ButtonsGroupType): Promise<void> {
+    pageState.getState().setCurrentPage(1);
+
+    const currentPage: number = pageState.getState().currentPage;
     if (type === 'Apply') {
       const brand = this.dropdowns.getValue().brand;
       const color = this.dropdowns.getValue().color;
@@ -98,8 +101,6 @@ export default class Accordion extends View {
         return;
       }
 
-      productsDataState.getState().setCurrentPage(1);
-
       loaderState.getState().loader.show();
       this.api
         .getFilter(
@@ -109,10 +110,10 @@ export default class Accordion extends View {
             price,
             wattage,
           },
-          productsDataState.getState().currentPage
+          currentPage
         )
         .then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         })
         .catch((error) => toastState.getState().toast.showError(error.message))
         .finally(() => {
@@ -120,12 +121,11 @@ export default class Accordion extends View {
           this.handleClickOpenAccordion();
         });
     } else if (type === 'Cancel') {
-      const currentPage: number = productsDataState.getState().currentPage;
       this.dropdowns.clearValue();
       await this.api
         .get(currentPage)
         .then((data) => {
-          productsDataState.getState().setData(data);
+          productsState.getState().setData(data);
         })
         .catch((error) => {
           if (error instanceof Error) {

@@ -84,10 +84,10 @@ export default class SignInPage extends View {
       if (response && response.statusCode === 200) {
         this.router.navigate(RouterPages.main);
       } else {
-        console.error(response?.body);
+        throw new Error(`${response?.body}`);
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) throw new Error(error.message);
     } finally {
       loaderState.getState().loader.close();
     }

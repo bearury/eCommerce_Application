@@ -1,0 +1,7 @@
+.totalPrice {
+  @apply leading-tight text-textAccent tablet:text-sm;
+
+  .count {
+    @apply font-bold text-lime-700;
+  }
+}

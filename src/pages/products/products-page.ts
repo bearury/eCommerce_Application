@@ -2,17 +2,24 @@ import View from '@utils/view.ts';
 import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './products-page.module.scss';
 import Router from '@router/router.ts';
-import { loaderState, productsDataState, toastState } from '@state/state.ts';
+import { cartState, loaderState, pageState, productsState, toastState } from '@state/state.ts';
 import ProductsApi from '@api/productsApi.ts';
 import { apiInstance } from '@api/api.ts';
 import { ProductsCard } from '@components/card/products-card/products-card';
 import Pagination, { CellIconType } from '@components/pagination/pagination';
-import { ClientResponse, ProductProjection, ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import {
+  Cart,
+  ClientResponse,
+  LineItem,
+  ProductProjection,
+  ProductProjectionPagedSearchResponse,
+} from '@commercetools/platform-sdk';
 import Accordion from '@pages/products/accordion/accordion';
 import CategoriesSelect from '@pages/products/categories-select/categories-select';
 import { Breadcrumbs } from '@pages/products/breadcrumbs/breadcrumbs';
 import SortingBlock from './sorting/sorting';
 import SearchingField from './searching/searching';
+import CartApi from '@api/cartApi.ts';
 
 export default class ProductsPage extends View {
   router: Router;
@@ -24,8 +31,6 @@ export default class ProductsPage extends View {
   accordion: Accordion;
 
   productsApi: ProductsApi;
-
-  // categoriesApi: CategoriesApi;
 
   pagination: Pagination;
 
@@ -42,7 +47,7 @@ export default class ProductsPage extends View {
     this.router = router;
 
     this.productsApi = new ProductsApi(apiInstance);
-    productsDataState.subscribe(this.renderCards.bind(this));
+    productsState.subscribe(this.renderCards.bind(this));
 
     this.searchingBlock = new SearchingField().getElement();
     this.sortingBlock = new SortingBlock().getElement();
@@ -51,7 +56,7 @@ export default class ProductsPage extends View {
     this.accordion = new Accordion();
     this.categories = new CategoriesSelect(this.router);
     this.configureView();
-    this.getProductApi(productsDataState.getState().currentPage);
+    this.getProductApi();
   }
 
   private configureView(): void {
@@ -71,12 +76,13 @@ export default class ProductsPage extends View {
     );
   }
 
-  private async getProductApi(page: number = 1): Promise<void> {
+  private async getProductApi(): Promise<void> {
     loaderState.getState().loader.show();
+    const page = pageState.getState().currentPage;
     await this.productsApi
       .get(page)
       .then((data) => {
-        productsDataState.getState().setData(data);
+        productsState.getState().setData(data);
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -88,16 +94,26 @@ export default class ProductsPage extends View {
       });
   }
 
-  private renderCards(): void {
-    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsDataState.getState().data;
+  private async renderCards(): Promise<void> {
+    const data: ClientResponse<ProductProjectionPagedSearchResponse> | null = productsState.getState().data;
+
     this.cardsContainer.replaceChildren();
+
+    const cart: ClientResponse<Cart> | null = cartState.getState().cart;
+    if (!cart) return;
+    const productInCart: string[] = cart.body.lineItems.map((product: LineItem) => product.productId);
 
     if (data?.body.results.length) {
       this.pagination.setParams(data.body);
       data.body.results.forEach((product: ProductProjection): void => {
+        const buttonValue: string = productInCart.includes(product.id) ? 'In cart ✅' : 'Add to cart 🛒';
+        const isDisabledButton: boolean = productInCart.includes(product.id);
         const cardProduct: HTMLElement = new ProductsCard({
           data: product,
           callback: this.handleClickCard.bind(this),
+          addToCartCallback: this.addToCartCallback,
+          buttonValue,
+          isDisabledButton,
         }).getElement();
         this.cardsContainer.append(cardProduct);
       });
@@ -116,16 +132,27 @@ export default class ProductsPage extends View {
   }
 
   private handleChangePage(page: string): void {
-    const currentPage: number = productsDataState.getState().currentPage;
+    const currentPage: number = pageState.getState().currentPage;
+
     if (page === CellIconType.right) {
-      this.getProductApi(Number(currentPage + 1));
-      productsDataState.getState().setCurrentPage(currentPage + 1);
+      pageState.getState().setCurrentPage(currentPage + 1);
     } else if (page === CellIconType.left) {
-      this.getProductApi(Number(currentPage - 1));
-      productsDataState.getState().setCurrentPage(currentPage - 1);
+      pageState.getState().setCurrentPage(currentPage - 1);
     } else {
-      this.getProductApi(Number(page));
-      productsDataState.getState().setCurrentPage(Number(page));
+      pageState.getState().setCurrentPage(Number(page));
+    }
+    this.getProductApi();
+  }
+
+  private async addToCartCallback(productId: string, button: HTMLButtonElement): Promise<void> {
+    const cartId = localStorage.getItem('cartId');
+    if (!cartId) {
+      throw new Error('No cart id!');
+    }
+    const response = await new CartApi(apiInstance).addToCart(cartId, productId);
+    if (response && response.statusCode === 200) {
+      button.value = 'In cart ✅';
+      button.disabled = true;
     }
   }
 }

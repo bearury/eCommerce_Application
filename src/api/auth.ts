@@ -1,6 +1,6 @@
 import { projectKey } from '@api/api';
 import { ByProjectKeyRequestBuilder, CustomerDraft, CustomerSignin } from '@commercetools/platform-sdk';
-import { authState, loaderState, toastState } from '@state/state';
+import { authState, cartState, loaderState, toastState } from '@state/state';
 import { LocalStorageTokenCache } from './tokenCache';
 import Api from './api';
 
@@ -21,7 +21,22 @@ class Auth {
   async login(user: CustomerSignin) {
     try {
       loaderState.getState().loader.show();
-      const data = await this.customerBuilder.me().login().post({ body: user }).execute();
+      const anonymousCartId = localStorage.getItem('cartId');
+      if (!anonymousCartId) {
+        throw new Error('no anon cart id!');
+      }
+      const data = await this.customerBuilder
+        .me()
+        .login()
+        .post({
+          body: {
+            email: user.email,
+            password: user.password,
+            anonymousCartId,
+            anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+          } as CustomerSignin,
+        })
+        .execute();
       if (data.statusCode === 200) {
         localStorage.setItem('isAuthorized', 'true');
         localStorage.setItem('customerID', data.body.customer.id);
@@ -34,7 +49,10 @@ class Auth {
         });
         this.apiInstance.setClient(newSession);
         this.customerBuilder = newSession.withProjectKey({ projectKey });
-        this.customerBuilder.me().get().execute();
+        const response = await this.customerBuilder.me().activeCart().get().execute();
+        localStorage.setItem('cartId', response.body.id);
+        localStorage.setItem('cartVersion', `${response.body.version}`);
+        cartState.getState().setCart(response);
         authState.getState().setIsAuthorized(true);
         toastState.getState().toast.showSuccess('Welcome');
         return data;
@@ -47,7 +65,6 @@ class Auth {
         }
         authState.getState().setIsAuthorized(false);
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
     } finally {
       loaderState.getState().loader.close();
@@ -73,7 +90,6 @@ class Auth {
             'An account with the provided email address already exists, please log in or use another email address.';
         }
         toastState.getState().toast.showError(message);
-        console.error(error);
       }
     } finally {
       loaderState.getState().loader.close();

@@ -3,7 +3,7 @@ import { ElementCreator, ParamsElementCreator } from '@utils/element-creator.ts'
 import styles from './searching.module.scss';
 import Search from '@api/search';
 import { apiInstance } from '@api/api';
-import { productsDataState, toastState } from '@state/state';
+import { productsState, toastState } from '@state/state';
 
 export default class SearchingField extends View {
   input: HTMLElement;
@@ -45,7 +45,7 @@ export default class SearchingField extends View {
         fuzzyLevel: 1,
       })
       .then((data) => {
-        productsDataState.getState().setData(data);
+        productsState.getState().setData(data);
       })
       .catch(() => {
         toastState
@@ -56,11 +56,11 @@ export default class SearchingField extends View {
 
   private configureView(): void {
     const searchField: HTMLElement = this.getElement();
-    document.addEventListener('keydown', (event) => {
-      if (event.code == 'Enter') {
-        this.searchProduct();
-      }
-    });
+    // document.addEventListener('keydown', (event) => {
+    //   if (event.code == 'Enter') {
+    //     this.searchProduct();
+    //   }
+    // });
     searchField.append(this.input, this.searchBtn);
   }
 }

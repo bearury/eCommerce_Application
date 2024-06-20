@@ -1,0 +1,28 @@
+.card {
+  @apply rounded-2xl bg-bgContainer p-7 text-textLight;
+
+  .image {
+    @apply mb-4 h-72 w-72 rounded-2xl;
+  }
+
+  .name {
+    @apply flex items-center text-2xl font-semibold;
+
+    .link {
+      @apply ml-4;
+    }
+  }
+
+  .role {
+    @apply text-textAccent;
+  }
+
+  .label {
+    @apply mt-5 text-lg font-semibold;
+  }
+
+  .bio,
+  .contributions {
+    @apply w-72 text-textAccent;
+  }
+}

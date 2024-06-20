@@ -3,7 +3,7 @@
 }
 
 .modal {
-  @apply relative m-auto h-5/6 w-11/12 rounded-2xl bg-bgBody transition-all;
+  @apply relative m-auto h-5/6 w-11/12 rounded-2xl bg-bgBody align-middle transition-all tablet:h-3/4;
 
   .modalHeader {
     @apply -m-px flex h-14 items-center justify-end rounded-2xl bg-bgContainer px-6;
@@ -14,6 +14,12 @@
   }
 
   .sliderBlock {
-    @apply flex items-center overflow-y-scroll py-6;
+    @apply flex items-center py-6 tablet:py-10;
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .modal {
+    height: 90%;
   }
 }

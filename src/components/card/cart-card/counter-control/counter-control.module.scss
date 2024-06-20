@@ -1,0 +1,16 @@
+.control {
+  @apply flex w-24 max-w-24 items-center justify-between tablet:max-w-20;
+
+  .button {
+    @apply flex h-8 w-8 items-center justify-center rounded border border-textAccent bg-bgContainer text-xl text-bgBody transition-all
+    hover:bg-textAccent hover:text-textDark active:scale-90 tablet:h-6 tablet:w-6;
+  }
+
+  .button:disabled {
+    @apply cursor-auto bg-textAccent hover:text-bgBody active:scale-100;
+  }
+
+  .counter {
+    @apply flex flex-[32px] flex-shrink-0 flex-grow-0 items-center justify-center font-bold text-textDark;
+  }
+}

@@ -6,5 +6,18 @@ import NotFoundPage from '@pages/not-found/not-found-page';
 import ProductsPage from '@pages/products/products-page';
 import CardProductPage from '@pages/card-product/card-product-page';
 import ProfilePage from '@pages/profile/profile-page';
+import AboutPage from '@pages/about/about-page';
+import BasketPage from '@pages/basket/basket-page';
 
-export { SignInPage, SignUpPage, MainPage, WrapperPages, ProductsPage, CardProductPage, ProfilePage, NotFoundPage };
+export {
+  SignInPage,
+  SignUpPage,
+  MainPage,
+  WrapperPages,
+  ProductsPage,
+  CardProductPage,
+  ProfilePage,
+  AboutPage,
+  BasketPage,
+  NotFoundPage,
+};

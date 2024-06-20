@@ -5,24 +5,65 @@ import { Price, ProductProjection } from '@commercetools/platform-sdk';
 import converterPrice from '@utils/converter-price.ts';
 import Image from '@components/image/image';
 import noImage from '/noImage.png';
+import Input, { InputType } from '@components/input/input';
 
 export class ProductsCard extends View {
-  constructor({ data, callback }: { data: ProductProjection; callback: (id: string) => void }) {
+  callback: Function;
+
+  addToCartButton: Input;
+
+  productId: string;
+
+  addToCartCallback: Function;
+
+  constructor({
+    data,
+    callback,
+    addToCartCallback,
+    buttonValue,
+    isDisabledButton,
+  }: {
+    data: ProductProjection;
+    callback: (id: string) => void;
+    addToCartCallback: (productId: string, button: HTMLButtonElement) => void;
+    buttonValue: string;
+    isDisabledButton: boolean;
+  }) {
     const params: ParamsElementCreator = {
       tag: 'div',
       classNames: [styles.card],
-      callback: [{ event: 'click', callback: () => callback(data.id) }],
     };
     super(params);
+    this.productId = data.id;
+    this.callback = callback;
+    this.addToCartCallback = addToCartCallback;
+    this.addToCartButton = new Input({
+      inputType: InputType.button,
+      callbacks: [
+        {
+          event: 'click',
+          callback: () =>
+            this.addToCartCallback(this.productId, this.addToCartButton.getElement() as HTMLButtonElement),
+        },
+      ],
+      classNames: ['button'],
+      value: buttonValue,
+      disabled: isDisabledButton,
+    });
     this.configureView(data);
   }
 
-  private configureView(data: ProductProjection): void {
+  private async configureView(data: ProductProjection): Promise<void> {
     const card: HTMLElement = this.getElement();
+    const activeWrapper: HTMLElement = new ElementCreator({
+      tag: 'div',
+      classNames: [styles.activeWrapper],
+      callback: [{ event: 'click', callback: () => this.callback(data.id) }],
+    }).getElement();
     const textName = data.name['en-US'];
     const images = data.masterVariant.images;
     const pricesValue: Price[] | undefined = data.masterVariant.prices?.filter(
-      (price: Price) => price.value.currencyCode === 'EUR' || price.value.currencyCode === 'USD'
+      (price: Price) => price.value.currencyCode === 'EUR'
     );
     const descriptionValue: string | undefined = data.description?.['en-US'];
 
@@ -72,16 +113,11 @@ export class ProductsCard extends View {
       if (price.discounted) {
         priceElement.classList.add(styles.priceDiscount);
 
-        if (price.country === 'US') {
-          discountUsd.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
-        } else if (price.country === 'DE') {
-          discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
-        }
+        discountEur.textContent = `${converterPrice(price.discounted.value)} ${price.value.currencyCode}`;
       }
-
       pricesWrapper.append(priceElement);
     });
-
-    card.append(image, name, pricesWrapper, description, discountUsd, discountEur);
+    activeWrapper.append(image, name, pricesWrapper, description, discountUsd, discountEur);
+    card.append(activeWrapper, this.addToCartButton.getElement());
   }
 }
