@@ -3,7 +3,7 @@ import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
 import { authState, cartState, routerState } from '@state/state.ts';
-import CountIndicator from '@components/buttons/header-button/count-indicator/count-indicator.ts';
+import CountIndicator from '@components/buttons/header-button/count-indicator/count-indicator';
 
 interface HeaderButtonProps {
   buttonType: RouterPages;

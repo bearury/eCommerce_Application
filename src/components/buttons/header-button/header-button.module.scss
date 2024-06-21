@@ -1,5 +1,5 @@
 .button {
-  @apply min-w-[110px] border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out relative;
+  @apply relative min-w-[110px] border-none bg-inherit p-2 text-xl text-textLight transition-all duration-300 ease-in-out;
 
   &:hover {
     @apply cursor-pointer text-textAccent;

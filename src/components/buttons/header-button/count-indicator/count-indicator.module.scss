@@ -1,4 +1,4 @@
 .countIndicator {
-  @apply w-5 h-5 bg-bgBody text-textDark text-xs flex justify-center items-center
-  rounded-full absolute content-empty top-1 left-[9px] font-bold border border-bgHeader;
+  @apply absolute left-0 top-0 flex h-5 w-5 items-center justify-center
+  rounded-full border border-bgHeader bg-bgBody text-xs font-bold text-textDark content-empty;
 }
