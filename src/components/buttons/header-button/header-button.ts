@@ -3,6 +3,7 @@ import { ParamsElementCreator } from '@utils/element-creator.ts';
 import styles from './header-button.module.scss';
 import { RouterPages } from '@app/app.ts';
 import { authState, cartState, routerState } from '@state/state.ts';
+import CountIndicator from '@components/buttons/header-button/count-indicator/count-indicator.ts';
 
 interface HeaderButtonProps {
   buttonType: RouterPages;
@@ -11,6 +12,8 @@ interface HeaderButtonProps {
 
 export default class HeaderButton extends View {
   type: RouterPages;
+
+  countIndicator: CountIndicator;
 
   constructor({ buttonType, callback }: HeaderButtonProps) {
     const textContent: string =
@@ -32,16 +35,21 @@ export default class HeaderButton extends View {
 
     const params: ParamsElementCreator = {
       tag: 'button',
-      classNames: [styles.button],
+      classNames: [
+        styles.button,
+        buttonType === RouterPages.about || buttonType === RouterPages.products ? styles.about : styles.button,
+      ],
       textContent,
       callback: [{ event: 'click', callback: () => callback(buttonType) }],
     };
 
     super(params);
+
+    this.getElement().classList.add();
     this.type = buttonType;
+    this.countIndicator = new CountIndicator();
 
     cartState.subscribe(this.addCountItemBasket.bind(this));
-
     routerState.subscribe(this.handlerChangePage.bind(this));
   }
 
@@ -65,7 +73,8 @@ export default class HeaderButton extends View {
   private addCountItemBasket(): void {
     const cartLength: number | undefined = cartState.getState().cart?.body.lineItems.length;
     if (this.type === RouterPages.basket && cartLength) {
-      this.getElement().textContent = `🛒 Basket (${cartLength})`;
+      this.getElement().append(this.countIndicator.getElement());
+      this.countIndicator.setValue(cartLength);
     } else if (this.type === RouterPages.basket) {
       this.getElement().textContent = `🛒 Basket`;
     }
